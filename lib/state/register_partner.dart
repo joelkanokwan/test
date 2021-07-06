@@ -4,6 +4,7 @@ import 'package:joelfindtechnician/alertdialog/alert_detail.dart';
 import 'package:joelfindtechnician/alertdialog/success_register.dart';
 import 'package:joelfindtechnician/gsheet/controller.dart';
 import 'package:joelfindtechnician/gsheet/model.dart';
+import 'package:joelfindtechnician/state/partner_signin.dart';
 
 class RegisterPartner extends StatefulWidget {
   @override
@@ -66,7 +67,9 @@ class _RegisterPartnerState extends State<RegisterPartner> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => PartnerSignin(),
+            ));
           },
           icon: Icon(
             Icons.arrow_back_ios,

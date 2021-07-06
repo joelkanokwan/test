@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/social_service.dart';
+import 'package:joelfindtechnician/state/partner_signin.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({Key? key}) : super(key: key);
@@ -43,7 +43,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => PartnerSignin()));
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -121,7 +122,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             color: Colors.blue,
                             onPressed: () {
                               if (checkFields())
-                                SocialService().resetPasswordLink(email, context);
+                                SocialService()
+                                    .resetPasswordLink(email, context);
                             },
                             child: Text(
                               "Submit",
