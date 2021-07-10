@@ -14,20 +14,9 @@ class _LoginSuccessState extends State<LoginSuccess> {
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/screen.png'),
-                  fit: BoxFit.cover),
-            ),
-          ),
-          AppBar(
-            backgroundColor: Colors.transparent,
-          ),
-          Container(
+        appBar: AppBar(),
+        body: Container(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -39,7 +28,7 @@ class _LoginSuccessState extends State<LoginSuccess> {
                 Text(
                   '' + User.displayName!,
                   style: GoogleFonts.lato(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontWeight: FontWeight.w700,
                     fontSize: 24,
                     fontStyle: FontStyle.italic,
@@ -49,7 +38,7 @@ class _LoginSuccessState extends State<LoginSuccess> {
                 Text(
                   ' ' + User.email!,
                   style: GoogleFonts.lato(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
                     fontStyle: FontStyle.italic,
@@ -159,8 +148,6 @@ class _LoginSuccessState extends State<LoginSuccess> {
               ],
             ),
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
