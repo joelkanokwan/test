@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/firebase_database.dart/eddit_profile.dart';
+
 import 'package:joelfindtechnician/social_service.dart';
 import 'package:joelfindtechnician/state/partner_signin.dart';
 
@@ -98,7 +100,10 @@ class _HomePageState extends State<HomePage> {
               child: FlatButton(
                 textColor: Colors.black,
                 color: Colors.blueGrey,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => EdditProfile()));
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
