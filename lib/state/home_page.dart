@@ -5,6 +5,7 @@ import 'package:joelfindtechnician/state/eddit_profile.dart';
 
 import 'package:joelfindtechnician/social_service.dart';
 import 'package:joelfindtechnician/state/partner_signin.dart';
+import 'package:joelfindtechnician/state/show_profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -73,7 +74,13 @@ class _HomePageState extends State<HomePage> {
               child: FlatButton(
                 textColor: Colors.black,
                 color: Colors.blueGrey,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => ShowProfile(),
+                    ),
+                  );
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),

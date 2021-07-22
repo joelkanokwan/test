@@ -1,8 +1,13 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joelfindtechnician/alertdialog/errorupload_profilePic.dart';
+import 'package:joelfindtechnician/alertdialog/updateprofile_success.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 
 class EdditProfile extends StatefulWidget {
@@ -13,23 +18,55 @@ class EdditProfile extends StatefulWidget {
 }
 
 class _EdditProfileState extends State<EdditProfile> {
-  File? _pickedImage;
+  final formKey = GlobalKey<FormState>();
+  TextEditingController img = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController about = TextEditingController();
+  File? image;
+  String? imgUrl;
 
-  void _imageFromCamera() async {
+  Future<void> uploadDatatoFirestore() async {
+    if (formKey.currentState!.validate()) {
+      if (image == null) {
+        showDialog(
+            context: context,
+            builder: (context) => ErrorUpLoadProfilePic(
+                title: '', discription: '', buttonText: ''));
+      }
+      Random random = Random();
+      int i = random.nextInt(1000000);
+      var storageImage =
+          FirebaseStorage.instance.ref().child('Images/images$i');
+      var task = storageImage.putFile(image!);
+      imgUrl = await (await task).ref.getDownloadURL();
+
+      await FirebaseFirestore.instance.collection('Product').add(
+          {'name': name.text, 'img': imgUrl.toString(), 'about': about.text});
+      showDialog(
+        context: context,
+        builder: (context) =>
+            UpdateProfileSuccess(title: '', discription: '', buttonText: ''),
+      );
+
+      formKey.currentState!.reset();
+    }
+  }
+
+  Future<void> _imageFromCamera() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(source: ImageSource.camera);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
-      _pickedImage = pickedImageFile;
+      image = pickedImageFile;
     });
   }
 
-  void _imageFromGallery() async {
+  Future<void> _imageFromGallery() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
-      _pickedImage = pickedImageFile;
+      image = pickedImageFile;
     });
   }
 
@@ -57,90 +94,108 @@ class _EdditProfileState extends State<EdditProfile> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Center(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      CircleAvatar(
-                        radius: 70,
-                        backgroundColor: Colors.grey,
-                        child: CircleAvatar(
-                          radius: 65,
-                          backgroundColor: Colors.blueAccent,
-                          backgroundImage: _pickedImage == null
-                              ? null
-                              : FileImage(_pickedImage!),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              labelText: "Name",
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              labelStyle: GoogleFonts.lato(
-                                fontSize: 18,
-                                color: Colors.black,
-                              ),
-                            ),
+              Form(
+                key: formKey,
+                child: Container(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        CircleAvatar(
+                          radius: 70,
+                          backgroundColor: Colors.grey,
+                          child: CircleAvatar(
+                            radius: 65,
+                            backgroundColor: Colors.blueAccent,
+                            backgroundImage:
+                                image == null ? null : FileImage(image!),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: TextFormField(
-                            maxLines: 10,
-                            decoration: InputDecoration(
-                              labelText: "About",
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              labelStyle: GoogleFonts.lato(
-                                fontSize: 18,
-                                color: Colors.black,
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: TextFormField(
+                              controller: name,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please Enter Name';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                labelText: "Name",
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                labelStyle: GoogleFonts.lato(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 30),
-                      Container(
-                        height: 50,
-                        width: 350,
-                        child: FlatButton(
-                          color: Colors.blue,
-                          onPressed: () {},
-                          child: Text(
-                            'Save',
-                            style: GoogleFonts.lato(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: TextFormField(
+                              controller: about,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please Enter About';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              maxLines: 10,
+                              decoration: InputDecoration(
+                                labelText: "About",
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                labelStyle: GoogleFonts.lato(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                        ),
+                        SizedBox(height: 30),
+                        Container(
+                          height: 50,
+                          width: 350,
+                          child: FlatButton(
+                            color: Colors.blue,
+                            onPressed: () {
+                              uploadDatatoFirestore();
+                            },
+                            child: Text(
+                              'Save',
+                              style: GoogleFonts.lato(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
