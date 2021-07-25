@@ -1,7 +1,7 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 
 class ShowProfile extends StatefulWidget {
@@ -12,6 +12,9 @@ class ShowProfile extends StatefulWidget {
 }
 
 class _ShowProfileState extends State<ShowProfile> {
+
+  final databaseReference = FirebaseFirestore.instance;
+  var firebaseUser = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +42,43 @@ class _ShowProfileState extends State<ShowProfile> {
             );
           }
           return ListView(
-            children: []
-          );
+              children: snapshot.data!.docs.map(
+            (e) {
+              return Column(
+                children: [
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(e['img']),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      e['name'],
+                      style: GoogleFonts.lato(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      e['about'],
+                      style: GoogleFonts.lato(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ).toList());
         },
       ),
     );

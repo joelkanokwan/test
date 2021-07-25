@@ -25,7 +25,7 @@ class _EdditProfileState extends State<EdditProfile> {
   File? image;
   String? imgUrl;
 
-  Future<void> uploadDatatoFirestore() async {
+  uploadDatatoFirestore() async {
     if (formKey.currentState!.validate()) {
       if (image == null) {
         showDialog(
@@ -47,12 +47,13 @@ class _EdditProfileState extends State<EdditProfile> {
         builder: (context) =>
             UpdateProfileSuccess(title: '', discription: '', buttonText: ''),
       );
+     
 
       formKey.currentState!.reset();
     }
   }
 
-  Future<void> _imageFromCamera() async {
+  _imageFromCamera() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(source: ImageSource.camera);
     final pickedImageFile = File(pickedImage!.path);
@@ -61,7 +62,7 @@ class _EdditProfileState extends State<EdditProfile> {
     });
   }
 
-  Future<void> _imageFromGallery() async {
+  _imageFromGallery() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     final pickedImageFile = File(pickedImage!.path);
