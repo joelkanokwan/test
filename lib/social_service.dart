@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:joelfindtechnician/alertdialog/error_reset.dart';
 import 'package:joelfindtechnician/alertdialog/error_signup.dart';
 import 'package:joelfindtechnician/alertdialog/success_reset.dart';
 import 'package:joelfindtechnician/alertdialog/success_signup.dart';
+import 'package:joelfindtechnician/model.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 import 'package:joelfindtechnician/state/login_success.dart';
 import 'alertdialog/error_signin.dart';
@@ -15,8 +17,9 @@ class SocialService {
   signUp(String email, String password, context) {
     return FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) {
+        .then((value) async {
       print('Signup Success');
+
       showDialog(
           context: context,
           builder: (context) =>
@@ -43,8 +46,20 @@ class SocialService {
   signIn(String email, String password, context) {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
-        .then((val) {
+        .then((val) async {
       print('signed in');
+      String uid = val.user!.uid;
+      print('Update Profile Success = $uid');
+
+      UserModel model = UserModel(img: 'img', name: 'name', about: 'about');
+      Map<String, dynamic> data = model.toMap();
+
+      await FirebaseFirestore.instance
+          .collection('Product')
+          .doc(uid)
+          .set(data)
+          .then((value) => print('insert value to firestore success'));
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomePage(),
