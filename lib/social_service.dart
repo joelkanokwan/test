@@ -51,14 +51,14 @@ class SocialService {
       String uid = val.user!.uid;
       print('Update Profile Success = $uid');
 
-      UserModel model = UserModel(img: 'img', name: 'name', about: 'about');
-      Map<String, dynamic> data = model.toMap();
+      
+      
 
-      await FirebaseFirestore.instance
-          .collection('Product')
-          .doc(uid)
-          .set(data)
-          .then((value) => print('insert value to firestore success'));
+      
+      
+      
+      
+      
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
