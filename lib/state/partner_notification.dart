@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,22 +7,19 @@ import 'package:joelfindtechnician/state/mywallet.dart';
 import 'package:joelfindtechnician/state/partner_aboutus.dart';
 import 'package:joelfindtechnician/state/partner_contactus.dart';
 import 'package:joelfindtechnician/state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/state/partner_notification.dart';
 import 'package:joelfindtechnician/state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/state/partner_signin.dart';
 import 'package:joelfindtechnician/state/partner_termandconditon.dart';
 import 'package:joelfindtechnician/state/social_service.dart';
 
-class ShowProfile extends StatefulWidget {
-  const ShowProfile({Key? key}) : super(key: key);
+class PartnerNotification extends StatefulWidget {
+  const PartnerNotification({Key? key}) : super(key: key);
 
   @override
-  _ShowProfileState createState() => _ShowProfileState();
+  _PartnerNotificationState createState() => _PartnerNotificationState();
 }
 
-class _ShowProfileState extends State<ShowProfile> {
-  final databaseReference = FirebaseFirestore.instance;
-  var firebaseUser = FirebaseAuth.instance.currentUser!;
+class _PartnerNotificationState extends State<PartnerNotification> {
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -38,7 +34,7 @@ class _ShowProfileState extends State<ShowProfile> {
             color: Colors.white,
           ),
         ),
-        title: Text('Show Profile'),
+        title: Text('Partner Notification'),
       ),
       endDrawer: Drawer(
         child: Material(
@@ -223,54 +219,6 @@ class _ShowProfileState extends State<ShowProfile> {
             ],
           ),
         ),
-      ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('Product').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return ListView(
-              children: snapshot.data!.docs.map(
-            (e) {
-              return Column(
-                children: [
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(e['img']),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Text(
-                      e['name'],
-                      style: GoogleFonts.lato(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Text(
-                      e['about'],
-                      style: GoogleFonts.lato(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ).toList());
-        },
       ),
     );
   }

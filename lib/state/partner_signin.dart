@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/social_service.dart';
+import 'package:joelfindtechnician/state/social_service.dart';
 import 'package:joelfindtechnician/state/forget_password.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/state/register_partner.dart';
