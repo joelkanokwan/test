@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/eddit_profile.dart';
+import 'package:joelfindtechnician/state/foamcontact_partner.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 import 'package:joelfindtechnician/state/mywallet.dart';
 import 'package:joelfindtechnician/state/partner_aboutus.dart';
@@ -12,6 +13,7 @@ import 'package:joelfindtechnician/state/partner_notification.dart';
 import 'package:joelfindtechnician/state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/state/partner_signin.dart';
 import 'package:joelfindtechnician/state/partner_termandconditon.dart';
+import 'package:joelfindtechnician/state/show_review.dart';
 import 'package:joelfindtechnician/state/social_service.dart';
 
 class ShowProfile extends StatefulWidget {
@@ -236,35 +238,94 @@ class _ShowProfileState extends State<ShowProfile> {
               children: snapshot.data!.docs.map(
             (e) {
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(e['img']),
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                    child: CircleAvatar(
+                      radius: 35,
+                      backgroundImage: NetworkImage(e['img']),
                     ),
                   ),
-                  Container(
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, top: 5),
                     child: Text(
                       e['name'],
                       style: GoogleFonts.lato(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                    child: Text(
+                      e['about'],
+                      style: GoogleFonts.lato(
+                        fontSize: 17,
                         color: Colors.grey,
                       ),
                     ),
                   ),
-                  Container(
-                    child: Text(
-                      e['about'],
-                      style: GoogleFonts.lato(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, right: 5, top: 8),
+                        child: FlatButton(
+                          height: 40,
+                          minWidth: 170,
+                          color: Colors.blue,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ShowReview()));
+                          },
+                          child: Text(
+                            'Review',
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 8,
+                        ),
+                        child: FlatButton(
+                          height: 40,
+                          minWidth: 170,
+                          color: Colors.blue,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FoamContactPartner()));
+                          },
+                          child: Text(
+                            'Contact',
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               );

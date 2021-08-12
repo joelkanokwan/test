@@ -33,6 +33,7 @@ class AlertDetail extends StatelessWidget {
             right: 16,
           ),
           margin: EdgeInsets.only(top: 16),
+          
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.rectangle,
