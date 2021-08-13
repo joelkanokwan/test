@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/login_success.dart';
 
-class PaymentSuccess extends StatefulWidget {
-  const PaymentSuccess({Key? key}) : super(key: key);
+class SentFormSuccess extends StatefulWidget {
+  const SentFormSuccess({Key? key}) : super(key: key);
 
   @override
   _PaymentSuccessState createState() => _PaymentSuccessState();
 }
 
-class _PaymentSuccessState extends State<PaymentSuccess> {
+class _PaymentSuccessState extends State<SentFormSuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                 image: AssetImage('assets/images/check.png'),
               ),
               Text(
-                'Your Payment Was Don!',
+                'Your Form was done!',
                 style: GoogleFonts.lato(
                   fontSize: 18,
                 ),
