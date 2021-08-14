@@ -6,10 +6,10 @@ class ReplySuccess extends StatefulWidget {
   const ReplySuccess({Key? key}) : super(key: key);
 
   @override
-  _PaymentSuccessState createState() => _PaymentSuccessState();
+  _ReplySuccessState createState() => _ReplySuccessState();
 }
 
-class _PaymentSuccessState extends State<ReplySuccess> {
+class _ReplySuccessState extends State<ReplySuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

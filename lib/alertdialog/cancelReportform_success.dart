@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-class CancelSuccess extends StatefulWidget {
-  const CancelSuccess({Key? key}) : super(key: key);
+class CancelReportFormSuccess extends StatefulWidget {
+  const CancelReportFormSuccess({Key? key}) : super(key: key);
 
   @override
-  _CancelSuccessState createState() => _CancelSuccessState();
+  _CancelReportFormSuccessState createState() => _CancelReportFormSuccessState();
 }
 
-class _CancelSuccessState extends State<CancelSuccess> {
+class _CancelReportFormSuccessState extends State<CancelReportFormSuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

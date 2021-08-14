@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-class CancelSuccess extends StatefulWidget {
-  const CancelSuccess({Key? key}) : super(key: key);
+class ConfirmReportSuccess extends StatefulWidget {
+  const ConfirmReportSuccess({Key? key}) : super(key: key);
 
   @override
-  _CancelSuccessState createState() => _CancelSuccessState();
+  _ConfirmReportSuccessState createState() => _ConfirmReportSuccessState();
 }
 
-class _CancelSuccessState extends State<CancelSuccess> {
+class _ConfirmReportSuccessState extends State<ConfirmReportSuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _CancelSuccessState extends State<CancelSuccess> {
                 image: AssetImage('assets/images/check.png'),
               ),
               Text(
-                'Your Cancel Was Don!',
+                'Your Appointment Was Don!',
                 style: GoogleFonts.lato(
                   fontSize: 18,
                 ),

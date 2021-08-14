@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/alertdialog/ctmAppointment_success.dart';
 import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
-import 'package:joelfindtechnician/state/appointment_form.dart';
-import 'package:joelfindtechnician/state/cancel_form.dart';
 import 'package:joelfindtechnician/state/payment_method.dart';
 
 class CustomerReply extends StatefulWidget {
@@ -21,8 +20,10 @@ class _PartnerReplyState extends State<CustomerReply> {
       children: [
         SpeedDialChild(
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AppointmentForm()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomerAppointmentSuccess()));
           },
           backgroundColor: Colors.amber,
           child: Icon(
@@ -38,8 +39,8 @@ class _PartnerReplyState extends State<CustomerReply> {
         ),
         SpeedDialChild(
           onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => PaymentsMethod()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PaymentsMethod()));
           },
           backgroundColor: Colors.amber,
           child: Icon(
@@ -56,7 +57,9 @@ class _PartnerReplyState extends State<CustomerReply> {
         SpeedDialChild(
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerCancelSuccess()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomerCancelSuccess()));
           },
           backgroundColor: Colors.amber,
           child: Icon(
@@ -88,6 +91,15 @@ class _PartnerReplyState extends State<CustomerReply> {
           ),
         ),
         title: Text('Customer Reply Page'),
+        actions: [
+          InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Icon(Icons.emoji_emotions_outlined),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: _speedDial(),
       body: Container(

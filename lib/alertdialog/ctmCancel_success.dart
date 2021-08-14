@@ -6,10 +6,10 @@ class CustomerCancelSuccess extends StatefulWidget {
   const CustomerCancelSuccess({Key? key}) : super(key: key);
 
   @override
-  _PaymentSuccessState createState() => _PaymentSuccessState();
+  _CustomerCancelSuccessState createState() => _CustomerCancelSuccessState();
 }
 
-class _PaymentSuccessState extends State<CustomerCancelSuccess> {
+class _CustomerCancelSuccessState extends State<CustomerCancelSuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

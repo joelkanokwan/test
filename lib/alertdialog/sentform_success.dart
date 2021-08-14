@@ -6,10 +6,10 @@ class SentFormSuccess extends StatefulWidget {
   const SentFormSuccess({Key? key}) : super(key: key);
 
   @override
-  _PaymentSuccessState createState() => _PaymentSuccessState();
+  _SentFormSuccessState createState() => _SentFormSuccessState();
 }
 
-class _PaymentSuccessState extends State<SentFormSuccess> {
+class _SentFormSuccessState extends State<SentFormSuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

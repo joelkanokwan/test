@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class OfferPriceForm extends StatefulWidget {
-  const OfferPriceForm({Key? key}) : super(key: key);
+class ConfirmReportForm extends StatefulWidget {
+  const ConfirmReportForm({Key? key}) : super(key: key);
 
   @override
-  _ReplyPageState createState() => _ReplyPageState();
+  _ConfirmReportFormState createState() => _ConfirmReportFormState();
 }
 
-class _ReplyPageState extends State<OfferPriceForm> {
+class _ConfirmReportFormState extends State<ConfirmReportForm> {
   DateTime? date;
   TimeOfDay? time;
-
+  int? _selectChoice;
   final _formKey = GlobalKey<FormState>();
-
   String getTime() {
     if (time == null) {
-      return 'Confirm Time';
+      return 'Appointment Time';
     } else {
       final hours = time!.hour.toString().padLeft(2, '0');
       final minutes = time!.minute.toString().padLeft(2, '0');
@@ -27,7 +25,7 @@ class _ReplyPageState extends State<OfferPriceForm> {
 
   String getDate() {
     if (date == null) {
-      return 'Confirm Date';
+      return 'Appointment Date';
     } else {
       return '${date!.day}/${date!.month}/${date!.year}';
     }
@@ -70,7 +68,7 @@ class _ReplyPageState extends State<OfferPriceForm> {
             color: Colors.white,
           ),
         ),
-        title: Text('Offer Price Form'),
+        title: Text('Confirm report form'),
         actions: [
           InkWell(
             onTap: () {},
@@ -91,70 +89,38 @@ class _ReplyPageState extends State<OfferPriceForm> {
               key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(height: 150),
+                  SizedBox(height: 200),
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please Enter Offer Price';
+                        return 'Please Enter confirm details';
+                      } else {}
+                    },
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Job',
+                      hintText: 'Ex: Eddit details or confirm follow above',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please Enter total price';
                       } else {}
                     },
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Offer Price',
-                      hintText:  'Baht',
+                      labelText: 'Total price',
+                      hintText: 'Baht',
                       prefixIcon: Icon(Icons.money),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please Enter some details';
-                      } else {}
-                    },
-                    maxLines: 4,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'Detail',
-                      hintText:
-                          'EX: The price included everything no more charge',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please Enter Yor warranty';
-                      } else {}
-                    },
-                    maxLines: 4,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'warranty',
-                      hintText:
-                          'Ex: Warranty Product and some problem about installing 1 year',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 60),
-                    child: Text(
-                      'Confirm or Cahnge Date and Time',
-                      style: GoogleFonts.lato(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -167,19 +133,18 @@ class _ReplyPageState extends State<OfferPriceForm> {
                         },
                         icon: Icon(
                           Icons.date_range_outlined,
-                          size: 30,
+                          size: 20,
                           color: Colors.orange,
                         ),
                         label: Text(getDate()),
                       ),
                       FlatButton.icon(
-                        padding: EdgeInsets.only(right: 10),
                         onPressed: () {
                           pickTime(context);
                         },
                         icon: Icon(
                           Icons.watch_later_outlined,
-                          size: 30,
+                          size: 20,
                           color: Colors.orange,
                         ),
                         label: Text(getTime()),
@@ -197,7 +162,7 @@ class _ReplyPageState extends State<OfferPriceForm> {
                         if (_formKey.currentState!.validate()) {}
                       },
                       child: Text(
-                        'Reply Customer',
+                        'Confirm to customer',
                         style: GoogleFonts.lato(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

@@ -6,10 +6,10 @@ class AppointmentSuccess extends StatefulWidget {
   const AppointmentSuccess({Key? key}) : super(key: key);
 
   @override
-  _PaymentSuccessState createState() => _PaymentSuccessState();
+  _AppointmentSuccessState createState() => _AppointmentSuccessState();
 }
 
-class _PaymentSuccessState extends State<AppointmentSuccess> {
+class _AppointmentSuccessState extends State<AppointmentSuccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
