@@ -1,34 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FoamContactPartner extends StatefulWidget {
-  const FoamContactPartner({Key? key}) : super(key: key);
+class OfferPriceForm extends StatefulWidget {
+  const OfferPriceForm({Key? key}) : super(key: key);
 
   @override
-  _FoamContactPartnerState createState() => _FoamContactPartnerState();
+  _ReplyPageState createState() => _ReplyPageState();
 }
 
-class _FoamContactPartnerState extends State<FoamContactPartner> {
+class _ReplyPageState extends State<OfferPriceForm> {
   DateTime? date;
   TimeOfDay? time;
-  int? _selectChoice;
 
   final _formKey = GlobalKey<FormState>();
 
   String getTime() {
     if (time == null) {
-      return 'Appointment Time';
+      return 'Confirm Time';
     } else {
       final hours = time!.hour.toString().padLeft(2, '0');
       final minutes = time!.minute.toString().padLeft(2, '0');
-
       return '$hours:$minutes';
     }
   }
 
   String getDate() {
     if (date == null) {
-      return 'Appointment Date';
+      return 'Confirm Date';
     } else {
       return '${date!.day}/${date!.month}/${date!.year}';
     }
@@ -43,7 +42,6 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
       lastDate: DateTime(2022),
     );
     if (newDate == null) return;
-
     setState(() => date = newDate);
   }
 
@@ -53,9 +51,7 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
       context: context,
       initialTime: time ?? initialTime,
     );
-
     if (newTime == null) return;
-
     setState(() {
       time = newTime;
     });
@@ -74,7 +70,7 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
             color: Colors.white,
           ),
         ),
-        title: Text('Foam contact technician'),
+        title: Text('Offer Price Form'),
         actions: [
           InkWell(
             onTap: () {},
@@ -95,67 +91,70 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
               key: _formKey,
               child: Column(
                 children: [
+                  SizedBox(height: 150),
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please type your name';
-                      } else {}
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Customer Name',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please type your phone number';
+                        return 'Please Enter Offer Price';
                       } else {}
                     },
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      
-                      labelText: 'Phone Number',
-                      
+                      labelText: 'Offer Price',
+                      hintText: 'Baht',
+                      prefixIcon: Icon(Icons.money),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 15),
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please type address of work';
+                        return 'Please Enter some details';
                       } else {}
                     },
-                    maxLines: 3,
+                    maxLines: 4,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Address of Work',
+                      labelText: 'Detail',
+                      hintText:
+                          'EX: The price included everything no more charge',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 15),
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please type job description';
+                        return 'Please Enter Yor warranty';
                       } else {}
                     },
-                    maxLines: 8,
+                    maxLines: 4,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Job Description',
+                      labelText: 'warranty',
+                      hintText:
+                          'Ex: Warranty Product and some problem about installing 1 year',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 60),
+                    child: Text(
+                      'Confirm or Cahnge Date and Time',
+                      style: GoogleFonts.lato(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -187,68 +186,27 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Radio(
-                            activeColor: Colors.amber,
-                            value: 1,
-                            groupValue: _selectChoice,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectChoice = 1;
-                              });
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Sent the work to the apprais',
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Radio(
-                            activeColor: Colors.amber,
-                            value: 2,
-                            groupValue: _selectChoice,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectChoice = 2;
-                              });
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Make an appointment to see the actual job site',
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 40),
-                      Container(
-                        height: 50,
-                        width: 330,
-                        child: FlatButton(
-                          textColor: Colors.white,
-                          color: Colors.blueAccent,
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
-                          },
-                          child: Text(
-                            'Sent foam to technician',
-                            style: GoogleFonts.lato(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                  SizedBox(height: 30),
+                  Container(
+                    height: 50,
+                    width: 330,
+                    child: FlatButton(
+                      textColor: Colors.white,
+                      color: Colors.blueAccent,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {}
+                      },
+                      child: Text(
+                        'Reply Customer',
+                        style: GoogleFonts.lato(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
                   ),
                 ],
               ),

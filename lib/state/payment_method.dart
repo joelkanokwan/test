@@ -343,11 +343,9 @@ class _PaymentsMethodState extends State<PaymentsMethod> {
                   title: Text('SignOut'),
                   onTap: () {
                     SocialService().signOut();
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
-                    );
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (route) => false);
                   },
                 ),
               ),
