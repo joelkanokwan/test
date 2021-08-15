@@ -57,6 +57,7 @@ class _LoginPage extends State<LoginPage> {
           }).toList(),
           options: CarouselOptions(
             height: double.infinity,
+            autoPlay: true,
             viewportFraction: 1,
             initialPage: currentIndex,
             onPageChanged: (index, reason) {
