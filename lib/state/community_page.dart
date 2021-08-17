@@ -36,55 +36,283 @@ class _CommunityPageState extends State<CommunityPage> {
         ),
         title: Text('Community Page'),
       ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        behavior: HitTestBehavior.opaque,
-        child: SafeArea(
-          child: Container(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          child: Icon(Icons.search),
-                          margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
-                        ),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search your province',
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          behavior: HitTestBehavior.opaque,
+          child: SafeArea(
+            child: Container(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            child: Icon(Icons.search),
+                            margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
                           ),
                         ),
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Search your province',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  CarouselSlider(
+                    items: [0, 1, 2, 3].map((item) {
+                      return Image.asset(
+                        'assets/images/display_login.jpg',
+                        fit: BoxFit.cover,
+                        width: 300,
+                      );
+                    }).toList(),
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 2,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      'Our Services',
+                      style: GoogleFonts.lato(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                CarouselSlider(
-                  items: [0, 1, 2, 3].map((item) {
-                    return Image.asset(
-                      'assets/images/display_login.jpg',
-                      fit: BoxFit.cover,
-                      width: 300,
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    aspectRatio: 2,
+                  Container(
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      children: [
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/aircon.png',
+                                    color: Colors.blue),
+                                Text(
+                                  'Airconditioner',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Installing Airconditioner'),
+                                Text('and fixing accessary')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.amberAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/cleaning.png',
+                                    color: Colors.orange),
+                                Text(
+                                  'Cleaning',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Home cleaning service'),
+                                Text('Office cleaning service')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.pinkAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/curtain.png',
+                                    color: Colors.redAccent),
+                                Text(
+                                  'Curtain',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Design and installing'),
+                                Text('curtain and accessary')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.purpleAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/door.png',
+                                ),
+                                Text(
+                                  'Door Window',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Design Installing and fixing'),
+                                Text('door window floor ceiling'),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.blueAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/electricity.png',
+                                ),
+                                Text(
+                                  'Electricity',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Design Installing and fixing'),
+                                Text('electricity systems'),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.redAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/fixmachine.png',
+                                  color: Colors.redAccent,
+                                ),
+                                Text(
+                                  'Fixing Machine',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Fixing machine'),
+                                Text('and electric machine'),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.greenAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/furniture.png',
+                                ),
+                                Text(
+                                  'Cleaning Furniture',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Cleaning furniture and'),
+                                Text('wash machine service'),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.pinkAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/toilet.png',
+                                ),
+                                Text(
+                                  'Toilet',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Design Installing and fixing'),
+                                Text('asseecsary of toilet'),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.amber,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

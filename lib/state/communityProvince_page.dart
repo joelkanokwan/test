@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/state/create_post.dart';
 import 'package:joelfindtechnician/state/ctm_aboutus.dart';
 import 'package:joelfindtechnician/state/ctm_contactus.dart';
 import 'package:joelfindtechnician/state/ctm_howtouseapp.dart';
@@ -35,97 +36,191 @@ class _CommunityProvincePageState extends State<CommunityProvincePage> {
           ),
         ),
         title: Text('Community Province Page'),
+       
+       
+       
       ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        behavior: HitTestBehavior.opaque,
-        child: SafeArea(
-          child: Container(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          child: Icon(Icons.search),
-                          margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
-                        ),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search your province',
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CreatePost()));
+        },
+        child: Icon(
+          Icons.edit_rounded,
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          behavior: HitTestBehavior.opaque,
+          child: SafeArea(
+            child: Container(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            child: Icon(Icons.search),
+                            margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                CarouselSlider(
-                  items: [0, 1, 2, 3].map((item) {
-                    return Image.asset(
-                      'assets/images/display_login.jpg',
-                      fit: BoxFit.cover,
-                      width: 300,
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    aspectRatio: 2,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Available Services',
-                    style: GoogleFonts.lato(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Search your province',
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 90),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        maxRadius: 25,
-                        backgroundColor: Colors.black12,
-                      ),
-                      SizedBox(width: 2),
-                      CircleAvatar(
-                        maxRadius: 25,
-                        backgroundColor: Colors.black12,
-                      ),
-                      SizedBox(width: 2),
-                      CircleAvatar(
-                        maxRadius: 25,
-                        backgroundColor: Colors.black12,
-                      ),
-                      SizedBox(width: 2),
-                      CircleAvatar(
-                        maxRadius: 25,
-                        backgroundColor: Colors.black12,
-                      ),
-                      SizedBox(width: 2),
-                      CircleAvatar(
-                        maxRadius: 25,
-                        backgroundColor: Colors.black12,
-                      ),
-                    ],
+                  CarouselSlider(
+                    items: [0, 1, 2, 3].map((item) {
+                      return Image.asset(
+                        'assets/images/display_login.jpg',
+                        fit: BoxFit.cover,
+                        width: 300,
+                      );
+                    }).toList(),
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 2,
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Available Services',
+                      style: GoogleFonts.lato(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      children: [
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/aircon.png',
+                                    color: Colors.blue),
+                                Text(
+                                  'Airconditioner',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Installing Airconditioner'),
+                                Text('and fixing accessary')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.amberAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/cleaning.png',
+                                    color: Colors.orange),
+                                Text(
+                                  'Cleaning',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Home cleaning service'),
+                                Text('Office cleaning service')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.pinkAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/curtain.png',
+                                    color: Colors.redAccent),
+                                Text(
+                                  'Curtain',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Design and installing'),
+                                Text('curtain and accessary')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.purpleAccent,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: SizedBox(
+                            height: 200,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: SizedBox(
+                            height: 200,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

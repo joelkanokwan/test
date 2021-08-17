@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/social_service.dart';
 
 import 'package:joelfindtechnician/state/ctm_aboutus.dart';
@@ -68,7 +69,7 @@ class _LoginSuccessState extends State<LoginSuccess> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MainServicePage()));
+                                  builder: (context) => CommunityPage()));
                         },
                         child: Row(
                           children: [

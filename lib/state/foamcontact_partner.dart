@@ -118,9 +118,7 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
                     },
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      
                       labelText: 'Phone Number',
-                      
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
