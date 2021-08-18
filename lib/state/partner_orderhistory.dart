@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/eddit_profile.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 import 'package:joelfindtechnician/state/mywallet.dart';
@@ -19,7 +20,21 @@ class PartnerOrderHistory extends StatefulWidget {
   _PartnerOrderHistoryState createState() => _PartnerOrderHistoryState();
 }
 
-class _PartnerOrderHistoryState extends State<PartnerOrderHistory> {
+class _PartnerOrderHistoryState extends State<PartnerOrderHistory>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabPartnerOrderhistorycontroller;
+  @override
+  void initState() {
+    super.initState();
+    _tabPartnerOrderhistorycontroller = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabPartnerOrderhistorycontroller!.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -38,6 +53,7 @@ class _PartnerOrderHistoryState extends State<PartnerOrderHistory> {
           ),
           title: Text('Partner History'),
           bottom: TabBar(
+            controller: _tabPartnerOrderhistorycontroller,
             tabs: [
               Tab(
                 icon: Icon(Icons.work_outline_outlined),
@@ -57,6 +73,531 @@ class _PartnerOrderHistoryState extends State<PartnerOrderHistory> {
               ),
             ],
           ),
+        ),
+        body: TabBarView(
+          controller: _tabPartnerOrderhistorycontroller,
+          children: [
+            ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Customer Name',
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Order Submit time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Tel',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Order ID',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Amount',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Payment',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.amber,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Text(
+                                'Warranty :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Customer Name',
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Order Submit time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Tel',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Order ID',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Amount',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Payment',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.amber,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Text(
+                                'Warranty :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Customer Name',
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Order Submit time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Tel',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Order ID',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Amount',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Payment',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.amber,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Text(
+                                'Warranty :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Customer Name',
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Order Submit time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment time :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Tel',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Order ID',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Amount',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                                VerticalDivider(thickness: 1),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Payment',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'xxxxxx',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.amber,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                          Divider(thickness: 2),
+                          Row(
+                            children: [
+                              Text(
+                                'Warranty :',
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'xxxxxxxxxxxxx',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         endDrawer: Drawer(
           child: Material(
@@ -102,14 +643,12 @@ class _PartnerOrderHistoryState extends State<PartnerOrderHistory> {
                     leading: Icon(
                       Icons.person_outline,
                     ),
-                    title: Text('My Profile'),
+                    title: Text('Go to services'),
                     onTap: () {
-                      Navigator.pushAndRemoveUntil(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                          (route) => false);
+                              builder: (context) => CommunityPage()));
                     },
                   ),
                 ),

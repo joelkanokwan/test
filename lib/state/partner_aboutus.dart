@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/eddit_profile.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 import 'package:joelfindtechnician/state/mywallet.dart';
@@ -80,14 +81,12 @@ class _PartnerAboutUsState extends State<PartnerAboutUs> {
                   leading: Icon(
                     Icons.person_outline,
                   ),
-                  title: Text('My Profile'),
+                  title: Text('Go to services'),
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                        (route) => false);
+                            builder: (context) => CommunityPage()));
                   },
                 ),
               ),

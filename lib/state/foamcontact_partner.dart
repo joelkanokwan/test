@@ -129,22 +129,6 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please type address of work';
-                      } else {}
-                    },
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: 'Address of Work',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
                         return 'Please type job description';
                       } else {}
                     },
@@ -156,6 +140,30 @@ class _FoamContactPartnerState extends State<FoamContactPartner> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_outlined,
+                        color: Colors.blue,
+                      ),
+                      SizedBox(width: 100),
+                      Container(
+                        child: DropdownButton(
+                          hint: Text(''),
+                          value: null,
+                          items: null,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Container(
+                        child: DropdownButton(
+                          hint: Text(''),
+                          value: null,
+                          items: null,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 15),
                   Row(

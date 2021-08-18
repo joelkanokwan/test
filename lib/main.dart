@@ -3,13 +3,10 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/state/communityProvince_page.dart';
-import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/home_page.dart';
+import 'package:joelfindtechnician/state/foamcontact_partner.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
-import 'package:joelfindtechnician/state/login_success.dart';
-import 'package:joelfindtechnician/state/payment_method.dart';
-
+import 'package:joelfindtechnician/state/partner_reply.dart';
+import 'package:joelfindtechnician/state/partner_signin.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginSuccess(),
+      home: LoginPage(),
     );
   }
 }

@@ -275,23 +275,6 @@ class _CommunityProvincePageState extends State<CommunityProvincePage> {
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ListTile(
                   leading: Icon(
-                    Icons.person_outline,
-                  ),
-                  title: Text('My Profile'),
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginSuccess(),
-                        ),
-                        (route) => false);
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
                     Icons.notification_important_outlined,
                   ),
                   title: Text('Notification'),

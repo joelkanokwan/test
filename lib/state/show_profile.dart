@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/alertdialog/payment_success.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/eddit_profile.dart';
 import 'package:joelfindtechnician/state/foamcontact_partner.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
@@ -13,6 +15,7 @@ import 'package:joelfindtechnician/state/partner_notification.dart';
 import 'package:joelfindtechnician/state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/state/partner_signin.dart';
 import 'package:joelfindtechnician/state/partner_termandconditon.dart';
+import 'package:joelfindtechnician/state/payment_method.dart';
 import 'package:joelfindtechnician/state/show_review.dart';
 import 'package:joelfindtechnician/state/social_service.dart';
 
@@ -86,14 +89,12 @@ class _ShowProfileState extends State<ShowProfile> {
                   leading: Icon(
                     Icons.person_outline,
                   ),
-                  title: Text('My Profile'),
+                  title: Text('Go to services'),
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                        (route) => false);
+                            builder: (context) => PaymentsMethod()));
                   },
                 ),
               ),

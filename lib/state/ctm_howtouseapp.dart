@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/social_service.dart';
 import 'package:joelfindtechnician/state/ctm_aboutus.dart';
 import 'package:joelfindtechnician/state/ctm_contactus.dart';
@@ -89,14 +90,12 @@ class _CustomerHowtouseAppState extends State<CustomerHowtouseApp> {
                   leading: Icon(
                     Icons.person_outline,
                   ),
-                  title: Text('My Profile'),
+                  title: Text('Go to services'),
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginSuccess(),
-                        ),
-                        (route) => false);
+                            builder: (context) => CommunityPage()));
                   },
                 ),
               ),

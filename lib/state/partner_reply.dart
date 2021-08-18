@@ -137,13 +137,89 @@ class _PartnerReplyState extends State<PartnerReply> {
       ),
       floatingActionButton: _speedDial(),
       body: Container(
-        margin: EdgeInsetsDirectional.only(top: 20),
-        padding: EdgeInsets.all(10),
-        child: GridView.count(
-          crossAxisCount: 1,
+        child: ListView(
           children: [
-            Card(
-              margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Customer Name',
+                        style: GoogleFonts.lato(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Text(
+                            'Appointment :',
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'xxxxxxxxxx',
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            'Order Summit :',
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'xxxxxxxxxx',
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            'Expire time:',
+                            style: GoogleFonts.lato(color: Colors.red),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'xxxxxxxxxx',
+                            style: GoogleFonts.lato(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                      Divider(thickness: 2),
+                      Text(
+                        'Job Description :',
+                        style: GoogleFonts.lato(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                      ),
+                      Divider(thickness: 2),
+                      Text(
+                        'Remark :',
+                      ),
+                      Divider(thickness: 2),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.amber,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),

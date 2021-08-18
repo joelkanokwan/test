@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joelfindtechnician/alertdialog/errorupload_profilePic.dart';
 import 'package:joelfindtechnician/alertdialog/updateprofile_success.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 import 'package:joelfindtechnician/state/mywallet.dart';
 import 'package:joelfindtechnician/state/partner_aboutus.dart';
@@ -140,14 +141,12 @@ class _EdditProfileState extends State<EdditProfile> {
                   leading: Icon(
                     Icons.person_outline,
                   ),
-                  title: Text('My Profile'),
+                  title: Text('Go to services'),
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                        (route) => false);
+                            builder: (context) => CommunityPage()));
                   },
                 ),
               ),
