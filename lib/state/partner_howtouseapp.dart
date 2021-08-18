@@ -41,27 +41,37 @@ class _PartnerHowtoUseAppState extends State<PartnerHowtoUseApp> {
           color: Colors.blue,
           child: ListView(
             children: [
-              DrawerHeader(
-                padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(radius: 20, backgroundColor: Colors.blue),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          User.email!,
-                          style: GoogleFonts.lato(
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
+              InkWell(
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                      (route) => false);
+                },
+                child: DrawerHeader(
+                  padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(radius: 20, backgroundColor: Colors.blue),
+                      SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            User.email!,
+                            style: GoogleFonts.lato(
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Container(

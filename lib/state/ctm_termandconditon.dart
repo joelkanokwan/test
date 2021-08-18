@@ -40,38 +40,48 @@ class _CustomerTermandConditonState extends State<CustomerTermandConditon> {
           color: Colors.blue,
           child: ListView(
             children: [
-              DrawerHeader(
-                padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(User.photoURL!)),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          User.displayName!,
-                          style: GoogleFonts.lato(
-                            fontSize: 17,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
+              InkWell(
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginSuccess(),
+                      ),
+                      (route) => false);
+                },
+                child: DrawerHeader(
+                  padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(User.photoURL!)),
+                      SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            User.displayName!,
+                            style: GoogleFonts.lato(
+                              fontSize: 17,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          User.email!,
-                          style: GoogleFonts.lato(
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
+                          SizedBox(height: 4),
+                          Text(
+                            User.email!,
+                            style: GoogleFonts.lato(
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Container(

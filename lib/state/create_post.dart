@@ -75,10 +75,20 @@ class _CreatePostState extends State<CreatePost> {
                       ),
                     ],
                   ),
-                  
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Container(
+                        child: DropdownButton(
+                          hint: Text(''),
+                          value: null,
+                          items: null,
+                        ),
+                      ),
+                    ],
+                  ),
                   Container(
                     margin: EdgeInsets.only(top: 30),
-                    
                     height: 50,
                     width: 330,
                     child: FlatButton(
