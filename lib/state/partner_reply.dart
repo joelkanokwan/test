@@ -148,6 +148,13 @@ class _PartnerReplyState extends State<PartnerReply> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
+                        '**Cuustomer sent form to technician**',
+                        style: GoogleFonts.lato(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
                         'Customer Name',
                         style: GoogleFonts.lato(
                           fontSize: 20,
@@ -219,8 +226,73 @@ class _PartnerReplyState extends State<PartnerReply> {
                     ],
                   ),
                 ),
+                
               ),
             ),
+                    Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '**Technician make form confirm to system**',
+                    style: GoogleFonts.lato(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Customer Name',
+                    style: GoogleFonts.lato(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        'Appointment time :',
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'xxxxxxxxxx',
+                      ),
+                    ],
+                  ),
+                  Divider(thickness: 2),
+                  Text(
+                    'Confirm Job :',
+                    style: GoogleFonts.lato(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  Text(
+                    'xxxxxxxxxxxxxxx',
+                  ),
+                  Divider(thickness: 2),
+                  Row(
+                    children: [
+                      Text(
+                        'Total Price :',
+                        style: GoogleFonts.lato(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text('xxxxx'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
           ],
         ),
       ),

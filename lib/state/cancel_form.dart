@@ -94,7 +94,7 @@ class _CancelFormState extends State<CancelForm> {
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please Enter Offer Price';
+                        return 'Please Enter Some reason';
                       } else {}
                     },
                     maxLines: 4,

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FoamContactPartner extends StatefulWidget {
-  const FoamContactPartner({Key? key}) : super(key: key);
+class FormContactPartner extends StatefulWidget {
+  const FormContactPartner({Key? key}) : super(key: key);
 
   @override
-  _FoamContactPartnerState createState() => _FoamContactPartnerState();
+  _FormContactPartnerState createState() => _FormContactPartnerState();
 }
 
-class _FoamContactPartnerState extends State<FoamContactPartner> {
+class _FormContactPartnerState extends State<FormContactPartner> {
   DateTime? date;
   TimeOfDay? time;
   int? _selectChoice;

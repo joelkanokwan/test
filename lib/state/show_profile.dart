@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/alertdialog/payment_success.dart';
-import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/eddit_profile.dart';
-import 'package:joelfindtechnician/state/foamcontact_partner.dart';
+import 'package:joelfindtechnician/state/formcontact_partner.dart';
 import 'package:joelfindtechnician/state/home_page.dart';
 import 'package:joelfindtechnician/state/mywallet.dart';
 import 'package:joelfindtechnician/state/partner_aboutus.dart';
@@ -322,7 +320,7 @@ class _ShowProfileState extends State<ShowProfile> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        FoamContactPartner()));
+                                        FormContactPartner()));
                           },
                           child: Text(
                             'Contact',
