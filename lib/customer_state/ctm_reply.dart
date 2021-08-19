@@ -3,7 +3,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/ctmAppointment_success.dart';
 import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
-import 'package:joelfindtechnician/state/payment_method.dart';
+import 'package:joelfindtechnician/customer_state/payment_method.dart';
 
 class CustomerReply extends StatefulWidget {
   const CustomerReply({Key? key}) : super(key: key);

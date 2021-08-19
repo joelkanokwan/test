@@ -10,16 +10,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:joelfindtechnician/alertdialog/errorupload_profilePic.dart';
 import 'package:joelfindtechnician/alertdialog/updateprofile_success.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/home_page.dart';
-import 'package:joelfindtechnician/state/mywallet.dart';
-import 'package:joelfindtechnician/state/partner_aboutus.dart';
-import 'package:joelfindtechnician/state/partner_contactus.dart';
-import 'package:joelfindtechnician/state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/state/partner_notification.dart';
-import 'package:joelfindtechnician/state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
-import 'package:joelfindtechnician/state/partner_termandconditon.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/home_page.dart';
+import 'package:joelfindtechnician/partner_state/mywallet.dart';
+import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
+import 'package:joelfindtechnician/partner_state/partner_contactus.dart';
+import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
+import 'package:joelfindtechnician/partner_state/partner_notification.dart';
+import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
 
 class EdditProfile extends StatefulWidget {
   const EdditProfile({Key? key}) : super(key: key);

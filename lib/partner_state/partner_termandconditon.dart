@@ -2,25 +2,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/eddit_profile.dart';
-import 'package:joelfindtechnician/state/home_page.dart';
-import 'package:joelfindtechnician/state/mywallet.dart';
-import 'package:joelfindtechnician/state/partner_aboutus.dart';
-import 'package:joelfindtechnician/state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/state/partner_notification.dart';
-import 'package:joelfindtechnician/state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
-import 'package:joelfindtechnician/state/partner_termandconditon.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/eddit_profile.dart';
+import 'package:joelfindtechnician/partner_state/home_page.dart';
+import 'package:joelfindtechnician/partner_state/mywallet.dart';
+import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
+import 'package:joelfindtechnician/partner_state/partner_contactus.dart';
+import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
+import 'package:joelfindtechnician/partner_state/partner_notification.dart';
+import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
 
-class PartnerContactUs extends StatefulWidget {
-  const PartnerContactUs({Key? key}) : super(key: key);
+class PartnerTermAndCondiotion extends StatefulWidget {
+  const PartnerTermAndCondiotion({Key? key}) : super(key: key);
 
   @override
-  _PartnerContactUsState createState() => _PartnerContactUsState();
+  _PartnerTermAndCondiotionState createState() =>
+      _PartnerTermAndCondiotionState();
 }
 
-class _PartnerContactUsState extends State<PartnerContactUs> {
+class _PartnerTermAndCondiotionState extends State<PartnerTermAndCondiotion> {
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -35,7 +36,7 @@ class _PartnerContactUsState extends State<PartnerContactUs> {
             color: Colors.white,
           ),
         ),
-        title: Text('Partner Contact Us'),
+        title: Text('Partner Term And Condition'),
       ),
       endDrawer: Drawer(
         child: Material(

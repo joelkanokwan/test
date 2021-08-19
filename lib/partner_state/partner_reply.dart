@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/cancelReportform_success.dart';
-import 'package:joelfindtechnician/state/appointment_form.dart';
-import 'package:joelfindtechnician/state/cancel_form.dart';
-import 'package:joelfindtechnician/state/confirmReportform.dart';
-import 'package:joelfindtechnician/state/offerprice_form.dart';
+import 'package:joelfindtechnician/partner_state/appointment_form.dart';
+import 'package:joelfindtechnician/partner_state/cancel_form.dart';
+import 'package:joelfindtechnician/partner_state/confirmReportform.dart';
+
+import 'package:joelfindtechnician/partner_state/offerprice_form.dart';
 
 class PartnerReply extends StatefulWidget {
   const PartnerReply({Key? key}) : super(key: key);

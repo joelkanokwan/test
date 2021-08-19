@@ -2,23 +2,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
-import 'package:joelfindtechnician/state/ctm_aboutus.dart';
-import 'package:joelfindtechnician/state/ctm_contactus.dart';
-import 'package:joelfindtechnician/state/ctm_notification.dart';
-import 'package:joelfindtechnician/state/ctm_ordethistory.dart';
-import 'package:joelfindtechnician/state/ctm_termandconditon.dart';
-import 'package:joelfindtechnician/state/login_page.dart';
-import 'package:joelfindtechnician/state/login_success.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/customer_state/ctm_aboutus.dart';
+import 'package:joelfindtechnician/customer_state/ctm_contactus.dart';
+import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
+import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
+import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/login_success.dart';
 
-class CustomerHowtouseApp extends StatefulWidget {
-  const CustomerHowtouseApp({Key? key}) : super(key: key);
+class CustomerNotification extends StatefulWidget {
+  const CustomerNotification({Key? key}) : super(key: key);
 
   @override
-  _CustomerHowtouseAppState createState() => _CustomerHowtouseAppState();
+  _CustomerNotificationState createState() => _CustomerNotificationState();
 }
 
-class _CustomerHowtouseAppState extends State<CustomerHowtouseApp> {
+class _CustomerNotificationState extends State<CustomerNotification> {
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -33,7 +33,7 @@ class _CustomerHowtouseAppState extends State<CustomerHowtouseApp> {
             color: Colors.white,
           ),
         ),
-        title: Text('Customer How to use App'),
+        title: Text('Customer Notification'),
       ),
       endDrawer: Drawer(
         child: Material(

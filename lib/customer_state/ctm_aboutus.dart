@@ -2,24 +2,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/ctm_aboutus.dart';
-import 'package:joelfindtechnician/state/ctm_contactus.dart';
-import 'package:joelfindtechnician/state/ctm_howtouseapp.dart';
-import 'package:joelfindtechnician/state/ctm_notification.dart';
-import 'package:joelfindtechnician/state/ctm_ordethistory.dart';
-import 'package:joelfindtechnician/state/ctm_termandconditon.dart';
-import 'package:joelfindtechnician/state/login_page.dart';
-import 'package:joelfindtechnician/state/login_success.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/customer_state/ctm_contactus.dart';
+import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
+import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
+import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
+import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/login_success.dart';
 
-class PaymentsMethod extends StatefulWidget {
-  const PaymentsMethod({Key? key}) : super(key: key);
+class CustomerAboutUs extends StatefulWidget {
+  const CustomerAboutUs({Key? key}) : super(key: key);
 
   @override
-  _PaymentsMethodState createState() => _PaymentsMethodState();
+  _CustomerAboutUsState createState() => _CustomerAboutUsState();
 }
 
-class _PaymentsMethodState extends State<PaymentsMethod> {
+class _CustomerAboutUsState extends State<CustomerAboutUs> {
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -34,160 +33,7 @@ class _PaymentsMethodState extends State<PaymentsMethod> {
             color: Colors.white,
           ),
         ),
-        title: Text('Payments Method'),
-      ),
-      body: Container(
-        margin: EdgeInsetsDirectional.only(top: 100),
-        padding: EdgeInsets.all(30),
-        child: GridView.count(
-          crossAxisCount: 2,
-          children: [
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.qr_code_outlined,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'QR Code',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.waterfall_chart,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'Wechat Pay',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.money_rounded,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'CryptoCurrency',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.table_chart_outlined,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'Bill Payment',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.credit_card_outlined,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'Credit Card',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.credit_card_outlined,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'Debit Card',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        title: Text('Customer AboutUs'),
       ),
       endDrawer: Drawer(
         child: Material(

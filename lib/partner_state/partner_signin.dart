@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
-import 'package:joelfindtechnician/state/forget_password.dart';
-import 'package:joelfindtechnician/state/login_page.dart';
-import 'package:joelfindtechnician/state/register_partner.dart';
-import 'package:joelfindtechnician/state/sign_up.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/forget_password.dart';
+import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/partner_state/register_partner.dart';
+import 'package:joelfindtechnician/partner_state/sign_up.dart';
 
 class PartnerSignin extends StatefulWidget {
   const PartnerSignin({Key? key}) : super(key: key);

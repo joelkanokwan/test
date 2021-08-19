@@ -2,25 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/eddit_profile.dart';
-import 'package:joelfindtechnician/state/home_page.dart';
-import 'package:joelfindtechnician/state/mywallet.dart';
-import 'package:joelfindtechnician/state/partner_aboutus.dart';
-import 'package:joelfindtechnician/state/partner_contactus.dart';
-import 'package:joelfindtechnician/state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
-import 'package:joelfindtechnician/state/partner_termandconditon.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
 
-class PartnerNotification extends StatefulWidget {
-  const PartnerNotification({Key? key}) : super(key: key);
+import 'package:joelfindtechnician/customer_state/ctm_aboutus.dart';
+import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
+import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
+import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
+import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/login_success.dart';
+
+class CustomerContactUs extends StatefulWidget {
+  const CustomerContactUs({Key? key}) : super(key: key);
 
   @override
-  _PartnerNotificationState createState() => _PartnerNotificationState();
+  _CustomerContactUsState createState() => _CustomerContactUsState();
 }
 
-class _PartnerNotificationState extends State<PartnerNotification> {
+class _CustomerContactUsState extends State<CustomerContactUs> {
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -35,7 +34,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
             color: Colors.white,
           ),
         ),
-        title: Text('Partner Notification'),
+        title: Text('Customer ContactUs'),
       ),
       endDrawer: Drawer(
         child: Material(
@@ -47,7 +46,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => LoginSuccess(),
                       ),
                       (route) => false);
                 },
@@ -56,11 +55,22 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(radius: 20, backgroundColor: Colors.blue),
+                      CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(User.photoURL!)),
                       SizedBox(width: 16),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            User.displayName!,
+                            style: GoogleFonts.lato(
+                              fontSize: 17,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4),
                           Text(
                             User.email!,
                             style: GoogleFonts.lato(
@@ -81,40 +91,12 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                   leading: Icon(
                     Icons.person_outline,
                   ),
-                  title: Text('Go to service'),
+                  title: Text('Go to services'),
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => CommunityPage()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.auto_fix_off,
-                  ),
-                  title: Text('Eddit Profile'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EdditProfile()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.account_balance_wallet_outlined,
-                  ),
-                  title: Text('My Wallet'),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MyWallet()));
                   },
                 ),
               ),
@@ -129,7 +111,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PartnerNotification()));
+                            builder: (context) => CustomerNotification()));
                   },
                 ),
               ),
@@ -144,7 +126,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PartnerOrderHistory()));
+                            builder: (context) => CustomerOrderHistory()));
                   },
                 ),
               ),
@@ -157,7 +139,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PartnerAboutUs()));
+                            builder: (context) => CustomerAboutUs()));
                   },
                 ),
               ),
@@ -174,7 +156,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PartnerContactUs()));
+                            builder: (context) => CustomerContactUs()));
                   },
                 ),
               ),
@@ -189,7 +171,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PartnerHowtoUseApp()));
+                            builder: (context) => CustomerHowtouseApp()));
                   },
                 ),
               ),
@@ -204,7 +186,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PartnerTermAndCondiotion()));
+                            builder: (context) => CustomerTermandConditon()));
                   },
                 ),
               ),
@@ -217,10 +199,8 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                   title: Text('SignOut'),
                   onTap: () {
                     SocialService().signOut();
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PartnerSignin()),
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                         (route) => false);
                   },
                 ),

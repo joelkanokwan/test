@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/login_page.dart';
 
 class SuccessRegister extends StatelessWidget {
   final String title, discription, buttonText;

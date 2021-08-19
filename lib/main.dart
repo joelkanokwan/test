@@ -3,14 +3,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/state/appointment_form.dart';
-import 'package:joelfindtechnician/state/ctm_reply.dart';
-import 'package:joelfindtechnician/state/formcontact_partner.dart';
-import 'package:joelfindtechnician/state/login_page.dart';
-import 'package:joelfindtechnician/state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/state/partner_reply.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
-import 'package:joelfindtechnician/state/payment_method.dart';
+import 'package:joelfindtechnician/customer_state/login_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PaymentsMethod(),
+      home: LoginPage(),
     );
   }
 }

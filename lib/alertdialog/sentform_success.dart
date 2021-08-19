@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/state/login_success.dart';
+import 'package:joelfindtechnician/customer_state/login_success.dart';
 
 class SentFormSuccess extends StatefulWidget {
   const SentFormSuccess({Key? key}) : super(key: key);

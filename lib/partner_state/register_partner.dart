@@ -4,7 +4,7 @@ import 'package:joelfindtechnician/alertdialog/alert_detail.dart';
 import 'package:joelfindtechnician/alertdialog/success_register.dart';
 import 'package:joelfindtechnician/gsheet/controller.dart';
 import 'package:joelfindtechnician/gsheet/model.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
 class RegisterPartner extends StatefulWidget {
   @override

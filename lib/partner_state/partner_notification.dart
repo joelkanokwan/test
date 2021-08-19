@@ -2,25 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/eddit_profile.dart';
-import 'package:joelfindtechnician/state/home_page.dart';
-import 'package:joelfindtechnician/state/mywallet.dart';
-import 'package:joelfindtechnician/state/partner_contactus.dart';
-import 'package:joelfindtechnician/state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/state/partner_notification.dart';
-import 'package:joelfindtechnician/state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
-import 'package:joelfindtechnician/state/partner_termandconditon.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/eddit_profile.dart';
+import 'package:joelfindtechnician/partner_state/home_page.dart';
+import 'package:joelfindtechnician/partner_state/mywallet.dart';
+import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
+import 'package:joelfindtechnician/partner_state/partner_contactus.dart';
+import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
+import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
 
-class PartnerAboutUs extends StatefulWidget {
-  const PartnerAboutUs({Key? key}) : super(key: key);
+class PartnerNotification extends StatefulWidget {
+  const PartnerNotification({Key? key}) : super(key: key);
 
   @override
-  _PartnerAboutUsState createState() => _PartnerAboutUsState();
+  _PartnerNotificationState createState() => _PartnerNotificationState();
 }
 
-class _PartnerAboutUsState extends State<PartnerAboutUs> {
+class _PartnerNotificationState extends State<PartnerNotification> {
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -35,7 +35,7 @@ class _PartnerAboutUsState extends State<PartnerAboutUs> {
             color: Colors.white,
           ),
         ),
-        title: Text('Partner About Us'),
+        title: Text('Partner Notification'),
       ),
       endDrawer: Drawer(
         child: Material(
@@ -81,7 +81,7 @@ class _PartnerAboutUsState extends State<PartnerAboutUs> {
                   leading: Icon(
                     Icons.person_outline,
                   ),
-                  title: Text('Go to services'),
+                  title: Text('Go to service'),
                   onTap: () {
                     Navigator.push(
                         context,

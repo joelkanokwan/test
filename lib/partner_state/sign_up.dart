@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
-class ForgetPassword extends StatefulWidget {
-  const ForgetPassword({Key? key}) : super(key: key);
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
 
   @override
-  _ForgetPasswordState createState() => _ForgetPasswordState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _ForgetPasswordState extends State<ForgetPassword> {
+class _SignUpState extends State<SignUp> {
+  get form => null;
+
   final formKey = new GlobalKey<FormState>();
 
-  late String email;
+  late String email, password;
 
   checkFields() {
     final form = formKey.currentState;
-
     if (form!.validate()) {
       form.save();
       formKey.currentState!.reset();
-
       return true;
     }
     return false;
@@ -43,8 +43,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => PartnerSignin()));
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => PartnerSignin(),
+            ));
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -67,7 +68,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25, right: 25),
                       child: Text(
-                        "Forget",
+                        "Create",
                         style: GoogleFonts.fredokaOne(
                           fontSize: 60,
                         ),
@@ -78,7 +79,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25),
                         child: Text(
-                          "Password",
+                          "Account",
                           style: GoogleFonts.fredokaOne(
                             fontSize: 60,
                           ),
@@ -114,6 +115,27 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             validator: (value) => value!.isEmpty
                                 ? 'Please Enter Email Address'
                                 : validateEmail(value)),
+                        TextFormField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              labelStyle: GoogleFonts.lato(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.grey,
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              this.password = value;
+                            },
+                            validator: (value) => value!.isEmpty
+                                ? 'Please Enter Password'
+                                : null),
                         SizedBox(height: 20),
                         Container(
                           height: 50,
@@ -123,10 +145,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             onPressed: () {
                               if (checkFields())
                                 SocialService()
-                                    .resetPasswordLink(email, context);
+                                    .signUp(email, password, context)
+                                    .then((userCreds) {});
                             },
                             child: Text(
-                              "Submit",
+                              "Signup",
                               style: GoogleFonts.lato(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

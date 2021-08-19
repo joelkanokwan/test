@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/state/social_service.dart';
-import 'package:joelfindtechnician/state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class ForgetPassword extends StatefulWidget {
+  const ForgetPassword({Key? key}) : super(key: key);
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _ForgetPasswordState createState() => _ForgetPasswordState();
 }
 
-class _SignUpState extends State<SignUp> {
-  get form => null;
-
+class _ForgetPasswordState extends State<ForgetPassword> {
   final formKey = new GlobalKey<FormState>();
 
-  late String email, password;
+  late String email;
 
   checkFields() {
     final form = formKey.currentState;
+
     if (form!.validate()) {
       form.save();
       formKey.currentState!.reset();
+
       return true;
     }
     return false;
@@ -43,9 +43,8 @@ class _SignUpState extends State<SignUp> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => PartnerSignin(),
-            ));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => PartnerSignin()));
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -68,7 +67,7 @@ class _SignUpState extends State<SignUp> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25, right: 25),
                       child: Text(
-                        "Create",
+                        "Forget",
                         style: GoogleFonts.fredokaOne(
                           fontSize: 60,
                         ),
@@ -79,7 +78,7 @@ class _SignUpState extends State<SignUp> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25),
                         child: Text(
-                          "Account",
+                          "Password",
                           style: GoogleFonts.fredokaOne(
                             fontSize: 60,
                           ),
@@ -115,27 +114,6 @@ class _SignUpState extends State<SignUp> {
                             validator: (value) => value!.isEmpty
                                 ? 'Please Enter Email Address'
                                 : validateEmail(value)),
-                        TextFormField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: "Password",
-                              labelStyle: GoogleFonts.lato(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.grey,
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              this.password = value;
-                            },
-                            validator: (value) => value!.isEmpty
-                                ? 'Please Enter Password'
-                                : null),
                         SizedBox(height: 20),
                         Container(
                           height: 50,
@@ -145,11 +123,10 @@ class _SignUpState extends State<SignUp> {
                             onPressed: () {
                               if (checkFields())
                                 SocialService()
-                                    .signUp(email, password, context)
-                                    .then((userCreds) {});
+                                    .resetPasswordLink(email, context);
                             },
                             child: Text(
-                              "Signup",
+                              "Submit",
                               style: GoogleFonts.lato(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
