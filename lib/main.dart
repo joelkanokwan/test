@@ -4,6 +4,11 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/partner_state/form_review.dart';
+import 'package:joelfindtechnician/partner_state/job_done.dart';
+import 'package:joelfindtechnician/partner_state/partner_reply.dart';
+import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/partner_state/sign_up.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: PartnerSignin(),
     );
   }
 }

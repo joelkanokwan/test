@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/cancelReportform_success.dart';
+import 'package:joelfindtechnician/alertdialog/jobdone_success.dart';
 import 'package:joelfindtechnician/partner_state/appointment_form.dart';
 import 'package:joelfindtechnician/partner_state/cancel_form.dart';
 import 'package:joelfindtechnician/partner_state/confirmReportform.dart';
+import 'package:joelfindtechnician/partner_state/job_done.dart';
 
 import 'package:joelfindtechnician/partner_state/offerprice_form.dart';
 
@@ -21,6 +23,23 @@ class _PartnerReplyState extends State<PartnerReply> {
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 25),
       children: [
+        SpeedDialChild(
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Jobdone()));
+          },
+          backgroundColor: Colors.amber,
+          child: Icon(
+            Icons.done_all_outlined,
+          ),
+          label: 'Job done',
+          labelBackgroundColor: Colors.amber,
+          labelStyle: GoogleFonts.lato(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
         SpeedDialChild(
           onTap: () {
             Navigator.push(context,
@@ -227,73 +246,72 @@ class _PartnerReplyState extends State<PartnerReply> {
                     ],
                   ),
                 ),
-                
               ),
             ),
-                    Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '**Technician make form confirm to system**',
-                    style: GoogleFonts.lato(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Customer Name',
-                    style: GoogleFonts.lato(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Row(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Appointment time :',
+                        '**Technician make form confirm to system**',
+                        style: GoogleFonts.lato(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      SizedBox(width: 10),
                       Text(
-                        'xxxxxxxxxx',
+                        'Customer Name',
+                        style: GoogleFonts.lato(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ],
-                  ),
-                  Divider(thickness: 2),
-                  Text(
-                    'Confirm Job :',
-                    style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  Text(
-                    'xxxxxxxxxxxxxxx',
-                  ),
-                  Divider(thickness: 2),
-                  Row(
-                    children: [
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            'Appointment time :',
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'xxxxxxxxxx',
+                          ),
+                        ],
+                      ),
+                      Divider(thickness: 2),
                       Text(
-                        'Total Price :',
+                        'Confirm Job :',
                         style: GoogleFonts.lato(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Text('xxxxx'),
+                      Text(
+                        'xxxxxxxxxxxxxxx',
+                      ),
+                      Divider(thickness: 2),
+                      Row(
+                        children: [
+                          Text(
+                            'Total Price :',
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text('xxxxx'),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
           ],
         ),
       ),

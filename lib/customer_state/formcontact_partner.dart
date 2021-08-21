@@ -141,118 +141,107 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(width: 100),
-                      Container(
-                        child: DropdownButton(
-                          hint: Text(''),
-                          value: null,
-                          items: null,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Container(
-                        child: DropdownButton(
-                          hint: Text(''),
-                          value: null,
-                          items: null,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 15),
-                  Row(
-                    children: [
-                      FlatButton.icon(
-                        onPressed: () {
-                          pickDate(context);
-                        },
-                        icon: Icon(
-                          Icons.date_range_outlined,
-                          size: 30,
-                          color: Colors.orange,
-                        ),
-                        label: Text(getDate()),
-                      ),
-                      FlatButton.icon(
-                        padding: EdgeInsets.only(right: 10),
-                        onPressed: () {
-                          pickTime(context);
-                        },
-                        icon: Icon(
-                          Icons.watch_later_outlined,
-                          size: 30,
-                          color: Colors.orange,
-                        ),
-                        label: Text(getTime()),
-                      ),
-                    ],
-                  ),
                   SizedBox(height: 10),
                   Column(
                     children: [
                       Row(
                         children: [
-                          Radio(
-                            activeColor: Colors.amber,
-                            value: 1,
-                            groupValue: _selectChoice,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectChoice = 1;
-                              });
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Sent the work to the apprais',
+                          Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.blue,
                           ),
                         ],
                       ),
+                      SizedBox(height: 15),
                       Row(
                         children: [
-                          Radio(
-                            activeColor: Colors.amber,
-                            value: 2,
-                            groupValue: _selectChoice,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectChoice = 2;
-                              });
+                          FlatButton.icon(
+                            onPressed: () {
+                              pickDate(context);
                             },
+                            icon: Icon(
+                              Icons.date_range_outlined,
+                              size: 30,
+                              color: Colors.orange,
+                            ),
+                            label: Text(getDate()),
                           ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Make an appointment to see the actual job site',
+                          FlatButton.icon(
+                            padding: EdgeInsets.only(right: 10),
+                            onPressed: () {
+                              pickTime(context);
+                            },
+                            icon: Icon(
+                              Icons.watch_later_outlined,
+                              size: 30,
+                              color: Colors.orange,
+                            ),
+                            label: Text(getTime()),
                           ),
                         ],
                       ),
-                      SizedBox(height: 40),
-                      Container(
-                        height: 50,
-                        width: 330,
-                        child: FlatButton(
-                          textColor: Colors.white,
-                          color: Colors.blueAccent,
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
-                          },
-                          child: Text(
-                            'Sent foam to technician',
-                            style: GoogleFonts.lato(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                      SizedBox(height: 10),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Radio(
+                                activeColor: Colors.amber,
+                                value: 1,
+                                groupValue: _selectChoice,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectChoice = 1;
+                                  });
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Sent the work to the apprais',
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Radio(
+                                activeColor: Colors.amber,
+                                value: 2,
+                                groupValue: _selectChoice,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectChoice = 2;
+                                  });
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Make an appointment to see the actual job site',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 40),
+                          Container(
+                            height: 50,
+                            width: 330,
+                            child: FlatButton(
+                              textColor: Colors.white,
+                              color: Colors.blueAccent,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {}
+                              },
+                              child: Text(
+                                'Sent foam to technician',
+                                style: GoogleFonts.lato(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
