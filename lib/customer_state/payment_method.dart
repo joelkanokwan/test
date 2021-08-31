@@ -162,30 +162,6 @@ class _PaymentsMethodState extends State<PaymentsMethod> {
                 ),
               ),
             ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.credit_card_outlined,
-                        color: Colors.orange,
-                        size: 70,
-                      ),
-                      Text(
-                        'Debit Card',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

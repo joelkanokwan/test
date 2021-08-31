@@ -3,7 +3,9 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:joelfindtechnician/customer_state/ctm_reply.dart';
 import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/payment_method.dart';
 import 'package:joelfindtechnician/partner_state/form_review.dart';
 import 'package:joelfindtechnician/partner_state/job_done.dart';
 import 'package:joelfindtechnician/partner_state/partner_reply.dart';
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PartnerSignin(),
+      home: CustomerReply(),
     );
   }
 }
