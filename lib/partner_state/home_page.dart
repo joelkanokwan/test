@@ -12,6 +12,8 @@ import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
 
 import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
+import 'package:joelfindtechnician/state/my_ref.dart';
 import 'package:joelfindtechnician/state/show_profile.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,6 +55,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(height: 40),
+                buildMyProfile(context),
                 Container(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -67,18 +70,19 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ShowProfile()));
+                                builder: (context) =>
+                                    CommunityPage()));
                       },
                       child: Row(
                         children: [
                           Icon(
-                            Icons.person_outline,
+                            Icons.warning_amber_outlined,
                             color: Colors.orange,
                           ),
                           SizedBox(width: 20),
                           Expanded(
                             child: Text(
-                              'My Profile',
+                              'Communiti Page',
                               style: GoogleFonts.lato(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -91,6 +95,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                buildMyRefer(context),
                 Container(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -438,6 +443,82 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container buildMyProfile(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: FlatButton(
+          padding: EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          color: Color(0xFFF5F6F9),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ShowProfile()));
+          },
+          child: Row(
+            children: [
+              Icon(
+                Icons.person_outline,
+                color: Colors.orange,
+              ),
+              SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  'My Profile',
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container buildMyRefer(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: FlatButton(
+          padding: EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          color: Color(0xFFF5F6F9),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MyReferance()));
+          },
+          child: Row(
+            children: [
+              Icon(
+                Icons.photo_album_outlined,
+                color: Colors.orange,
+              ),
+              SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  'My Reference',
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios)
+            ],
           ),
         ),
       ),

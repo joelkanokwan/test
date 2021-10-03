@@ -1,7 +1,7 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
@@ -105,6 +105,81 @@ class _MyWalletState extends State<MyWallet>
                             fontSize: 18,
                           ),
                         ),
+                        ListView(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: IntrinsicHeight(
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Order ID',
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'xxxxxx',
+                                            ),
+                                          ],
+                                        ),
+                                        VerticalDivider(thickness: 1),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Amount',
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'xxxxxx',
+                                            ),
+                                          ],
+                                        ),
+                                        VerticalDivider(thickness: 1),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '25%',
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'xxxxxx',
+                                            ),
+                                          ],
+                                        ),
+                                        VerticalDivider(thickness: 1),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Allowance',
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'xxxxxx',
+                                            ),
+                                          ],
+                                        ),
+                                      ])),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -136,6 +211,101 @@ class _MyWalletState extends State<MyWallet>
                         topLeft: Radius.circular(60),
                         topRight: Radius.circular(60),
                       ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Current year',
+                          style: GoogleFonts.lato(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'January :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Febuary :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'March :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Apirl :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'May :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'June :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'July :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'August :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'September :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'October :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'November :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'December :',
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

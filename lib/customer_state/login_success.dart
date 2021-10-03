@@ -17,9 +17,9 @@ class LoginSuccess extends StatefulWidget {
 }
 
 class _LoginSuccessState extends State<LoginSuccess> {
+  final User = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
-    final User = FirebaseAuth.instance.currentUser!;
     return Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

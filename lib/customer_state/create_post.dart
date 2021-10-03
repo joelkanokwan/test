@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:joelfindtechnician/alertdialog/select_province.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({Key? key}) : super(key: key);
@@ -10,6 +14,29 @@ class CreatePost extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePost> {
   final _formKey = GlobalKey<FormState>();
+  File? image;
+  String? imgUrl;
+
+  TextEditingController addressController = TextEditingController();
+
+  _imageFromCamera() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.camera);
+    final pickedImageFile = File(pickedImage!.path);
+    setState(() {
+      image = pickedImageFile;
+    });
+  }
+
+  _imageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImageFile = File(pickedImage!.path);
+    setState(() {
+      image = pickedImageFile;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +51,59 @@ class _CreatePostState extends State<CreatePost> {
           ),
         ),
         title: Text('Create Post'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Center(
+                        child: Text(
+                          'Choose Profile Photo',
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purpleAccent,
+                          ),
+                        ),
+                      ),
+                      content: SingleChildScrollView(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FlatButton.icon(
+                              onPressed: () {
+                                _imageFromCamera();
+                                Navigator.of(context).pop();
+                              },
+                              icon: Icon(Icons.camera,
+                                  color: Colors.purpleAccent),
+                              label: Text('Camera'),
+                            ),
+                            FlatButton.icon(
+                              onPressed: () {
+                                _imageFromGallery();
+                                Navigator.of(context).pop();
+                              },
+                              icon: Icon(
+                                Icons.image,
+                                color: Colors.purpleAccent,
+                              ),
+                              label: Text('Gallery'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: Icon(Icons.camera_alt_outlined),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: GestureDetector(
@@ -51,38 +131,64 @@ class _CreatePostState extends State<CreatePost> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        color: Colors.blue,
+                  TextFormField(
+                    controller: addressController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please fill your address';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: "Address",
+                      labelStyle: GoogleFonts.lato(
+                        color: Colors.grey,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
                       ),
-                      SizedBox(width: 100),
-                      Container(
-                        child: DropdownButton(
-                          hint: Text(''),
-                          value: null,
-                          items: null,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Container(
-                        child: DropdownButton(
-                          hint: Text(''),
-                          value: null,
-                          items: null,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   Row(
                     children: [
-                      SizedBox(width: 10),
                       Container(
-                        child: DropdownButton(
-                          hint: Text(''),
-                          value: null,
-                          items: null,
+                        child: FlatButton.icon(
+                          onPressed: () {
+                            SelectProvince().normalDialog(context);
+                          },
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'จังหวัด',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'อำเภอ',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'ตำบล',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
                         ),
                       ),
                     ],

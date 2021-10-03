@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
+import 'package:joelfindtechnician/models/user_model.dart';
 import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/forget_password.dart';
 import 'package:joelfindtechnician/customer_state/login_page.dart';
@@ -163,9 +167,35 @@ class _PartnerSigninState extends State<PartnerSignin> {
                         width: 330,
                         child: FlatButton(
                           color: Colors.blue,
-                          onPressed: () {
-                            if (checkFields())
-                              SocialService().signIn(email, password, context);
+                          onPressed: () async {
+                            if (checkFields()) {
+                              await Firebase.initializeApp()
+                                  .then((value) async {
+                                await FirebaseFirestore.instance
+                                    .collection('user')
+                                    .where('email', isEqualTo: email)
+                                    .snapshots()
+                                    .listen((event) {
+                                  if (event.docs.length == 0) {
+                                    MyDialog().normalDialog(
+                                        context, 'Wrong Email', 'No Email');
+                                  } else {
+                                    for (var item in event.docs) {
+                                      UserModelFirebase userModelFirebase =
+                                          UserModelFirebase.fromMap(
+                                              item.data());
+                                      if (userModelFirebase.accept) {
+                                        SocialService()
+                                            .signIn(email, password, context);
+                                      } else {
+                                        MyDialog().normalDialog(context,
+                                            'Error', 'Please Contact Admin');
+                                      }
+                                    }
+                                  }
+                                });
+                              });
+                            }
                           },
                           child: Text(
                             "Signin",

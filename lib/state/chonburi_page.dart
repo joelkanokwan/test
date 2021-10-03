@@ -13,17 +13,17 @@ import 'package:joelfindtechnician/customer_state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
 import 'package:joelfindtechnician/partner_state/social_service.dart';
 
-class CommunityProvincePage extends StatefulWidget {
-  const CommunityProvincePage({Key? key}) : super(key: key);
+class ChonburiPage extends StatefulWidget {
+  const ChonburiPage({Key? key}) : super(key: key);
 
   @override
-  _CommunityProvincePageState createState() => _CommunityProvincePageState();
+  _ChonburiPageState createState() => _ChonburiPageState();
 }
 
-class _CommunityProvincePageState extends State<CommunityProvincePage> {
+class _ChonburiPageState extends State<ChonburiPage> {
+  final User = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
-    final User = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -35,7 +35,7 @@ class _CommunityProvincePageState extends State<CommunityProvincePage> {
             color: Colors.white,
           ),
         ),
-        title: Text('Community Province Page'),
+        title: Text('Chonburi Page'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -161,31 +161,6 @@ class _CommunityProvincePageState extends State<CommunityProvincePage> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           color: Colors.pinkAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset('assets/images/curtain.png',
-                                    color: Colors.redAccent),
-                                Text(
-                                  'Curtain',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design and installing'),
-                                Text('curtain and accessary')
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.purpleAccent,
                         ),
                       ],
                     ),

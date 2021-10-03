@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/alert_detail.dart';
+import 'package:joelfindtechnician/alertdialog/choose_jobscope.dart';
+import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
+import 'package:joelfindtechnician/alertdialog/select_province.dart';
 import 'package:joelfindtechnician/alertdialog/success_register.dart';
 import 'package:joelfindtechnician/gsheet/controller.dart';
 import 'package:joelfindtechnician/gsheet/model.dart';
+import 'package:joelfindtechnician/models/user_model.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
 class RegisterPartner extends StatefulWidget {
@@ -20,38 +26,84 @@ class _RegisterPartnerState extends State<RegisterPartner> {
   TextEditingController jobtypeController = TextEditingController();
   TextEditingController jobscopeController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  Future<Null> checkNameAndAddData() async {
+    await Firebase.initializeApp().then((value) async {
+      print('Initial Success');
+      await FirebaseFirestore.instance
+          .collection('user')
+          .where('name', isEqualTo: nameController.text)
+          .snapshots()
+          .listen((event) async {
+        print('event ==> ${event.docs}');
+        if (event.docs.length == 0) {
+          print('ชื่อร้านไม่ซ้ำ');
+
+          UserModelFirebase userModelFirebase = UserModelFirebase(
+            email: emailController.text,
+            uid: '',
+            name: nameController.text,
+            phoneNumber: phonenumberlController.text,
+            jobType: jobtypeController.text,
+            jobScope: jobscopeController.text,
+            address: addressController.text,
+            accept: false,
+            about: '',
+            img: '',
+          );
+
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc()
+              .set(userModelFirebase.toMap())
+              .then((value) {
+            print('Insert Data Success');
+
+            insertValueToSheet();
+          });
+        } else {
+          print('ชื่อร้านซ้ำ');
+          MyDialog()
+              .normalDialog(context, 'ชื่อร้านซ้ำ', 'เปลี่ยนชื่อร้านใหม่');
+        }
+      });
+    });
+  }
+
+  void insertValueToSheet() {
+    RegisterFoam registerFoam = RegisterFoam(
+      nameController.text,
+      phonenumberlController.text,
+      jobtypeController.text,
+      jobscopeController.text,
+      addressController.text,
+      emailController.text,
+    );
+    FormController formController = FormController();
+    showDialog(
+      context: context,
+      builder: (context) => SuccessRegister(
+        title: "",
+        discription: "",
+        buttonText: "",
+      ),
+    );
+    _formKey.currentState!.reset();
+    _showSnackbar("");
+    formController.submitForm(registerFoam, (String response) {
+      print("Response: $response");
+      if (response == FormController.STATUS_SUCCESS) {
+        _showSnackbar("Submitted");
+      } else {
+        _showSnackbar("Error Occurred!");
+      }
+    });
+  }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      RegisterFoam registerFoam = RegisterFoam(
-          nameController.text,
-          phonenumberlController.text,
-          jobtypeController.text,
-          jobscopeController.text,
-          addressController.text);
-
-      FormController formController = FormController();
-
-      showDialog(
-        context: context,
-        builder: (context) => SuccessRegister(
-          title: "",
-          discription: "",
-          buttonText: "",
-        ),
-      );
-      _formKey.currentState!.reset();
-
-      _showSnackbar("");
-
-      formController.submitForm(registerFoam, (String response) {
-        print("Response: $response");
-        if (response == FormController.STATUS_SUCCESS) {
-          _showSnackbar("Submitted");
-        } else {
-          _showSnackbar("Error Occurred!");
-        }
-      });
+      checkNameAndAddData();
     }
   }
 
@@ -130,15 +182,15 @@ class _RegisterPartnerState extends State<RegisterPartner> {
                     keyboardType: TextInputType.number,
                   ),
                   TextFormField(
-                    controller: jobtypeController,
+                    controller: emailController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'กรุณาระบุประเภทของงาน';
+                        return 'กรุณาระบุอีเมล์';
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: "ประเภทของงาน",
+                      labelText: "อีเมล์",
                       labelStyle: GoogleFonts.lato(
                         color: Colors.grey,
                         fontSize: 15,
@@ -172,7 +224,7 @@ class _RegisterPartnerState extends State<RegisterPartner> {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: "ที่อยู่ปัจจุบัน",
+                      labelText: "ที่อยู่ปัจจุบัน/ที่ตั้งห้างร้าน/บริษัท",
                       labelStyle: GoogleFonts.lato(
                         color: Colors.grey,
                         fontSize: 15,
@@ -180,6 +232,69 @@ class _RegisterPartnerState extends State<RegisterPartner> {
                       ),
                     ),
                   ),
+                  Row(
+                    children: [
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {
+                            SelectProvince().normalDialog(context);
+                          },
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'จังหวัด',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'อำเภอ',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'ตำบล',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 230,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        ChooseJobScope().normalDialog(context);
+                      },
+                      icon: Icon(
+                        Icons.work_outline_outlined,
+                        color: Colors.orange,
+                      ),
+                      label: Text(
+                        'ประเภทของงาน',
+                        style: GoogleFonts.lato(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
                   SizedBox(height: 20),
                   Container(
                     height: 50,

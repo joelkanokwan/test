@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/customer_state/create_post.dart';
 import 'package:joelfindtechnician/customer_state/ctm_aboutus.dart';
 import 'package:joelfindtechnician/customer_state/ctm_contactus.dart';
 import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
@@ -12,14 +13,14 @@ import 'package:joelfindtechnician/customer_state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
 import 'package:joelfindtechnician/partner_state/social_service.dart';
 
-class CommunityPage extends StatefulWidget {
-  const CommunityPage({Key? key}) : super(key: key);
+class ChiangMaiPage extends StatefulWidget {
+  const ChiangMaiPage({Key? key}) : super(key: key);
 
   @override
-  _CommunityPageState createState() => _CommunityPageState();
+  _ChiangMaiPageState createState() => _ChiangMaiPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> {
+class _ChiangMaiPageState extends State<ChiangMaiPage> {
   final User = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,16 @@ class _CommunityPageState extends State<CommunityPage> {
             color: Colors.white,
           ),
         ),
-        title: Text('Community Page'),
+        title: Text('ChiangMai Page'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CreatePost()));
+        },
+        child: Icon(
+          Icons.edit_rounded,
+        ),
       ),
       body: SingleChildScrollView(
         child: GestureDetector(
@@ -53,9 +63,12 @@ class _CommunityPageState extends State<CommunityPage> {
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          child: Icon(Icons.search),
-                          margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            child: Icon(Icons.search),
+                            margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
+                          ),
                         ),
                         Expanded(
                           child: TextField(
@@ -83,9 +96,9 @@ class _CommunityPageState extends State<CommunityPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Our Services',
+                      'Available Services',
                       style: GoogleFonts.lato(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -174,136 +187,31 @@ class _CommunityPageState extends State<CommunityPage> {
                           ),
                           color: Colors.purpleAccent,
                         ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
                         Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/door.png',
-                                ),
-                                Text(
-                                  'Door Window',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design Installing and fixing'),
-                                Text('door window floor ceiling'),
-                              ],
-                            ),
-                          ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15)),
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: SizedBox(
+                            height: 200,
                           ),
-                          color: Colors.blueAccent,
                         ),
+                        SizedBox(height: 5),
                         Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/electricity.png',
-                                ),
-                                Text(
-                                  'Electricity',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design Installing and fixing'),
-                                Text('electricity systems'),
-                              ],
-                            ),
-                          ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15)),
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: SizedBox(
+                            height: 200,
                           ),
-                          color: Colors.redAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/fixmachine.png',
-                                  color: Colors.redAccent,
-                                ),
-                                Text(
-                                  'Fixing Machine',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Fixing machine'),
-                                Text('and electric machine'),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.greenAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/furniture.png',
-                                ),
-                                Text(
-                                  'Cleaning Furniture',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Cleaning furniture and'),
-                                Text('wash machine service'),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.pinkAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/toilet.png',
-                                ),
-                                Text(
-                                  'Toilet',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design Installing and fixing'),
-                                Text('asseecsary of toilet'),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.amber,
                         ),
                       ],
                     ),

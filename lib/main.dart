@@ -3,19 +3,37 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/customer_state/ctm_reply.dart';
+import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
+import 'package:joelfindtechnician/customer_state/showmessage_ctm.dart';
+import 'package:joelfindtechnician/customer_state/formcontact_partner.dart';
 import 'package:joelfindtechnician/customer_state/login_page.dart';
-import 'package:joelfindtechnician/customer_state/payment_method.dart';
-import 'package:joelfindtechnician/partner_state/form_review.dart';
-import 'package:joelfindtechnician/partner_state/job_done.dart';
-import 'package:joelfindtechnician/partner_state/partner_reply.dart';
-import 'package:joelfindtechnician/partner_state/partner_signin.dart';
-import 'package:joelfindtechnician/partner_state/sign_up.dart';
+import 'package:joelfindtechnician/form.dart/doc_payment.dart';
+import 'package:joelfindtechnician/form.dart/formto_technician.dart';
+import 'package:joelfindtechnician/form.dart/order_detail.dart';
+import 'package:joelfindtechnician/form.dart/reply_offerprice.dart';
+import 'package:joelfindtechnician/form.dart/technician_appointment.dart';
+import 'package:joelfindtechnician/partner_state/partner_notification.dart';
+import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
+import 'package:joelfindtechnician/partner_state/showmessage_partner.dart';
+import 'package:joelfindtechnician/state/bkk_page.dart';
+import 'package:joelfindtechnician/state/chiangmai_page.dart';
+import 'package:joelfindtechnician/state/detail_bkk.dart';
+
+final Map<String, WidgetBuilder> map = {
+  // '/loginPage': (BuildContext context) => LoginPage(),
+  // '/homePage': (BuildContext context) => HomePage(),
+  // '/authenAdmin': (BuildContext context) => AuthenAdmin(),
+  // '/adminService': (BuildContext context) => AdminService(),
+  // '/myReferance': (BuildContext context) => MyReferance(),
+  // '/addReferance': (BuildContext context) => AddReferance(),
+};
+
+String firstPage;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  // firstPage = '/loginPage';
   runApp(MyApp());
 }
 
@@ -24,7 +42,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CustomerReply(),
+      home: LoginPage(),
+      // routes: map,
+      // initialRoute: firstPage,
     );
   }
 }

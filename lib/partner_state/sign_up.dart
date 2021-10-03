@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
+import 'package:joelfindtechnician/models/user_model.dart';
 import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
@@ -142,11 +147,66 @@ class _SignUpState extends State<SignUp> {
                           width: 330,
                           child: FlatButton(
                             color: Colors.blue,
-                            onPressed: () {
-                              if (checkFields())
-                                SocialService()
-                                    .signUp(email, password, context)
-                                    .then((userCreds) {});
+                            onPressed: () async {
+                              if (checkFields()) {
+                                print('email = $email, password = $password');
+
+                                await Firebase.initializeApp()
+                                    .then((value) async {
+                                  await FirebaseFirestore.instance
+                                      .collection('user')
+                                      .where('email', isEqualTo: email)
+                                      .snapshots()
+                                      .listen((event) async {
+                                    if (event.docs.length == 0) {
+                                      MyDialog().normalDialog(
+                                          context, 'Error', 'No email');
+                                    } else {
+                                      for (var item in event.docs) {
+                                        UserModelFirebase userModelFirebase =
+                                            UserModelFirebase.fromMap(
+                                                item.data());
+
+                                        String docId = item.id;
+                                        if (userModelFirebase.accept) {
+                                          print('OK Accept True');
+
+                                          bool oneTime = true;
+                                          if (oneTime) {
+                                            oneTime = false;
+                                            await FirebaseAuth.instance
+                                                .createUserWithEmailAndPassword(
+                                                    email: email,
+                                                    password: password)
+                                                .then((value) async {
+                                              String uid = value.user!.uid;
+                                              print(
+                                                  'Create Account Success uid = $uid');
+                                              Map<String, dynamic> map = {};
+                                              map['uid'] = uid;
+                                              await FirebaseFirestore.instance
+                                                  .collection('user')
+                                                  .doc(docId)
+                                                  .update(map)
+                                                  .then((value) => print(
+                                                      'Success Update UID'));
+                                            }).catchError((value) {
+                                              MyDialog().normalDialog(context,
+                                                  'Error', value.message);
+                                            });
+                                          }
+
+                                          // SocialService()
+                                          // .signUp(email, password, context)
+                                          // .then((userCreds) {});
+                                          MyDialog().normalDialog(context,
+                                              'Wait Accept', 'Server Checking');
+                                        } else {}
+                                      }
+                                    }
+                                  });
+                                });
+                              }
                             },
                             child: Text(
                               "Signup",

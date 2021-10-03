@@ -4,6 +4,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/state/authen_admin.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -84,63 +85,16 @@ class _LoginPage extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(
-                  width: 320,
-                  margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: SignInButton(
-                    Buttons.FacebookNew,
-                    onPressed: () {
-                      SocialService().loginfb(context);
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: EdgeInsets.all(10),
-                  ),
-                ),
-                Container(
-                  width: 320,
-                  margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: SignInButton(
-                    Buttons.Google,
-                    onPressed: () {
-                      SocialService().googlesignIn(context);
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: EdgeInsets.all(5),
-                  ),
-                ),
-                Container(
-                  width: 320,
-                  margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: SignInButton(
-                    Buttons.AppleDark,
-                    onPressed: () {},
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: EdgeInsets.all(13),
-                  ),
-                ),
-                Container(
-                  child: FlatButton(
-                      textColor: Colors.black,
-                      child: Text(
-                        "Partner Click!",
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => PartnerSignin(),
-                          ),
-                        );
-                      }),
+                buildFacebook(context),
+                buildGoogle(context),
+                buildApple(),
+                buildPartner(context),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AuthenAdmin()));
+                  },
+                  child: Text('Admin'),
                 ),
                 Container(
                   child: SizedBox(
@@ -152,6 +106,76 @@ class _LoginPage extends State<LoginPage> {
           ),
         ),
       ]),
+    );
+  }
+
+  Container buildPartner(BuildContext context) {
+    return Container(
+      child: FlatButton(
+          textColor: Colors.black,
+          child: Text(
+            "Partner Click!",
+            style: GoogleFonts.lato(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => PartnerSignin(),
+              ),
+            );
+          }),
+    );
+  }
+
+  Container buildApple() {
+    return Container(
+      width: 320,
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SignInButton(
+        Buttons.AppleDark,
+        onPressed: () {},
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: EdgeInsets.all(13),
+      ),
+    );
+  }
+
+  Container buildGoogle(BuildContext context) {
+    return Container(
+      width: 320,
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SignInButton(
+        Buttons.Google,
+        onPressed: () {
+          SocialService().googlesignIn(context);
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: EdgeInsets.all(5),
+      ),
+    );
+  }
+
+  Container buildFacebook(BuildContext context) {
+    return Container(
+      width: 320,
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: SignInButton(
+        Buttons.FacebookNew,
+        onPressed: () {
+          SocialService().loginfb(context);
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: EdgeInsets.all(10),
+      ),
     );
   }
 }

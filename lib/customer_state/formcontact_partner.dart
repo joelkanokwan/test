@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:joelfindtechnician/alertdialog/select_province.dart';
 
 class FormContactPartner extends StatefulWidget {
   const FormContactPartner({Key? key}) : super(key: key);
@@ -12,6 +16,27 @@ class _FormContactPartnerState extends State<FormContactPartner> {
   DateTime? date;
   TimeOfDay? time;
   int? _selectChoice;
+  File? image;
+  String? imgUrl;
+
+  
+  _imageFromCamera() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.camera);
+    final pickedImageFile = File(pickedImage!.path);
+    setState(() {
+      image = pickedImageFile;
+    });
+  }
+
+  _imageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImageFile = File(pickedImage!.path);
+    setState(() {
+      image = pickedImageFile;
+    });
+  }
 
   final _formKey = GlobalKey<FormState>();
 
@@ -80,7 +105,54 @@ class _FormContactPartnerState extends State<FormContactPartner> {
             onTap: () {},
             child: Padding(
               padding: const EdgeInsets.all(15),
-              child: Icon(Icons.emoji_emotions_outlined),
+              child: IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Center(
+                          child: Text(
+                            'Choose Profile Photo',
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purpleAccent,
+                            ),
+                          ),
+                        ),
+                        content: SingleChildScrollView(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FlatButton.icon(
+                                onPressed: () {
+                                  _imageFromCamera();
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(Icons.camera,
+                                    color: Colors.purpleAccent),
+                                label: Text('Camera'),
+                              ),
+                              FlatButton.icon(
+                                onPressed: () {
+                                  _imageFromGallery();
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(
+                                  Icons.image,
+                                  color: Colors.purpleAccent,
+                                ),
+                                label: Text('Gallery'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: Icon(Icons.camera_alt_outlined),
+              ),
             ),
           ),
         ],
@@ -142,106 +214,153 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                     ),
                   ),
                   SizedBox(height: 10),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please type your address';
+                      } else {}
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Address',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {
+                            SelectProvince().normalDialog(context);
+                          },
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'จังหวัด',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'อำเภอ',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.orange,
+                          ),
+                          label: Text(
+                            'ตำบล',
+                            style: GoogleFonts.lato(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                  Row(
+                    children: [
+                      FlatButton.icon(
+                        onPressed: () {
+                          pickDate(context);
+                        },
+                        icon: Icon(
+                          Icons.date_range_outlined,
+                          size: 30,
+                          color: Colors.orange,
+                        ),
+                        label: Text(getDate()),
+                      ),
+                      FlatButton.icon(
+                        padding: EdgeInsets.only(right: 10),
+                        onPressed: () {
+                          pickTime(context);
+                        },
+                        icon: Icon(
+                          Icons.watch_later_outlined,
+                          size: 30,
+                          color: Colors.orange,
+                        ),
+                        label: Text(getTime()),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
                   Column(
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.blue,
+                          Radio(
+                            activeColor: Colors.amber,
+                            value: 1,
+                            groupValue: _selectChoice,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectChoice = 1;
+                              });
+                            },
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'Sent the work to the apprais',
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
                       Row(
                         children: [
-                          FlatButton.icon(
-                            onPressed: () {
-                              pickDate(context);
+                          Radio(
+                            activeColor: Colors.amber,
+                            value: 2,
+                            groupValue: _selectChoice,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectChoice = 2;
+                              });
                             },
-                            icon: Icon(
-                              Icons.date_range_outlined,
-                              size: 30,
-                              color: Colors.orange,
-                            ),
-                            label: Text(getDate()),
                           ),
-                          FlatButton.icon(
-                            padding: EdgeInsets.only(right: 10),
-                            onPressed: () {
-                              pickTime(context);
-                            },
-                            icon: Icon(
-                              Icons.watch_later_outlined,
-                              size: 30,
-                              color: Colors.orange,
-                            ),
-                            label: Text(getTime()),
+                          SizedBox(width: 10),
+                          Text(
+                            'Make an appointment to see the actual job site',
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Radio(
-                                activeColor: Colors.amber,
-                                value: 1,
-                                groupValue: _selectChoice,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectChoice = 1;
-                                  });
-                                },
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Sent the work to the apprais',
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Radio(
-                                activeColor: Colors.amber,
-                                value: 2,
-                                groupValue: _selectChoice,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectChoice = 2;
-                                  });
-                                },
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Make an appointment to see the actual job site',
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 40),
-                          Container(
-                            height: 50,
-                            width: 330,
-                            child: FlatButton(
-                              textColor: Colors.white,
-                              color: Colors.blueAccent,
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {}
-                              },
-                              child: Text(
-                                'Sent foam to technician',
-                                style: GoogleFonts.lato(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                      SizedBox(height: 40),
+                      Container(
+                        height: 50,
+                        width: 330,
+                        child: FlatButton(
+                          textColor: Colors.white,
+                          color: Colors.blueAccent,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {}
+                          },
+                          child: Text(
+                            'Sent foam to technician',
+                            style: GoogleFonts.lato(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
                       ),
                     ],
                   ),

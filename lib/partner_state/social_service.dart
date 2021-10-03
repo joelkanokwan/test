@@ -13,21 +13,21 @@ import 'package:joelfindtechnician/customer_state/login_success.dart';
 import '../alertdialog/error_signin.dart';
 
 class SocialService {
-  signUp(String email, String password, context) {
-    return FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) async {
-      print('Signup Success');
+  // signUp(String email, String password, context) {
+    // return FirebaseAuth.instance
+        // .createUserWithEmailAndPassword(email: email, password: password)
+        // .then((value) async {
+      // print('Signup Success');
 
-      showDialog(
-          context: context,
-          builder: (context) =>
-              SignUpSuccess(title: '', discription: '', buttonText: ''));
-    }).catchError((e) {
-      SignUpError(title: '', discription: '', buttonText: '')
-          .errorsignup(context, e);
-    });
-  }
+      // showDialog(
+          // context: context,
+          // builder: (context) =>
+              // SignUpSuccess(title: '', discription: '', buttonText: ''));
+    // }).catchError((e) {
+      // SignUpError(title: '', discription: '', buttonText: '')
+          // .errorsignup(context, e);
+    // });
+  // }
 
   resetPasswordLink(String email, context) {
     FirebaseAuth.instance.sendPasswordResetEmail(email: email).then((value) {
