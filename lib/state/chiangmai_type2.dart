@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DetailBangkokPage extends StatefulWidget {
-  const DetailBangkokPage({Key? key}) : super(key: key);
+class ChiangMaiType2 extends StatefulWidget {
+  const ChiangMaiType2({Key? key}) : super(key: key);
 
   @override
-  _DetailBangkokPageState createState() => _DetailBangkokPageState();
+  _ChiangMaiType2State createState() => _ChiangMaiType2State();
 }
 
-class _DetailBangkokPageState extends State<DetailBangkokPage> {
+class _ChiangMaiType2State extends State<ChiangMaiType2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _DetailBangkokPageState extends State<DetailBangkokPage> {
             color: Colors.white,
           ),
         ),
-        title: Text('Detail Bangkok Page'),
+        title: Text('ChiangMai Type2'),
       ),
       body: Container(
         child: ListView(
@@ -63,7 +63,7 @@ class _DetailBangkokPageState extends State<DetailBangkokPage> {
                             ),
                             Icon(
                               Icons.location_on_outlined,
-                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(left: 6),
                               child: Text(

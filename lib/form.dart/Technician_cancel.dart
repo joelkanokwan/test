@@ -61,24 +61,6 @@ class _TechnicianCancelState extends State<TechnicianCancel> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            'Expire time :',
-                            style: GoogleFonts.lato(
-                              color: Colors.red,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'xxxxxxxxxx',
-                            style: GoogleFonts.lato(
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
                       Divider(thickness: 2),
                       Text(
                         'Details :',

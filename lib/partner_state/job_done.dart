@@ -25,45 +25,59 @@ class _JobdoneState extends State<Jobdone> {
         ),
         title: Text('Review Form'),
       ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        behavior: HitTestBehavior.opaque,
-        child: Column(
-          children: [
-            SizedBox(height: 250),
-            Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Text(
-                'Please comment your satisfaction level',
-                style: GoogleFonts.lato(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 30),
-            Container(
-              height: 50,
-              width: 330,
-              child: FlatButton(
-                textColor: Colors.white,
-                color: Colors.blueAccent,
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
-                },
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          behavior: HitTestBehavior.opaque,
+          child: Column(
+            children: [
+              SizedBox(height: 250),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Text(
-                  'Submit',
+                  'Please comment your satisfaction level',
                   style: GoogleFonts.lato(
-                    fontSize: 20,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextFormField(
+                  maxLines: 8,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 30),
+              Container(
+                height: 50,
+                width: 330,
+                child: FlatButton(
+                  textColor: Colors.white,
+                  color: Colors.blueAccent,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {}
+                  },
+                  child: Text(
+                    'Submit',
+                    style: GoogleFonts.lato(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

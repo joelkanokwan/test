@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -37,6 +35,34 @@ class ChooseJobScope {
                 SizedBox(width: 10),
                 Text(
                   'Type 2',
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Radio(
+                  activeColor: Colors.amber,
+                  value: 2,
+                  groupValue: _selectJobScope,
+                  onChanged: (value) {},
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'Type 3',
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Radio(
+                  activeColor: Colors.amber,
+                  value: 2,
+                  groupValue: _selectJobScope,
+                  onChanged: (value) {},
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'Type 4',
                 ),
               ],
             ),

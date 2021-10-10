@@ -53,6 +53,18 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                       Row(
                         children: [
                           Text(
+                            'Order number:',
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'xxxxxxxxxx',
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
                             'Appointment :',
                           ),
                           SizedBox(width: 10),

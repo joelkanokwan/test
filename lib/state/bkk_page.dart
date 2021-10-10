@@ -137,6 +137,31 @@ class _BangkokPageState extends State<BangkokPage> {
                           ),
                           color: Colors.amberAccent,
                         ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('assets/images/cleaning.png',
+                                    color: Colors.orange),
+                                Text(
+                                  'Cleaning',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text('Home cleaning service'),
+                                Text('Office cleaning service')
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.pinkAccent,
+                        ),
                       ],
                     ),
                   ),

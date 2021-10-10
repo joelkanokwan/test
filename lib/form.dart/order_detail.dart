@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class OrderDetail extends StatefulWidget {
   const OrderDetail({Key? key}) : super(key: key);
@@ -10,6 +13,26 @@ class OrderDetail extends StatefulWidget {
 }
 
 class _OrderDetailState extends State<OrderDetail> {
+  File? image;
+
+  _imageFromCamera() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.camera);
+    final pickedImageFile = File(pickedImage!.path);
+    setState(() {
+      image = pickedImageFile;
+    });
+  }
+
+  _imageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImageFile = File(pickedImage!.path);
+    setState(() {
+      image = pickedImageFile;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,13 +84,21 @@ class _OrderDetailState extends State<OrderDetail> {
                       ),
                       SizedBox(height: 8),
                       Text(
+                        'Tax ID :',
+                        style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
                         'Order number :',
                         style: GoogleFonts.lato(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                       SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         'Appointment Date :',
                         style: GoogleFonts.lato(
@@ -99,6 +130,58 @@ class _OrderDetailState extends State<OrderDetail> {
                         style: GoogleFonts.lato(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Divider(thickness: 3),
+                      TextButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Center(
+                                  child: Text(
+                                    'Choose your slip',
+                                    style: GoogleFonts.lato(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purpleAccent,
+                                    ),
+                                  ),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      FlatButton.icon(
+                                        onPressed: () {
+                                          _imageFromCamera();
+                                          Navigator.of(context).pop();
+                                        },
+                                        icon: Icon(Icons.camera,
+                                            color: Colors.purpleAccent),
+                                        label: Text('Camera'),
+                                      ),
+                                      FlatButton.icon(
+                                        onPressed: () {
+                                          _imageFromGallery();
+                                          Navigator.of(context).pop();
+                                        },
+                                        icon: Icon(
+                                          Icons.image,
+                                          color: Colors.purpleAccent,
+                                        ),
+                                        label: Text('Gallery'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.upload_outlined),
+                        label: Text(
+                          'Upload Slip',
                         ),
                       ),
                     ],

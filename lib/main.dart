@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/showmessage_ctm.dart';
 import 'package:joelfindtechnician/customer_state/formcontact_partner.dart';
@@ -10,14 +11,17 @@ import 'package:joelfindtechnician/customer_state/login_page.dart';
 import 'package:joelfindtechnician/form.dart/doc_payment.dart';
 import 'package:joelfindtechnician/form.dart/formto_technician.dart';
 import 'package:joelfindtechnician/form.dart/order_detail.dart';
+import 'package:joelfindtechnician/form.dart/receipt.dart';
 import 'package:joelfindtechnician/form.dart/reply_offerprice.dart';
 import 'package:joelfindtechnician/form.dart/technician_appointment.dart';
+import 'package:joelfindtechnician/partner_state/mywallet.dart';
 import 'package:joelfindtechnician/partner_state/partner_notification.dart';
 import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/partner_state/showmessage_partner.dart';
 import 'package:joelfindtechnician/state/bkk_page.dart';
 import 'package:joelfindtechnician/state/chiangmai_page.dart';
-import 'package:joelfindtechnician/state/detail_bkk.dart';
+import 'package:joelfindtechnician/state/community_page.dart';
+import 'package:joelfindtechnician/state/bangkok_type2.dart';
 
 final Map<String, WidgetBuilder> map = {
   // '/loginPage': (BuildContext context) => LoginPage(),

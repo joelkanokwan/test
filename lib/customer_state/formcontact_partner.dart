@@ -19,7 +19,6 @@ class _FormContactPartnerState extends State<FormContactPartner> {
   File? image;
   String? imgUrl;
 
-  
   _imageFromCamera() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(source: ImageSource.camera);
@@ -191,6 +190,22 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please type your email address';
+                      } else {}
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Email Address',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),

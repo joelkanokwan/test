@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joelfindtechnician/alertdialog/choose_jobscope.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
 
 class CreatePost extends StatefulWidget {
@@ -192,6 +193,23 @@ class _CreatePostState extends State<CreatePost> {
                         ),
                       ),
                     ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 230,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        ChooseJobScope().normalDialog(context);
+                      },
+                      icon: Icon(
+                        Icons.work_outline_outlined,
+                        color: Colors.orange,
+                      ),
+                      label: Text(
+                        'เลือกแท๊กงาน',
+                        style: GoogleFonts.lato(fontSize: 15),
+                      ),
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 30),

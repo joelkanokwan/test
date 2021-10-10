@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:joelfindtechnician/alertdialog/ctmAppointment_success.dart';
 import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
 
 class CustomerAppointment {
@@ -17,7 +18,7 @@ class CustomerAppointment {
               onPressed: () => Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CustomerCancelSuccess()),
+                      builder: (context) => CustomerAppointmentSuccess()),
                   (route) => true),
               child: Text('OK'))
         ],
