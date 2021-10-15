@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/customer_state/login_page.dart';
 import 'package:joelfindtechnician/models/user_model.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 
 class AdminService extends StatefulWidget {
@@ -15,17 +13,9 @@ class AdminService extends StatefulWidget {
   _AdminServiceState createState() => _AdminServiceState();
 }
 
-class _AdminServiceState extends State<AdminService> with SingleTickerProviderStateMixin {
-  TabController? _tabProvinceApprovecontroller;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabProvinceApprovecontroller!.dispose();
-  }
-
+class _AdminServiceState extends State<AdminService> {
   List<UserModelFirebase> userModels = [];
-  List<UserModelFirebase> serachUserModels = [];
+  List<UserModelFirebase> searchUserModels = [];
   List<String> docsIds = [];
   final debouncer = Debouncer(millisecond: 500);
 
@@ -33,14 +23,13 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
   void initState() {
     super.initState();
     readAllUser();
-    _tabProvinceApprovecontroller = TabController(length: 3, vsync: this);
   }
 
   Future<Null> readAllUser() async {
     if (userModels.length != 0) {
       userModels.clear();
       docsIds.clear();
-      serachUserModels.clear();
+      searchUserModels.clear();
     }
 
     await Firebase.initializeApp().then((value) async {
@@ -54,7 +43,7 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
               UserModelFirebase.fromMap(item.data());
           setState(() {
             userModels.add(userModelFirebase);
-            serachUserModels = userModels;
+            searchUserModels = userModels;
             docsIds.add(item.id);
           });
         }
@@ -75,9 +64,9 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('JobType => ${userModelFirebase.jobType}'),
-            Text('JobType => ${userModelFirebase.jobScope}'),
-            Text('JobType => ${userModelFirebase.phoneNumber}'),
+            Text('JobType =>  ${userModelFirebase.jobType}'),
+            Text('JobScope =>  ${userModelFirebase.jobScope}'),
+            Text('PhoneNumber =>  ${userModelFirebase.phoneNumber}'),
           ],
         ),
         actions: [
@@ -99,119 +88,44 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              ),
-            ),
-            title: Text(
-              'Approve',
-            ),
-            bottom: TabBar(controller: _tabProvinceApprovecontroller, tabs: [
-              Tab(
-                text: 'เชียงใหม่',
-              ),
-              Tab(
-                text: 'กรุงเทพมหานคร',
-              ),
-              Tab(
-                text: 'ชลบุรี',
-              ),
-            ]),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  onPressed: () {
-                    SocialService().signOut();
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false);
-                  },
-                  icon: Icon(
-                    Icons.power_settings_new,
-                  ),
-                ),
-              ),
-            ]),
-        body: userModels.length == 0
-            ? ShowProgress()
-            : GestureDetector(
-                onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                behavior: HitTestBehavior.opaque,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      buildSearch(),
-                      buildListView(),
-                    ],
-                  ),
-                ),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Admin Service'),
       ),
+      body: userModels.length == 0
+          ? ShowProgress()
+          : GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+              behavior: HitTestBehavior.opaque,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    buildSearch(),
+                    buildListView(),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
   Container buildSearch() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.circular(30),
+      margin: EdgeInsets.all(16),
+      child: TextFormField(
+        onChanged: (value) {
+          setState(() {
+            searchUserModels = userModels
+                .where((element) =>
+                    (element.name.toLowerCase().contains(value.toLowerCase())))
+                .toList();
+          });
+        },
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(),
+        ),
       ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              child: Icon(Icons.search),
-              margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  serachUserModels = userModels
-                      .where((element) => (element.name
-                          .toLowerCase()
-                          .contains(value.toLowerCase())))
-                      .toList();
-                });
-              },
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Search Your Name',
-              ),
-            ),
-          ),
-        ],
-      ),
-      // margin: EdgeInsets.all(16),
-      // child: TextFormField(
-      // onChanged: (value) {
-      // setState(() {
-      // serachUserModels = userModels
-      // .where((element) =>
-      // (element.name.toLowerCase().contains(value.toLowerCase())))
-      // .toList();
-      // });
-      // },
-      // decoration: InputDecoration(
-      // prefix: Icon(Icons.search),
-      // border: OutlineInputBorder(),
-      // ),
-      // ),
     );
   }
 
@@ -219,7 +133,7 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
     return ListView.builder(
       shrinkWrap: true,
       physics: ScrollPhysics(),
-      itemCount: serachUserModels.length,
+      itemCount: searchUserModels.length,
       itemBuilder: (context, index) => Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -229,17 +143,18 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(serachUserModels[index].name),
+                  Text(searchUserModels[index].name),
                   Checkbox(
-                      value: serachUserModels[index].accept,
-                      onChanged: (value) {
-                        print('You Tap ==> idDoc ==> ${docsIds[index]}');
-                        confirmAcceptDialog(
-                            docsIds[index], serachUserModels[index]);
-                      }),
+                    value: searchUserModels[index].accept,
+                    onChanged: (value) {
+                      print('You tap ==>> idDoc ==> ${docsIds[index]}');
+                      confirmAcceptDialog(
+                          docsIds[index], searchUserModels[index]);
+                    },
+                  ),
                 ],
               ),
-              Text(serachUserModels[index].email),
+              Text(searchUserModels[index].email),
             ],
           ),
         ),
@@ -251,14 +166,12 @@ class _AdminServiceState extends State<AdminService> with SingleTickerProviderSt
       String docs, UserModelFirebase userModelFirebase) async {
     await Firebase.initializeApp().then((value) async {
       Map<String, dynamic> data = {};
-      data['accept'] = userModelFirebase.accept;
+      data['accept'] = !userModelFirebase.accept;
       await FirebaseFirestore.instance
           .collection('user')
           .doc(docs)
           .update(data)
-          .then(
-            (value) => readAllUser(),
-          );
+          .then((value) => readAllUser());
     });
   }
 }

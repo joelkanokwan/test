@@ -14,10 +14,12 @@ import 'package:joelfindtechnician/form.dart/order_detail.dart';
 import 'package:joelfindtechnician/form.dart/receipt.dart';
 import 'package:joelfindtechnician/form.dart/reply_offerprice.dart';
 import 'package:joelfindtechnician/form.dart/technician_appointment.dart';
+import 'package:joelfindtechnician/partner_state/home_page.dart';
 import 'package:joelfindtechnician/partner_state/mywallet.dart';
 import 'package:joelfindtechnician/partner_state/partner_notification.dart';
 import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/partner_state/showmessage_partner.dart';
+import 'package:joelfindtechnician/state/admin_service.dart';
 import 'package:joelfindtechnician/state/bkk_page.dart';
 import 'package:joelfindtechnician/state/chiangmai_page.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
@@ -46,7 +48,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: AdminService(),
       // routes: map,
       // initialRoute: firstPage,
     );

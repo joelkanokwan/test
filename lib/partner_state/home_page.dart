@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/partner_state/eddit_profile.dart';
 import 'package:joelfindtechnician/partner_state/mywallet.dart';
 import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
@@ -15,6 +18,8 @@ import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/my_ref.dart';
 import 'package:joelfindtechnician/state/show_profile.dart';
+import 'package:joelfindtechnician/utility/my_constant.dart';
+import 'package:joelfindtechnician/widgets/show_progress.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,6 +29,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserModelOld? userModelOld;
+  @override
+  void initState() {
+    super.initState();
+    findUser();
+  }
+
+  Future<Null> findUser() async {
+    await Firebase.initializeApp().then((value) async {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection('user')
+          .where('uid', isEqualTo: firebaseUser!.uid)
+          .get()
+          .then((value) {
+        for (var item in value.docs) {
+          setState(() {
+            userModelOld = UserModelOld.fromMap(item.data());
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
@@ -40,10 +69,7 @@ class _HomePageState extends State<HomePage> {
           child: Center(
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 70,
-                  backgroundColor: Colors.blue,
-                ),
+                userModelOld == null ? ShowProgress() : buildCircleAvatar(),
                 SizedBox(height: 8),
                 Text(
                   ' ' + User.email!,
@@ -70,8 +96,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    CommunityPage()));
+                                builder: (context) => CommunityPage()));
                       },
                       child: Row(
                         children: [
@@ -449,6 +474,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  CircleAvatar buildCircleAvatar() {
+    return CircleAvatar(
+      radius: 70,
+      backgroundImage: userModelOld!.img.isEmpty
+          ? NetworkImage(MyConstant.urlNoAvatar)
+          : NetworkImage(userModelOld!.img),
+    );
+  }
+
   Container buildMyProfile(BuildContext context) {
     return Container(
       child: Padding(
@@ -460,8 +494,12 @@ class _HomePageState extends State<HomePage> {
           ),
           color: Color(0xFFF5F6F9),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ShowProfile()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ShowProfile(),
+              ),
+            ).then((value) => findUser());
           },
           child: Row(
             children: [

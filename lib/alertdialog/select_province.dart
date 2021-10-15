@@ -15,7 +15,7 @@ class SelectProvince {
                 children: [
                   Radio(
                     activeColor: Colors.amber,
-                    value: 1,
+                    value: 0,
                     groupValue: _selectJobScope,
                     onChanged: (value) {},
                   ),
@@ -29,7 +29,7 @@ class SelectProvince {
                 children: [
                   Radio(
                     activeColor: Colors.amber,
-                    value: 2,
+                    value: 1,
                     groupValue: _selectJobScope,
                     onChanged: (value) {},
                   ),
@@ -58,5 +58,5 @@ class SelectProvince {
         ),
       ),
     );
-  }
+  } //endNormal
 }

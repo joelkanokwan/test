@@ -156,52 +156,57 @@ class _SignUpState extends State<SignUp> {
                                   await FirebaseFirestore.instance
                                       .collection('user')
                                       .where('email', isEqualTo: email)
-                                      .snapshots()
-                                      .listen((event) async {
+                                      .get()
+                                      .then((event) async {
                                     if (event.docs.length == 0) {
                                       MyDialog().normalDialog(
-                                          context, 'Error', 'No email');
+                                          context,
+                                          'No Email',
+                                          'ไม่มี Email นี่ใน ฐานข้อมูล');
                                     } else {
                                       for (var item in event.docs) {
                                         UserModelFirebase userModelFirebase =
                                             UserModelFirebase.fromMap(
                                                 item.data());
-
                                         String docId = item.id;
                                         if (userModelFirebase.accept) {
-                                          print('OK Accept True');
+                                          print('### OK Accept True');
 
-                                          bool oneTime = true;
-                                          if (oneTime) {
-                                            oneTime = false;
-                                            await FirebaseAuth.instance
-                                                .createUserWithEmailAndPassword(
-                                                    email: email,
-                                                    password: password)
-                                                .then((value) async {
-                                              String uid = value.user!.uid;
-                                              print(
-                                                  'Create Account Success uid = $uid');
-                                              Map<String, dynamic> map = {};
-                                              map['uid'] = uid;
-                                              await FirebaseFirestore.instance
-                                                  .collection('user')
-                                                  .doc(docId)
-                                                  .update(map)
-                                                  .then((value) => print(
-                                                      'Success Update UID'));
-                                            }).catchError((value) {
-                                              MyDialog().normalDialog(context,
-                                                  'Error', value.message);
+                                          await FirebaseAuth.instance
+                                              .createUserWithEmailAndPassword(
+                                                  email: email,
+                                                  password: password)
+                                              .then((value) async {
+                                            String uid = value.user!.uid;
+                                            print(
+                                                'Success Create Account uid = $uid');
+                                            Map<String, dynamic> map = {};
+                                            map['uid'] = uid;
+                                            await FirebaseFirestore.instance
+                                                .collection('user')
+                                                .doc(docId)
+                                                .update(map)
+                                                .then((value) {
+                                              print('Success Update UID');
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PartnerSignin()),
+                                                  (route) => false);
                                             });
-                                          }
-
-                                          // SocialService()
-                                          // .signUp(email, password, context)
-                                          // .then((userCreds) {});
-                                          MyDialog().normalDialog(context,
-                                              'Wait Accept', 'Server Checking');
-                                        } else {}
+                                          }).catchError((value) {
+                                            MyDialog().normalDialog(
+                                                context,
+                                                'Cannot Create Acount',
+                                                value.message);
+                                          });
+                                        } else {
+                                          MyDialog().normalDialog(
+                                              context,
+                                              'Wait Accept',
+                                              'รอแป้ป กำลังตรวจสอนอยู่');
+                                        }
                                       }
                                     }
                                   });

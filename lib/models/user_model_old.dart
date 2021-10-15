@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class UserModelFirebase {
+import 'package:flutter/foundation.dart';
+
+class UserModelOld {
   final String email;
   final String uid;
   final String name;
@@ -11,7 +13,12 @@ class UserModelFirebase {
   final bool accept;
   final String about;
   final String img;
-  UserModelFirebase({
+
+  final String province;
+  final String amphure;
+  final String district;
+  final List<String> typeTechnics;
+  UserModelOld({
     required this.email,
     required this.uid,
     required this.name,
@@ -22,9 +29,13 @@ class UserModelFirebase {
     required this.accept,
     required this.about,
     required this.img,
+    required this.province,
+    required this.amphure,
+    required this.district,
+    required this.typeTechnics,
   });
 
-  UserModelFirebase copyWith({
+  UserModelOld copyWith({
     String? email,
     String? uid,
     String? name,
@@ -35,8 +46,12 @@ class UserModelFirebase {
     bool? accept,
     String? about,
     String? img,
+    String? province,
+    String? amphure,
+    String? district,
+    List<String>? typeTechnics,
   }) {
-    return UserModelFirebase(
+    return UserModelOld(
       email: email ?? this.email,
       uid: uid ?? this.uid,
       name: name ?? this.name,
@@ -47,6 +62,10 @@ class UserModelFirebase {
       accept: accept ?? this.accept,
       about: about ?? this.about,
       img: img ?? this.img,
+      province: province ?? this.province,
+      amphure: amphure ?? this.amphure,
+      district: district ?? this.district,
+      typeTechnics: typeTechnics ?? this.typeTechnics,
     );
   }
 
@@ -62,11 +81,15 @@ class UserModelFirebase {
       'accept': accept,
       'about': about,
       'img': img,
+      'province': province,
+      'amphure': amphure,
+      'district': district,
+      'typeTechnics': typeTechnics,
     };
   }
 
-  factory UserModelFirebase.fromMap(Map<String, dynamic> map) {
-    return UserModelFirebase(
+  factory UserModelOld.fromMap(Map<String, dynamic> map) {
+    return UserModelOld(
       email: map['email'],
       uid: map['uid'],
       name: map['name'],
@@ -77,23 +100,27 @@ class UserModelFirebase {
       accept: map['accept'],
       about: map['about'],
       img: map['img'],
+      province: map['province'],
+      amphure: map['amphure'],
+      district: map['district'],
+      typeTechnics: List<String>.from(map['typeTechnics']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory UserModelFirebase.fromJson(String source) => UserModelFirebase.fromMap(json.decode(source));
+  factory UserModelOld.fromJson(String source) => UserModelOld.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'UserModelFirebase(email: $email, uid: $uid, name: $name, phoneNumber: $phoneNumber, jobType: $jobType, jobScope: $jobScope, address: $address, accept: $accept, about: $about, img: $img)';
+    return 'UserModelOld(email: $email, uid: $uid, name: $name, phoneNumber: $phoneNumber, jobType: $jobType, jobScope: $jobScope, address: $address, accept: $accept, about: $about, img: $img, province: $province, amphure: $amphure, district: $district, typeTechnics: $typeTechnics)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
-    return other is UserModelFirebase &&
+    return other is UserModelOld &&
       other.email == email &&
       other.uid == uid &&
       other.name == name &&
@@ -103,7 +130,11 @@ class UserModelFirebase {
       other.address == address &&
       other.accept == accept &&
       other.about == about &&
-      other.img == img;
+      other.img == img &&
+      other.province == province &&
+      other.amphure == amphure &&
+      other.district == district &&
+      listEquals(other.typeTechnics, typeTechnics);
   }
 
   @override
@@ -117,6 +148,10 @@ class UserModelFirebase {
       address.hashCode ^
       accept.hashCode ^
       about.hashCode ^
-      img.hashCode;
+      img.hashCode ^
+      province.hashCode ^
+      amphure.hashCode ^
+      district.hashCode ^
+      typeTechnics.hashCode;
   }
 }
