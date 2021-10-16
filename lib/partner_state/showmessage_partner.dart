@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/cancelReportform_success.dart';
 import 'package:joelfindtechnician/alertdialog/jobdone_success.dart';
 import 'package:joelfindtechnician/alertdialog/partner_cancel.dart';
+import 'package:joelfindtechnician/form.dart/partner_confirm.dart';
 import 'package:joelfindtechnician/partner_state/appointment_form.dart';
 import 'package:joelfindtechnician/partner_state/cancel_form.dart';
 import 'package:joelfindtechnician/partner_state/confirmReportform.dart';
@@ -24,16 +25,80 @@ class _ShowMessagePartnerState extends State<ShowMessagePartner> {
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 25),
       children: [
+        // SpeedDialChild(
+          // onTap: () {
+            // Navigator.push(context,
+                // MaterialPageRoute(builder: (context) => ConfirmReportForm()));
+          // },
+          // backgroundColor: Colors.amber,
+          // child: Icon(
+            // Icons.check_circle_outline,
+          // ),
+          // label: 'Confirm report form',
+          // labelBackgroundColor: Colors.amber,
+          // labelStyle: GoogleFonts.lato(
+            // color: Colors.white,
+            // fontWeight: FontWeight.bold,
+            // fontSize: 15,
+          // ),
+        // ),
+        // SpeedDialChild(
+          // onTap: () {
+            // PartnerrCancel().normalDialog(context, '', '');
+          // },
+          // backgroundColor: Colors.amber,
+          // child: Icon(
+            // Icons.cancel_presentation_outlined,
+          // ),
+          // label: 'Cancel report form',
+          // labelBackgroundColor: Colors.amber,
+          // labelStyle: GoogleFonts.lato(
+            // color: Colors.white,
+            // fontWeight: FontWeight.bold,
+            // fontSize: 15,
+          // ),
+        // ),
+        // SpeedDialChild(
+        // onTap: () {
+        // Navigator.push(context,
+        // MaterialPageRoute(builder: (context) => AppointmentForm()));
+        // },
+        // backgroundColor: Colors.amber,
+        // child: Icon(
+        // Icons.calendar_today_outlined,
+        // ),
+        // label: 'Appointment',
+        // labelBackgroundColor: Colors.amber,
+        // labelStyle: GoogleFonts.lato(
+        // color: Colors.white,
+        // fontWeight: FontWeight.bold,
+        // fontSize: 15,
+        // ),
+        // ),
+        // SpeedDialChild(
+        // onTap: () {
+        // Navigator.push(context,
+        // MaterialPageRoute(builder: (context) => OfferPriceForm()));
+        //
+        // backgroundColor: Colors.amber,
+        // child: Icon(
+        // Icons.reply,
+        // ),
+        // label: 'Offer price',
+        // labelBackgroundColor: Colors.amber,
+        // labelStyle: GoogleFonts.lato(
+        // color: Colors.white,
+        // fontWeight: FontWeight.bold,
+        // fontSize: 15,
+        // ),
+        // ),
         SpeedDialChild(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ConfirmReportForm()));
-          },
+          onTap: () {},
           backgroundColor: Colors.amber,
           child: Icon(
-            Icons.check_circle_outline,
+            Icons.replay,
           ),
-          label: 'Confirm report form',
+          label: 'Confirm',
           labelBackgroundColor: Colors.amber,
           labelStyle: GoogleFonts.lato(
             color: Colors.white,
@@ -43,58 +108,8 @@ class _ShowMessagePartnerState extends State<ShowMessagePartner> {
         ),
         SpeedDialChild(
           onTap: () {
-            PartnerrCancel().normalDialog(context, '', '');
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(
-            Icons.cancel_presentation_outlined,
-          ),
-          label: 'Cancel report form',
-          labelBackgroundColor: Colors.amber,
-          labelStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        SpeedDialChild(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AppointmentForm()));
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(
-            Icons.calendar_today_outlined,
-          ),
-          label: 'Appointment',
-          labelBackgroundColor: Colors.amber,
-          labelStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        SpeedDialChild(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => OfferPriceForm()));
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(
-            Icons.reply,
-          ),
-          label: 'Offer price',
-          labelBackgroundColor: Colors.amber,
-          labelStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        SpeedDialChild(
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CancelForm()));
+           PartnerrCancel().normalDialog(context, 'ยกเลิกงาน', 'คุณแน่ใจที่จะยกเลิกงานใช่ไหม ?');
+           
           },
           backgroundColor: Colors.amber,
           child: Icon(

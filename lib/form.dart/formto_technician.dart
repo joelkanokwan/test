@@ -36,13 +36,6 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '**Cuustomer sent form to technician**',
-                        style: GoogleFonts.lato(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
                         'Customer Name',
                         style: GoogleFonts.lato(
                           fontSize: 20,
@@ -100,6 +93,18 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                         ],
                       ),
                       Divider(thickness: 2),
+                      Row(
+                        children: [
+                          Text(
+                            'Remark :',
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'xxxxxxxxxx',
+                          ),
+                        ],
+                      ),
+                      Divider(thickness: 2),
                       Text(
                         'Job Description :',
                         style: GoogleFonts.lato(
@@ -112,16 +117,14 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                       ),
                       Divider(thickness: 2),
                       Text(
-                        'Remark :',
+                        'Detail of work :',
+                        style: GoogleFonts.lato(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
-                      Divider(thickness: 2),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.amber,
-                          ),
-                        ],
+                      Text(
+                        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                       ),
                     ],
                   ),

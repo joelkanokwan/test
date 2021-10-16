@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joelfindtechnician/alertdialog/choose_post.dart';
+import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
 
 class FormContactPartner extends StatefulWidget {
@@ -99,62 +101,62 @@ class _FormContactPartnerState extends State<FormContactPartner> {
           ),
         ),
         title: Text('Foam contact technician'),
-        actions: [
-          InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Center(
-                          child: Text(
-                            'Choose Profile Photo',
-                            style: GoogleFonts.lato(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purpleAccent,
-                            ),
-                          ),
-                        ),
-                        content: SingleChildScrollView(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FlatButton.icon(
-                                onPressed: () {
-                                  _imageFromCamera();
-                                  Navigator.of(context).pop();
-                                },
-                                icon: Icon(Icons.camera,
-                                    color: Colors.purpleAccent),
-                                label: Text('Camera'),
-                              ),
-                              FlatButton.icon(
-                                onPressed: () {
-                                  _imageFromGallery();
-                                  Navigator.of(context).pop();
-                                },
-                                icon: Icon(
-                                  Icons.image,
-                                  color: Colors.purpleAccent,
-                                ),
-                                label: Text('Gallery'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                icon: Icon(Icons.camera_alt_outlined),
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        // InkWell(
+        // onTap: () {},
+        // child: Padding(
+        // padding: const EdgeInsets.all(15),
+        // child: IconButton(
+        // onPressed: () {
+        // showDialog(
+        // context: context,
+        // builder: (BuildContext context) {
+        // return AlertDialog(
+        // title: Center(
+        // child: Text(
+        // 'Choose Profile Photo',
+        // style: GoogleFonts.lato(
+        // fontWeight: FontWeight.bold,
+        // color: Colors.purpleAccent,
+        // ),
+        // ),
+        // ),
+        // content: SingleChildScrollView(
+        // child: Row(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // children: [
+        // FlatButton.icon(
+        // onPressed: () {
+        // _imageFromCamera();
+        // Navigator.of(context).pop();
+        // },
+        // icon: Icon(Icons.camera,
+        // color: Colors.purpleAccent),
+        // label: Text('Camera'),
+        // ),
+        // FlatButton.icon(
+        // onPressed: () {
+        // _imageFromGallery();
+        // Navigator.of(context).pop();
+        // },
+        // icon: Icon(
+        // Icons.image,
+        // color: Colors.purpleAccent,
+        // ),
+        // label: Text('Gallery'),
+        // ),
+        // ],
+        // ),
+        // ),
+        // );
+        // },
+        // );
+        // },
+        // icon: Icon(Icons.camera_alt_outlined),
+        // ),
+        // ),
+        // ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: GestureDetector(
@@ -212,12 +214,20 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                       ),
                     ),
                   ),
+                  TextButton.icon(
+                    onPressed: () {
+                      ChoosePost()
+                          .normalDialog(context, 'Please choose your post', '');
+                    },
+                    icon: Icon(Icons.add),
+                    label: Text('Please Add your post to job Description'),
+                  ),
                   SizedBox(height: 10),
                   TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please type job description';
-                      } else {}
+                      // if (value!.isEmpty) {
+                      // return 'Please type job description';
+                      // } else {}
                     },
                     maxLines: 8,
                     decoration: InputDecoration(
@@ -231,9 +241,9 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                   SizedBox(height: 10),
                   TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please type your address';
-                      } else {}
+                      // if (value!.isEmpty) {
+                      // return 'Please type your address';
+                      // } else {}
                     },
                     decoration: InputDecoration(
                       labelText: 'Address',
@@ -243,48 +253,18 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 15),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
-                        child: FlatButton.icon(
-                          onPressed: () {
-                            SelectProvince().normalDialog(context);
-                          },
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.orange,
-                          ),
-                          label: Text(
-                            'จังหวัด',
-                            style: GoogleFonts.lato(fontSize: 15),
-                          ),
-                        ),
+                        child: Text('ตำบล'),
                       ),
                       Container(
-                        child: FlatButton.icon(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.orange,
-                          ),
-                          label: Text(
-                            'อำเภอ',
-                            style: GoogleFonts.lato(fontSize: 15),
-                          ),
-                        ),
+                        child: Text('อำเภอ'),
                       ),
                       Container(
-                        child: FlatButton.icon(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.orange,
-                          ),
-                          label: Text(
-                            'ตำบล',
-                            style: GoogleFonts.lato(fontSize: 15),
-                          ),
-                        ),
+                        child: Text('จังหวัด'),
                       ),
                     ],
                   ),
@@ -333,7 +313,7 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            'Sent the work to the apprais',
+                            'ให้ช่างส่งใบเสนอราคาให้',
                           ),
                         ],
                       ),
@@ -351,7 +331,7 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            'Make an appointment to see the actual job site',
+                            'นัดหมายช่างเพื่อดูหน้างานจริง',
                           ),
                         ],
                       ),

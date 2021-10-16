@@ -1,10 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joelfindtechnician/alertdialog/choose_jobscope.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
+import 'package:joelfindtechnician/model.dart';
+import 'package:joelfindtechnician/models/subdistruct_model.dart';
+import 'package:joelfindtechnician/models/typetechnic_model.dart';
+import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({Key? key}) : super(key: key);
@@ -18,7 +26,141 @@ class _CreatePostState extends State<CreatePost> {
   File? image;
   String? imgUrl;
 
+  List<String> provinces = [
+    'เชียงใหม่',
+    'กทม',
+    'ชลบุรี',
+  ];
+  String? province, amphur, subdistrict, typetechnic;
+  bool amphurbool = true;
+  bool subdistrictbool = true;
+  int? province_id;
+  List<AmphurModel> amphurModels = [];
+  List<SubDistrictModel> subdistrictModel = [];
+  List<TypeTechnicModel> typetechnicModels = [];
+  List<Widget> widgets = [];
+  List<bool> typetechnicBool = [];
+  List<String> typeTechnicStrings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    readAllType();
+  }
+
+  Future<void> readAllType() async {
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseFirestore.instance
+          .collection('typetechnic')
+          .get()
+          .then((value) {
+        int index = 0;
+        for (var item in value.docs) {
+          TypeTechnicModel model = TypeTechnicModel.fromMap(item.data());
+          setState(() {
+            typetechnicModels.add(model);
+            typetechnicBool.add(false);
+            widgets.add(creatWidget(model, index));
+          });
+          index++;
+        }
+      });
+    });
+  }
+
+  Widget creatWidget(TypeTechnicModel model, int index) => CheckboxListTile(
+        controlAffinity: ListTileControlAffinity.leading,
+        title: Text(model.name),
+        value: typetechnicBool[index],
+        onChanged: (value) {
+          setState(() {
+            typetechnicBool[index] = !typetechnicBool[index];
+            print('### typetechnicBool ==> $typetechnicBool');
+          });
+        },
+      );
+
+  // Future<Null> normalDialog(BuildContext context) async {
+    // showDialog(
+      // context: context,
+      // builder: (context) => StatefulBuilder(
+        // builder: (context, setState) => AlertDialog(
+          // title: Column(
+            // children: [
+              // Row(
+                // children: [
+                  // Radio(
+                    // activeColor: Colors.amber,
+                    // value: 0,
+                    // groupValue: indexProvince,
+                    // onChanged: (value) {
+                      // setState(() {
+                        // indexProvince = 0;
+                      // });
+                    // },
+                  // ),
+                  // SizedBox(width: 10),
+                  // Text(
+                    // provinces[0],
+                  // ),
+                // ],
+              // ),
+              // Row(
+                // children: [
+                  // Radio(
+                    // activeColor: Colors.amber,
+                    // value: 1,
+                    // groupValue: indexProvince,
+                    // onChanged: (value) {
+                      // setState(() {
+                        // indexProvince = 1;
+                      // });
+                    // },
+                  // ),
+                  // SizedBox(width: 10),
+                  // Text(
+                    // provinces[1],
+                  // ),
+                // ],
+              // ),
+              // Row(
+                // children: [
+                  // Radio(
+                    // activeColor: Colors.amber,
+                    // value: 2,
+                    // groupValue: indexProvince,
+                    // onChanged: (value) {
+                      // setState(() {
+                        // indexProvince = 2;
+                      // });
+                    // },
+                  // ),
+                  // SizedBox(width: 10),
+                  // Text(
+                    // provinces[2],
+                  // ),
+                // ],
+              // ),
+            // ],
+          // ),
+          // actions: [
+            // TextButton(
+              // onPressed: () {
+                // setState(() {
+                  // print('indexProvince ==> $indexProvince');
+                // });
+                // Navigator.pop(context);
+              // },
+              // child: Text('OK'),
+            // ),
+          // ],
+        // ),
+      // ),
+    // );
+  // }
+
   TextEditingController addressController = TextEditingController();
+  TextEditingController jobDescriptionController = TextEditingController();
 
   _imageFromCamera() async {
     final picker = ImagePicker();
@@ -116,101 +258,24 @@ class _CreatePostState extends State<CreatePost> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please type job description';
-                      } else {}
-                    },
-                    maxLines: 10,
-                    decoration: InputDecoration(
-                      labelText: 'Job Description',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
+                  buildJobDescription(),
                   SizedBox(height: 15),
-                  TextFormField(
-                    controller: addressController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please fill your address';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Address",
-                      labelStyle: GoogleFonts.lato(
-                        color: Colors.grey,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        child: FlatButton.icon(
-                          onPressed: () {
-                            SelectProvince().normalDialog(context);
-                          },
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.orange,
-                          ),
-                          label: Text(
-                            'จังหวัด',
-                            style: GoogleFonts.lato(fontSize: 15),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: FlatButton.icon(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.orange,
-                          ),
-                          label: Text(
-                            'อำเภอ',
-                            style: GoogleFonts.lato(fontSize: 15),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: FlatButton.icon(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.orange,
-                          ),
-                          label: Text(
-                            'ตำบล',
-                            style: GoogleFonts.lato(fontSize: 15),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 230,
-                    child: FlatButton.icon(
-                      onPressed: () {
-                        ChooseJobScope().normalDialog(context);
-                      },
-                      icon: Icon(
-                        Icons.work_outline_outlined,
-                        color: Colors.orange,
-                      ),
-                      label: Text(
-                        'เลือกแท๊กงาน',
-                        style: GoogleFonts.lato(fontSize: 15),
-                      ),
-                    ),
-                  ),
+                  buildAddress(),
+                  // buildOldProvince(context),
+                  province == null
+                      ? buildProvince()
+                      : Text('จังหวัด ${province!}'),
+                  amphurbool
+                      ? SizedBox()
+                      : amphur == null
+                          ? buildAmphur()
+                          : Text('อำเภอ ${amphur!}'),
+                  subdistrictbool
+                      ? SizedBox()
+                      : subdistrict == null
+                          ? buildSubDistrict()
+                          : Text('ตำบล ${subdistrict!}'),
+                          buildJobType(context),
                   Container(
                     margin: EdgeInsets.only(top: 30),
                     height: 50,
@@ -237,6 +302,199 @@ class _CreatePostState extends State<CreatePost> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  DropdownButton<String> buildProvince() {
+    return DropdownButton<String>(
+      hint: Text('โปรดเลือกจังหวัด'),
+      onChanged: (value) {
+        setState(() {
+          if (amphurModels.isNotEmpty) {
+            amphurModels.clear();
+            amphur = null;
+            subdistrictModel.clear();
+            subdistrictbool = true;
+          }
+          province = value;
+
+          switch (province) {
+            case 'เชียงใหม่':
+              province_id = 38;
+              findAmphur();
+
+              break;
+            case 'กทม':
+              province_id = 1;
+              findAmphur();
+              break;
+            case 'ชลบุรี':
+              province_id = 11;
+              findAmphur();
+              break;
+            default:
+          }
+        });
+      },
+      value: province,
+      items: provinces
+          .map(
+            (e) => DropdownMenuItem<String>(
+              child: Text(e),
+              value: e,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Future<void> findAmphur() async {
+    print('### province_id = $province_id');
+    String apiAmphur =
+        'https://www.androidthai.in.th/eye/Amphur.php?isAdd=true&province_id=$province_id';
+    await Dio().get(apiAmphur).then((value) {
+      for (var item in json.decode(value.data)) {
+        AmphurModel model = AmphurModel.fromMap(item);
+        // print('### amphure ==>> ${model.name_th}');
+
+        setState(() {
+          amphurModels.add(model);
+          amphurbool = false;
+        });
+      }
+      // print('### value amphur == $value');
+    });
+  }
+
+  DropdownButton<String> buildAmphur() {
+    return DropdownButton<String>(
+      hint: Text('โปรดเลือกอำเภอ'),
+      onChanged: (value) {
+        setState(() {
+          if (subdistrictModel.isNotEmpty) {
+            subdistrictModel.clear();
+            subdistrictbool = true;
+          }
+
+          amphur = value;
+          subdistrictbool = false;
+          findSubDistrict(amphur!);
+        });
+      },
+      value: amphur,
+      items: amphurModels
+          .map(
+            (e) => DropdownMenuItem<String>(
+              child: Text(e.name_th),
+              value: e.name_th,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Future<void> findSubDistrict(String nameAmphure) async {
+    String amphure_id = '';
+    for (var item in amphurModels) {
+      if (nameAmphure == item.name_th) {
+        amphure_id = item.id;
+      }
+    }
+
+    print('### amphur_id ==>> $amphure_id');
+
+    String apiSubDisTrict =
+        'https://www.androidthai.in.th/eye/getDistriceByAmphure.php?isAdd=true&amphure_id=$amphure_id';
+    await Dio().get(apiSubDisTrict).then((value) {
+      for (var item in json.decode(value.data)) {
+        SubDistrictModel model = SubDistrictModel.fromMap(item);
+        setState(() {
+          subdistrictModel.add(model);
+        });
+      }
+    });
+  }
+
+  DropdownButton<String> buildSubDistrict() {
+    return DropdownButton<String>(
+      hint: Text('โปรดเลือกตำบล'),
+      onChanged: (value) {
+        setState(() {
+          subdistrict = value;
+        });
+      },
+      value: subdistrict,
+      items: subdistrictModel
+          .map(
+            (e) => DropdownMenuItem<String>(
+              child: Text(e.name_th),
+              value: e.name_th,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+   Widget buildJobType(BuildContext context) {
+   return Column(
+     children: [
+       ShowText(
+         title: 'ประเภทของงาน',
+       ),
+       ListView.builder(
+         shrinkWrap: true,
+         physics: ScrollPhysics(),
+         itemCount: typetechnicModels.length,
+         itemBuilder: (context, index) => CheckboxListTile(
+           controlAffinity: ListTileControlAffinity.leading,
+           title: Text(typetechnicModels[index].name),
+           value: typetechnicBool[index],
+           onChanged: (value) {
+             setState(() {
+               typetechnicBool[index] = value!;
+             });
+           },
+         ),
+       ),
+     ],
+   );
+ }
+
+  TextFormField buildAddress() {
+    return TextFormField(
+      controller: addressController,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please fill your address';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Address",
+        labelStyle: GoogleFonts.lato(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildJobDescription() {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please type job description';
+        } else {}
+      },
+      maxLines: 10,
+      decoration: InputDecoration(
+        labelText: 'Job Description',
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
       ),
     );

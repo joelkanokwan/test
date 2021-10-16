@@ -28,6 +28,12 @@ class _CommunityPageState extends State<CommunityPage> {
   UserModelOld? userModelOld;
   bool load = true;
 
+  List<String> provinces = [
+    'เชียงใหม่',
+    'กทม',
+    'ชลบุรี',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -87,25 +93,20 @@ class _CommunityPageState extends State<CommunityPage> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          child: Icon(Icons.search),
-                          margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Search your province',
+                    child: DropdownButton(
+                     
+                      hint: Text('Please Choose your area',
+                      
+                      ),
+                      onChanged: (value) {},
+                      items: provinces
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              child: Text(e),
+                              value: e,
                             ),
-                          ),
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
                   ),
                   CarouselSlider(
@@ -169,82 +170,6 @@ class _CommunityPageState extends State<CommunityPage> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Image.asset('assets/images/cleaning.png',
-                                    color: Colors.orange),
-                                Text(
-                                  'Cleaning',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Home cleaning service'),
-                                Text('Office cleaning service')
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.pinkAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset('assets/images/curtain.png',
-                                    color: Colors.redAccent),
-                                Text(
-                                  'Curtain',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design and installing'),
-                                Text('curtain and accessary')
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.purpleAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/door.png',
-                                ),
-                                Text(
-                                  'Door Window',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design Installing and fixing'),
-                                Text('door window floor ceiling'),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.blueAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
                                 Image.asset(
                                   'assets/images/electricity.png',
                                 ),
@@ -272,63 +197,10 @@ class _CommunityPageState extends State<CommunityPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Image.asset(
-                                  'assets/images/fixmachine.png',
-                                  color: Colors.redAccent,
-                                ),
-                                Text(
-                                  'Fixing Machine',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Fixing machine'),
-                                Text('and electric machine'),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.greenAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/furniture.png',
-                                ),
-                                Text(
-                                  'Cleaning Furniture',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Cleaning furniture and'),
-                                Text('wash machine service'),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.pinkAccent,
-                        ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
                                   'assets/images/toilet.png',
                                 ),
                                 Text(
-                                  'Toilet',
+                                  'Plumbling',
                                   style: GoogleFonts.lato(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -343,7 +215,7 @@ class _CommunityPageState extends State<CommunityPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          color: Colors.amber,
+                          color: Colors.pinkAccent,
                         ),
                       ],
                     ),

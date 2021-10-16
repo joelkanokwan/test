@@ -39,57 +39,57 @@ class _ShowMessageCustomerState extends State<ShowMessageCustomer> {
             fontSize: 15,
           ),
         ),
-        SpeedDialChild(
-          onTap: () {
-            CustomerAppointment().normalDialog(context, '', '');
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(
-            Icons.calendar_today_outlined,
-          ),
-          label: 'Appointment',
-          labelBackgroundColor: Colors.amber,
-          labelStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        SpeedDialChild(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CheckDetailBeforePay()));
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(
-            Icons.reply,
-          ),
-          label: 'Confirm job',
-          labelBackgroundColor: Colors.amber,
-          labelStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        SpeedDialChild(
-          onTap: () {
-            CustomerCancel().normalDialog(context, '', '');
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(
-            Icons.cancel_outlined,
-          ),
-          label: 'cancel',
-          labelBackgroundColor: Colors.amber,
-          labelStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
+        // SpeedDialChild(
+          // onTap: () {
+            // CustomerAppointment().normalDialog(context, '', '');
+          // },
+          // backgroundColor: Colors.amber,
+          // child: Icon(
+            // Icons.calendar_today_outlined,
+          // ),
+          // label: 'Appointment',
+          // labelBackgroundColor: Colors.amber,
+          // labelStyle: GoogleFonts.lato(
+            // color: Colors.white,
+            // fontWeight: FontWeight.bold,
+            // fontSize: 15,
+          // ),
+        // ),
+        // SpeedDialChild(
+          // onTap: () {
+            // Navigator.push(
+                // context,
+                // MaterialPageRoute(
+                    // builder: (context) => CheckDetailBeforePay()));
+          // },
+          // backgroundColor: Colors.amber,
+          // child: Icon(
+            // Icons.reply,
+          // ),
+          // label: 'Confirm job',
+          // labelBackgroundColor: Colors.amber,
+          // labelStyle: GoogleFonts.lato(
+            // color: Colors.white,
+            // fontWeight: FontWeight.bold,
+            // fontSize: 15,
+          // ),
+        // ),
+        // SpeedDialChild(
+          // onTap: () {
+            // CustomerCancel().normalDialog(context, '', '');
+          // },
+          // backgroundColor: Colors.amber,
+          // child: Icon(
+            // Icons.cancel_outlined,
+          // ),
+          // label: 'cancel',
+          // labelBackgroundColor: Colors.amber,
+          // labelStyle: GoogleFonts.lato(
+            // color: Colors.white,
+            // fontWeight: FontWeight.bold,
+            // fontSize: 15,
+          // ),
+        // ),
       ],
     );
   }

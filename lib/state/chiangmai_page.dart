@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/create_post.dart';
@@ -11,7 +13,9 @@ import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
 import 'package:joelfindtechnician/customer_state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
+import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/utility/my_constant.dart';
 
 class ChiangMaiPage extends StatefulWidget {
   const ChiangMaiPage({Key? key}) : super(key: key);
@@ -22,6 +26,49 @@ class ChiangMaiPage extends StatefulWidget {
 
 class _ChiangMaiPageState extends State<ChiangMaiPage> {
   final User = FirebaseAuth.instance.currentUser!;
+
+  UserModelOld? userModelOld;
+  bool load = true;
+
+  List<String> provinces = [
+    'เชียงใหม่',
+    'กทม',
+    'ชลบุรี',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    readUserProfile();
+    if (User.displayName != null) {
+      load = false;
+    }
+  }
+
+  Future<void> readUserProfile() async {
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .where('uid', isEqualTo: User.uid)
+          .get()
+          .then((value) async {
+        for (var item in value.docs) {
+          String docId = item.id;
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(docId)
+              .get()
+              .then((value) {
+            setState(() {
+              load = false;
+              userModelOld = UserModelOld.fromMap(value.data()!);
+            });
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,28 +104,19 @@ class _ChiangMaiPageState extends State<ChiangMaiPage> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     margin: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            child: Icon(Icons.search),
-                            margin: EdgeInsets.fromLTRB(3, 0, 7, 0),
-                          ),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Search your province',
+                    child: DropdownButton(
+                      hint: Text(
+                        'Please Choose your area',
+                      ),
+                      onChanged: (value) {},
+                      items: provinces
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              child: Text(e),
+                              value: e,
                             ),
-                          ),
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
                   ),
                   CarouselSlider(
@@ -110,7 +148,7 @@ class _ChiangMaiPageState extends State<ChiangMaiPage> {
                     child: GridView.count(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
+                      crossAxisCount: 3,
                       children: [
                         Card(
                           child: Center(
@@ -122,13 +160,13 @@ class _ChiangMaiPageState extends State<ChiangMaiPage> {
                                 Text(
                                   'Airconditioner',
                                   style: GoogleFonts.lato(
-                                    fontSize: 20,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 10),
-                                Text('Installing Airconditioner'),
-                                Text('and fixing accessary')
+                                // SizedBox(height: 10),
+                                // Text('Installing Airconditioner'),
+                                // Text('and fixing accessary')
                               ],
                             ),
                           ),
@@ -142,18 +180,45 @@ class _ChiangMaiPageState extends State<ChiangMaiPage> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Image.asset('assets/images/cleaning.png',
-                                    color: Colors.orange),
+                                Image.asset(
+                                  'assets/images/electricity.png',
+                                ),
                                 Text(
-                                  'Cleaning',
+                                  'Electricity',
                                   style: GoogleFonts.lato(
-                                    fontSize: 20,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 10),
-                                Text('Home cleaning service'),
-                                Text('Office cleaning service')
+                                // SizedBox(height: 10),
+                                // Text('Design Installing and fixing'),
+                                // Text('electricity systems'),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.redAccent,
+                        ),
+                        Card(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/toilet.png',
+                                ),
+                                Text(
+                                  'Plumbling',
+                                  style: GoogleFonts.lato(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                // SizedBox(height: 10),
+                                // Text('Design Installing and fixing'),
+                                // Text('asseecsary of toilet'),
                               ],
                             ),
                           ),
@@ -162,60 +227,35 @@ class _ChiangMaiPageState extends State<ChiangMaiPage> {
                           ),
                           color: Colors.pinkAccent,
                         ),
-                        Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset('assets/images/curtain.png',
-                                    color: Colors.redAccent),
-                                Text(
-                                  'Curtain',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('Design and installing'),
-                                Text('curtain and accessary')
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          color: Colors.purpleAccent,
-                        ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Container(
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: SizedBox(
-                            height: 200,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: SizedBox(
-                            height: 200,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // SizedBox(height: 10),
+                  // Container(
+                    // child: ListView(
+                      // shrinkWrap: true,
+                      // physics: NeverScrollableScrollPhysics(),
+                      // children: [
+                        // Card(
+                          // shape: RoundedRectangleBorder(
+                              // borderRadius: BorderRadius.circular(15)),
+                          // margin: EdgeInsets.only(left: 20, right: 20),
+                          // child: SizedBox(
+                            // height: 200,
+                          // ),
+                        // ),
+                        // SizedBox(height: 5),
+                        // Card(
+                          // shape: RoundedRectangleBorder(
+                              // borderRadius: BorderRadius.circular(15)),
+                          // margin: EdgeInsets.only(left: 20, right: 20),
+                          // child: SizedBox(
+                            // height: 200,
+                          // ),
+                        // ),
+                      // ],
+                    // ),
+                  // ),
                 ],
               ),
             ),
@@ -243,13 +283,19 @@ class _ChiangMaiPageState extends State<ChiangMaiPage> {
                     children: [
                       CircleAvatar(
                           radius: 20,
-                          backgroundImage: NetworkImage(User.photoURL!)),
+                          backgroundImage: NetworkImage(User.photoURL == null
+                              ? userModelOld!.img.isEmpty
+                                  ? MyConstant.urlNoAvatar
+                                  : userModelOld!.img
+                              : User.photoURL!)),
                       SizedBox(width: 16),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            User.displayName!,
+                            User.displayName == null
+                                ? userModelOld!.name
+                                : User.displayName!,
                             style: GoogleFonts.lato(
                               fontSize: 17,
                               fontStyle: FontStyle.italic,
