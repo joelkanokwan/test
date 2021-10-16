@@ -9,6 +9,7 @@ import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/showmessage_ctm.dart';
 import 'package:joelfindtechnician/customer_state/formcontact_partner.dart';
 import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/form.dart/confirm_job.dart';
 import 'package:joelfindtechnician/form.dart/partner_confirm.dart';
 import 'package:joelfindtechnician/form.dart/formto_technician.dart';
 import 'package:joelfindtechnician/form.dart/check_detail.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ShowMessageCustomer(),
+      home: ConfirmJob(),
       // routes: map,
       // initialRoute: firstPage,
     );

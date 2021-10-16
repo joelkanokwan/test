@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ReCeipt extends StatefulWidget {
-  const ReCeipt({Key? key}) : super(key: key);
+class ConfirmJob extends StatefulWidget {
+  const ConfirmJob({Key? key}) : super(key: key);
 
   @override
-  _ReCeiptState createState() => _ReCeiptState();
+  _ConfirmJobState createState() => _ConfirmJobState();
 }
 
-class _ReCeiptState extends State<ReCeipt> {
+class _ConfirmJobState extends State<ConfirmJob> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class _ReCeiptState extends State<ReCeipt> {
             color: Colors.white,
           ),
         ),
-        title: Text('Receipt'),
+        title: Text('Confirm Job'),
       ),
       body: Container(
         child: ListView(
@@ -36,44 +36,6 @@ class _ReCeiptState extends State<ReCeipt> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          'Company name',
-                          style: GoogleFonts.fredokaOne(
-                            fontSize: 25,
-                            color: Colors.orange,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          'Tax ID : 123456789',
-                          style: GoogleFonts.lato(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          'Date/Time Print receipt',
-                          style: GoogleFonts.lato(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          'Receipt/Tax Invoice',
-                          style: GoogleFonts.lato(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 18),
                       Text(
                         'Shop name :',
                         style: GoogleFonts.lato(
@@ -84,22 +46,6 @@ class _ReCeiptState extends State<ReCeipt> {
                       SizedBox(height: 8),
                       Text(
                         'Customer name :',
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Customer TaxID :',
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Email address :',
                         style: GoogleFonts.lato(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -140,23 +86,6 @@ class _ReCeiptState extends State<ReCeipt> {
                         ),
                       ),
                       Divider(thickness: 3),
-                      SizedBox(height: 8),
-                      Text(
-                        'Service Tax(3%) :',
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Vat(7%) :',
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
                       Text(
                         'Total Price :',
                         style: GoogleFonts.lato(
@@ -168,7 +97,7 @@ class _ReCeiptState extends State<ReCeipt> {
                       Row(
                         children: [
                           Text(
-                            'Payment method :',
+                            'Status :',
                             style: GoogleFonts.lato(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -176,7 +105,7 @@ class _ReCeiptState extends State<ReCeipt> {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            '',
+                            'Paid',
                             style: GoogleFonts.lato(
                               fontSize: 18,
                             ),
