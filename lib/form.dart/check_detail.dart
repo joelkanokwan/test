@@ -141,6 +141,44 @@ class _CheckDetailState extends State<CheckDetail> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      // Column(
+                      // children: [
+                      // Row(
+                      // children: [
+                      // Radio(
+                      // activeColor: Colors.amber,
+                      // value: 1,
+                      // groupValue: _selectChoice,
+                      // onChanged: (value) {
+                      // setState(() {
+                      // _selectChoice = 1;
+                      // });
+                      // },
+                      // ),
+                      // SizedBox(width: 10),
+                      // Text('QR Code')
+                      // ],
+                      // ),
+                      // Row(
+                      // children: [
+                      // Radio(
+                      // activeColor: Colors.amber,
+                      // value: 2,
+                      // groupValue: _selectChoice,
+                      // onChanged: (value) {
+                      // setState(() {
+                      // _selectChoice = 2;
+                      // });
+                      // },
+                      // ),
+                      // SizedBox(width: 10),
+                      // Text(
+                      // 'Credit Card',
+                      // ),
+                      // ],
+                      // ),
+                      // ],
+                      // ),
                       Container(
                         padding: EdgeInsets.only(left: 15, right: 15),
                         child: GridView.count(
@@ -205,6 +243,7 @@ class _CheckDetailState extends State<CheckDetail> {
                             ),
                           ],
                         ),
+
                         // TextButton.icon(
                         // onPressed: () {
                         // showDialog(

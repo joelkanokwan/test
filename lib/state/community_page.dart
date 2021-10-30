@@ -10,11 +10,22 @@ import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
 import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
-import 'package:joelfindtechnician/customer_state/login_page.dart';
+import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
+import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
+
+
+
+
+
+
+
+
+
+
+
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({Key? key}) : super(key: key);

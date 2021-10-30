@@ -142,14 +142,6 @@ class _ReCeiptState extends State<ReCeipt> {
                       Divider(thickness: 3),
                       SizedBox(height: 8),
                       Text(
-                        'Service Tax(3%) :',
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
                         'Vat(7%) :',
                         style: GoogleFonts.lato(
                           fontSize: 18,

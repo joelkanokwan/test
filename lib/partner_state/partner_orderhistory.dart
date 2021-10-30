@@ -1,264 +1,159 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/partner_state/eddit_profile.dart';
-import 'package:joelfindtechnician/partner_state/home_page.dart';
-import 'package:joelfindtechnician/partner_state/mywallet.dart';
-import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
-import 'package:joelfindtechnician/partner_state/partner_contactus.dart';
-import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/partner_state/partner_notification.dart';
-import 'package:joelfindtechnician/partner_state/partner_signin.dart';
-import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/state/event.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class PartnerOrderHistory extends StatefulWidget {
-  const PartnerOrderHistory({Key? key}) : super(key: key);
-
   @override
   _PartnerOrderHistoryState createState() => _PartnerOrderHistoryState();
 }
 
-class _PartnerOrderHistoryState extends State<PartnerOrderHistory>
-    with SingleTickerProviderStateMixin {
-  TabController? _tabPartnerOrderhistorycontroller;
+class _PartnerOrderHistoryState extends State< PartnerOrderHistory> {
+  late Map<DateTime, List<Event>> selectedEvents;
+  CalendarFormat format = CalendarFormat.month;
+  DateTime selectedDay = DateTime.now();
+  DateTime focusedDay = DateTime.now();
+
+  TextEditingController _eventController = TextEditingController();
+
   @override
   void initState() {
+    selectedEvents = {};
     super.initState();
-    _tabPartnerOrderhistorycontroller = TabController(length: 2, vsync: this);
+  }
+
+  List<Event> _getEventsfromDay(DateTime date) {
+    return selectedEvents[date] ?? [];
   }
 
   @override
   void dispose() {
+    _eventController.dispose();
     super.dispose();
-    _tabPartnerOrderhistorycontroller!.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final User = FirebaseAuth.instance.currentUser!;
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("ESTech Calendar"),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          TableCalendar(
+            focusedDay: selectedDay,
+            firstDay: DateTime(1990),
+            lastDay: DateTime(2050),
+            calendarFormat: format,
+            onFormatChanged: (CalendarFormat _format) {
+              setState(() {
+                format = _format;
+              });
             },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
+            startingDayOfWeek: StartingDayOfWeek.sunday,
+            daysOfWeekVisible: true,
+
+            //Day Changed
+            onDaySelected: (DateTime selectDay, DateTime focusDay) {
+              setState(() {
+                selectedDay = selectDay;
+                focusedDay = focusDay;
+              });
+              print(focusedDay);
+            },
+            selectedDayPredicate: (DateTime date) {
+              return isSameDay(selectedDay, date);
+            },
+
+            eventLoader: _getEventsfromDay,
+
+            //To style the Calendar
+            calendarStyle: CalendarStyle(
+              isTodayHighlighted: true,
+              selectedDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              selectedTextStyle: TextStyle(color: Colors.white),
+              todayDecoration: BoxDecoration(
+                color: Colors.purpleAccent,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              defaultDecoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              weekendDecoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
+            headerStyle: HeaderStyle(
+              formatButtonVisible: true,
+              titleCentered: true,
+              formatButtonShowsNext: false,
+              formatButtonDecoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              formatButtonTextStyle: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
-          title: Text('Partner History'),
-          bottom: TabBar(
-            controller: _tabPartnerOrderhistorycontroller,
-            tabs: [
-              Tab(
-                icon: Icon(Icons.work_outline_outlined),
-                text: 'current job',
+          ..._getEventsfromDay(selectedDay).map(
+            (Event event) => ListTile(
+              title: Text(
+                event.title,
               ),
-              Tab(
-                icon: Icon(Icons.done_outline),
-                text: 'job done',
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Add Event"),
+            content: TextFormField(
+              controller: _eventController,
+            ),
+            actions: [
+              TextButton(
+                child: Text("Cancel"),
+                onPressed: () => Navigator.pop(context),
+              ),
+              TextButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  if (_eventController.text.isEmpty) {
+
+                  } else {
+                    if (selectedEvents[selectedDay] != null) {
+                      selectedEvents[selectedDay]!.add(
+                        Event(title: _eventController.text),
+                      );
+                    } else {
+                      selectedEvents[selectedDay] = [
+                        Event(title: _eventController.text)
+                      ];
+                    }
+
+                  }
+                  Navigator.pop(context);
+                  _eventController.clear();
+                  setState((){});
+                  return;
+                },
               ),
             ],
           ),
         ),
-        endDrawer: Drawer(
-          child: Material(
-            color: Colors.blue,
-            child: ListView(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                        (route) => false);
-                  },
-                  child: DrawerHeader(
-                    padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(radius: 20, backgroundColor: Colors.blue),
-                        SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              User.email!,
-                              style: GoogleFonts.lato(
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.person_outline,
-                    ),
-                    title: Text('Go to services'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CommunityPage()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.auto_fix_off,
-                    ),
-                    title: Text('Eddit Profile'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EdditProfile()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.account_balance_wallet_outlined,
-                    ),
-                    title: Text('My Wallet'),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MyWallet()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.notification_important_outlined,
-                    ),
-                    title: Text('Notification'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PartnerNotification()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.shopping_bag_outlined,
-                    ),
-                    title: Text('Order History'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PartnerOrderHistory()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(Icons.person_pin_circle_sharp),
-                    title: Text('About Us'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PartnerAboutUs()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.message_outlined,
-                    ),
-                    title: Text(
-                      'Contact Us',
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PartnerContactUs()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.label_important_outlined,
-                    ),
-                    title: Text('How to use App'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PartnerHowtoUseApp()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.warning_amber_outlined,
-                    ),
-                    title: Text('Term and Conditon'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PartnerTermAndCondiotion()));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.power_settings_new,
-                    ),
-                    title: Text('SignOut'),
-                    onTap: () {
-                      SocialService().signOut();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PartnerSignin()),
-                          (route) => false);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        label: Text("Add Event"),
+        icon: Icon(Icons.add),
       ),
     );
   }

@@ -5,12 +5,8 @@ import 'package:joelfindtechnician/alertdialog/cancelReportform_success.dart';
 import 'package:joelfindtechnician/alertdialog/jobdone_success.dart';
 import 'package:joelfindtechnician/alertdialog/partner_cancel.dart';
 import 'package:joelfindtechnician/form.dart/partner_confirm.dart';
-import 'package:joelfindtechnician/partner_state/appointment_form.dart';
-import 'package:joelfindtechnician/partner_state/cancel_form.dart';
-import 'package:joelfindtechnician/partner_state/confirmReportform.dart';
-import 'package:joelfindtechnician/partner_state/job_done.dart';
 
-import 'package:joelfindtechnician/partner_state/offerprice_form.dart';
+
 
 class ShowMessagePartner extends StatefulWidget {
   const ShowMessagePartner({Key? key}) : super(key: key);

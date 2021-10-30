@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
 class ForgetPassword extends StatefulWidget {

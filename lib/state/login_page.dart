@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
+import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 import 'package:joelfindtechnician/state/authen_admin.dart';
 

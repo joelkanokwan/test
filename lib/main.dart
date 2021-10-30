@@ -3,29 +3,12 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/customer_state/create_post.dart';
-import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
-import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
-import 'package:joelfindtechnician/customer_state/showmessage_ctm.dart';
 import 'package:joelfindtechnician/customer_state/formcontact_partner.dart';
-import 'package:joelfindtechnician/customer_state/login_page.dart';
-import 'package:joelfindtechnician/form.dart/confirm_job.dart';
-import 'package:joelfindtechnician/form.dart/partner_confirm.dart';
-import 'package:joelfindtechnician/form.dart/formto_technician.dart';
-import 'package:joelfindtechnician/form.dart/check_detail.dart';
-import 'package:joelfindtechnician/form.dart/receipt.dart';
-import 'package:joelfindtechnician/form.dart/reply_offerprice.dart';
-import 'package:joelfindtechnician/form.dart/technician_appointment.dart';
 import 'package:joelfindtechnician/partner_state/home_page.dart';
-import 'package:joelfindtechnician/partner_state/mywallet.dart';
-import 'package:joelfindtechnician/partner_state/partner_notification.dart';
-import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/partner_state/showmessage_partner.dart';
-import 'package:joelfindtechnician/state/admin_service.dart';
-import 'package:joelfindtechnician/state/bkk_page.dart';
 import 'package:joelfindtechnician/state/chiangmai_page.dart';
-import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/bangkok_type2.dart';
+import 'package:joelfindtechnician/state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/login_success.dart';
+
 
 final Map<String, WidgetBuilder> map = {
   // '/loginPage': (BuildContext context) => LoginPage(),
@@ -50,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ConfirmJob(),
+      home:FormContactPartner(),
       // routes: map,
       // initialRoute: firstPage,
     );

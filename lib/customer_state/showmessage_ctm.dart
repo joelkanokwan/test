@@ -6,8 +6,7 @@ import 'package:joelfindtechnician/alertdialog/ctm_cancel.dart';
 import 'package:joelfindtechnician/alertdialog/ctmAppointment_success.dart';
 import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
-import 'package:joelfindtechnician/customer_state/checkdetail_beforepay.dart';
-import 'package:joelfindtechnician/partner_state/job_done.dart';
+import 'package:joelfindtechnician/partner/job_done.dart';
 
 class ShowMessageCustomer extends StatefulWidget {
   const ShowMessageCustomer({Key? key}) : super(key: key);
@@ -39,57 +38,6 @@ class _ShowMessageCustomerState extends State<ShowMessageCustomer> {
             fontSize: 15,
           ),
         ),
-        // SpeedDialChild(
-          // onTap: () {
-            // CustomerAppointment().normalDialog(context, '', '');
-          // },
-          // backgroundColor: Colors.amber,
-          // child: Icon(
-            // Icons.calendar_today_outlined,
-          // ),
-          // label: 'Appointment',
-          // labelBackgroundColor: Colors.amber,
-          // labelStyle: GoogleFonts.lato(
-            // color: Colors.white,
-            // fontWeight: FontWeight.bold,
-            // fontSize: 15,
-          // ),
-        // ),
-        // SpeedDialChild(
-          // onTap: () {
-            // Navigator.push(
-                // context,
-                // MaterialPageRoute(
-                    // builder: (context) => CheckDetailBeforePay()));
-          // },
-          // backgroundColor: Colors.amber,
-          // child: Icon(
-            // Icons.reply,
-          // ),
-          // label: 'Confirm job',
-          // labelBackgroundColor: Colors.amber,
-          // labelStyle: GoogleFonts.lato(
-            // color: Colors.white,
-            // fontWeight: FontWeight.bold,
-            // fontSize: 15,
-          // ),
-        // ),
-        // SpeedDialChild(
-          // onTap: () {
-            // CustomerCancel().normalDialog(context, '', '');
-          // },
-          // backgroundColor: Colors.amber,
-          // child: Icon(
-            // Icons.cancel_outlined,
-          // ),
-          // label: 'cancel',
-          // labelBackgroundColor: Colors.amber,
-          // labelStyle: GoogleFonts.lato(
-            // color: Colors.white,
-            // fontWeight: FontWeight.bold,
-            // fontSize: 15,
-          // ),
-        // ),
       ],
     );
   }

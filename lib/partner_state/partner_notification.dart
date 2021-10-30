@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/partner_state/eddit_profile.dart';
 import 'package:joelfindtechnician/partner_state/home_page.dart';
 import 'package:joelfindtechnician/partner_state/mywallet.dart';
 import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
@@ -11,7 +11,6 @@ import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
 import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
 
 class PartnerNotification extends StatefulWidget {
   const PartnerNotification({Key? key}) : super(key: key);
@@ -51,7 +50,6 @@ class _PartnerNotificationState extends State<PartnerNotification> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 30, 0),
                 child: Text(
@@ -126,21 +124,6 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => CommunityPage()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.auto_fix_off,
-                  ),
-                  title: Text('Eddit Profile'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EdditProfile()));
                   },
                 ),
               ),

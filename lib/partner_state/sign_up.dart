@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/models/user_model.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
+
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 
 class SignUp extends StatefulWidget {

@@ -3,10 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
+import 'package:joelfindtechnician/state/login_page.dart';
+import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/models/user_model.dart';
-import 'package:joelfindtechnician/partner_state/social_service.dart';
+
 import 'package:joelfindtechnician/partner_state/forget_password.dart';
-import 'package:joelfindtechnician/customer_state/login_page.dart';
+
 import 'package:joelfindtechnician/partner_state/register_partner.dart';
 import 'package:joelfindtechnician/partner_state/sign_up.dart';
 

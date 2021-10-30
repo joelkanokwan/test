@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
-import 'package:joelfindtechnician/partner_state/eddit_profile.dart';
 import 'package:joelfindtechnician/partner_state/mywallet.dart';
 import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
 import 'package:joelfindtechnician/partner_state/partner_contactus.dart';
@@ -12,11 +12,8 @@ import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
 import 'package:joelfindtechnician/partner_state/partner_notification.dart';
 import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
-
-import 'package:joelfindtechnician/partner_state/social_service.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
-import 'package:joelfindtechnician/state/my_ref.dart';
 import 'package:joelfindtechnician/state/show_profile.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
@@ -108,45 +105,6 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             child: Text(
                               'Communiti Page',
-                              style: GoogleFonts.lato(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Icon(Icons.arrow_forward_ios)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                buildMyRefer(context),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: FlatButton(
-                      padding: EdgeInsets.all(15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      color: Color(0xFFF5F6F9),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EdditProfile()));
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.auto_fix_off,
-                            color: Colors.orange,
-                          ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: Text(
-                              'Eddit Profile',
                               style: GoogleFonts.lato(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -511,44 +469,6 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Text(
                   'My Profile',
-                  style: GoogleFonts.lato(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Icon(Icons.arrow_forward_ios)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container buildMyRefer(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: FlatButton(
-          padding: EdgeInsets.all(15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          color: Color(0xFFF5F6F9),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyReferance()));
-          },
-          child: Row(
-            children: [
-              Icon(
-                Icons.photo_album_outlined,
-                color: Colors.orange,
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: Text(
-                  'My Reference',
                   style: GoogleFonts.lato(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

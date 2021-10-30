@@ -8,8 +8,8 @@ import 'package:joelfindtechnician/alertdialog/error_reset.dart';
 import 'package:joelfindtechnician/alertdialog/error_signup.dart';
 import 'package:joelfindtechnician/alertdialog/success_reset.dart';
 import 'package:joelfindtechnician/alertdialog/success_signup.dart';
-import 'package:joelfindtechnician/partner_state/home_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
+import 'package:joelfindtechnician/partner_state/home_page.dart';
 import '../alertdialog/error_signin.dart';
 
 class SocialService {
