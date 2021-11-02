@@ -36,7 +36,7 @@ class _PartnerOrderHistoryState extends State< PartnerOrderHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ESTech Calendar"),
+        title: Text("Partner OrderHistory"),
         centerTitle: true,
       ),
       body: Column(
@@ -104,57 +104,57 @@ class _PartnerOrderHistoryState extends State< PartnerOrderHistory> {
               ),
             ),
           ),
-          ..._getEventsfromDay(selectedDay).map(
-            (Event event) => ListTile(
-              title: Text(
-                event.title,
-              ),
-            ),
-          ),
+          // ..._getEventsfromDay(selectedDay).map(
+            // (Event event) => ListTile(
+              // title: Text(
+                // event.title,
+              // ),
+            // ),
+          // ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Add Event"),
-            content: TextFormField(
-              controller: _eventController,
-            ),
-            actions: [
-              TextButton(
-                child: Text("Cancel"),
-                onPressed: () => Navigator.pop(context),
-              ),
-              TextButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  if (_eventController.text.isEmpty) {
+      // floatingActionButton: FloatingActionButton.extended(
+        // onPressed: () => showDialog(
+          // context: context,
+          // builder: (context) => AlertDialog(
+            // title: Text("Add Event"),
+            // content: TextFormField(
+              // controller: _eventController,
+            // ),
+            // actions: [
+              // TextButton(
+                // child: Text("Cancel"),
+                // onPressed: () => Navigator.pop(context),
+              // ),
+              // TextButton(
+                // child: Text("Ok"),
+                // onPressed: () {
+                  // if (_eventController.text.isEmpty) {
 
-                  } else {
-                    if (selectedEvents[selectedDay] != null) {
-                      selectedEvents[selectedDay]!.add(
-                        Event(title: _eventController.text),
-                      );
-                    } else {
-                      selectedEvents[selectedDay] = [
-                        Event(title: _eventController.text)
-                      ];
-                    }
+                  // } else {
+                    // if (selectedEvents[selectedDay] != null) {
+                      // selectedEvents[selectedDay]!.add(
+                        // Event(title: _eventController.text),
+                      // );
+                    // } else {
+                      // selectedEvents[selectedDay] = [
+                        // Event(title: _eventController.text)
+                      // ];
+                    // }
 
-                  }
-                  Navigator.pop(context);
-                  _eventController.clear();
-                  setState((){});
-                  return;
-                },
-              ),
-            ],
-          ),
-        ),
-        label: Text("Add Event"),
-        icon: Icon(Icons.add),
-      ),
+                  // }
+                  // Navigator.pop(context);
+                  // _eventController.clear();
+                  // setState((){});
+                  // return;
+                // },
+              // ),
+            // ],
+          // ),
+        // ),
+        // label: Text("Add Event"),
+        // icon: Icon(Icons.add),
+      // ),
     );
   }
 }

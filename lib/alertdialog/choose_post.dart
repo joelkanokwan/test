@@ -8,20 +8,24 @@ class ChoosePost {
       context: context,
       builder: (context) => AlertDialog(
         title: ListTile(
-          leading: Icon(Icons.add,
-          color: Colors.orange,
+          leading: Icon(
+            Icons.add,
+            color: Colors.orange,
           ),
-          title: Text(title,
-          style: GoogleFonts.lato(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          title: Text(
+            title,
+            style: GoogleFonts.lato(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           subtitle: Text(message),
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             child: Text('OK'),
           ),
         ],

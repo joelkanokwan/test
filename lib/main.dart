@@ -3,12 +3,22 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/customer_state/formcontact_partner.dart';
+import 'package:joelfindtechnician/alertdialogs/appointment_success.dart';
+import 'package:joelfindtechnician/customer_state/showmessage_ctm.dart';
+import 'package:joelfindtechnician/form.dart/check_detail.dart';
+import 'package:joelfindtechnician/form.dart/receipt.dart';
+import 'package:joelfindtechnician/forms/formcontact_partner.dart';
+import 'package:joelfindtechnician/form.dart/confirm_job.dart';
+import 'package:joelfindtechnician/forms/formto_technician.dart';
+import 'package:joelfindtechnician/forms/partner_confirm.dart';
+import 'package:joelfindtechnician/form.dart/reply_offerprice.dart';
 import 'package:joelfindtechnician/partner_state/home_page.dart';
+import 'package:joelfindtechnician/partner_state/partner_notification.dart';
+import 'package:joelfindtechnician/partner_state/showmessage_partner.dart';
 import 'package:joelfindtechnician/state/chiangmai_page.dart';
+import 'package:joelfindtechnician/forms/creditcard_form.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
-
 
 final Map<String, WidgetBuilder> map = {
   // '/loginPage': (BuildContext context) => LoginPage(),
@@ -33,7 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:FormContactPartner(),
+      home: LoginPage(),
       // routes: map,
       // initialRoute: firstPage,
     );

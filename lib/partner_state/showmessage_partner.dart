@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/alertdialog/cancelReportform_success.dart';
 import 'package:joelfindtechnician/alertdialog/jobdone_success.dart';
 import 'package:joelfindtechnician/alertdialog/partner_cancel.dart';
-import 'package:joelfindtechnician/form.dart/partner_confirm.dart';
+import 'package:joelfindtechnician/forms/partner_confirm.dart';
 
 
 

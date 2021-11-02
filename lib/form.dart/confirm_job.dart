@@ -53,6 +53,14 @@ class _ConfirmJobState extends State<ConfirmJob> {
                       ),
                       SizedBox(height: 8),
                       Text(
+                        'Phone Number :',
+                        style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
                         'Order number :',
                         style: GoogleFonts.lato(
                           fontSize: 18,

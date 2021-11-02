@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
+import 'package:joelfindtechnician/state/event.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class CustomerOrderHistory extends StatefulWidget {
   @override
@@ -8,105 +9,152 @@ class CustomerOrderHistory extends StatefulWidget {
 }
 
 class _CustomerOrderHistoryState extends State<CustomerOrderHistory> {
-  DateTime? selectedDay;
-  late List<CleanCalendarEvent> selectedEvent;
+  late Map<DateTime, List<Event>> selectedEvents;
+  CalendarFormat format = CalendarFormat.month;
+  DateTime selectedDay = DateTime.now();
+  DateTime focusedDay = DateTime.now();
 
-  final Map<DateTime, List<CleanCalendarEvent>> events = {
-    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day): [
-      CleanCalendarEvent(
-        'Event A',
-        startTime: DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, 10, 0),
-        endTime: DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          12,
-          0,
-        ),
-        description: 'A special event',
-        color: Colors.blue,
-      ),
-    ],
-    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 2):
-        [
-      CleanCalendarEvent('Event B',
-          startTime: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day + 2, 10, 0),
-          endTime: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day + 2, 12, 0),
-          color: Colors.orange),
-      CleanCalendarEvent('Event C',
-          startTime: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day + 2, 14, 30),
-          endTime: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day + 2, 17, 0),
-          color: Colors.pink),
-    ],
-  };
-
-  static var endTime;
-
-  void _handleData(date) {
-    setState(() {
-      selectedDay = date;
-      selectedEvent = events[selectedDay] ?? [];
-    });
-    print(selectedDay);
-  }
+  TextEditingController _eventController = TextEditingController();
 
   @override
   void initState() {
-    selectedEvent = events[selectedDay] ?? [];
+    selectedEvents = {};
     super.initState();
+  }
+
+  List<Event> _getEventsfromDay(DateTime date) {
+    return selectedEvents[date] ?? [];
+  }
+
+  @override
+  void dispose() {
+    _eventController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Partner OrderHistory'),
+        title: Text("Customer OrderHistory"),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: Container(
-          child: Calendar(
-            startOnMonday: true,
-            selectedColor: Colors.blue,
-            todayColor: Colors.red,
-            eventColor: Colors.green,
-            eventDoneColor: Colors.amber,
-            bottomBarColor: Colors.deepOrange,
-            onRangeSelected: (range) {
-              print('selected Day ${range.from},${range.to}');
+      body: Column(
+        children: [
+          TableCalendar(
+            focusedDay: selectedDay,
+            firstDay: DateTime(1990),
+            lastDay: DateTime(2050),
+            calendarFormat: format,
+            onFormatChanged: (CalendarFormat _format) {
+              setState(() {
+                format = _format;
+              });
             },
-            onDateSelected: (date) {
-              return _handleData(date);
+            startingDayOfWeek: StartingDayOfWeek.sunday,
+            daysOfWeekVisible: true,
+
+            //Day Changed
+            onDaySelected: (DateTime selectDay, DateTime focusDay) {
+              setState(() {
+                selectedDay = selectDay;
+                focusedDay = focusDay;
+              });
+              print(focusedDay);
             },
-            events: events,
-            isExpanded: true,
-            dayOfWeekStyle: TextStyle(
-              fontSize: 15,
-              color: Colors.black,
-              fontWeight: FontWeight.w900,
+            selectedDayPredicate: (DateTime date) {
+              return isSameDay(selectedDay, date);
+            },
+
+            eventLoader: _getEventsfromDay,
+
+            //To style the Calendar
+            calendarStyle: CalendarStyle(
+              isTodayHighlighted: true,
+              selectedDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              selectedTextStyle: TextStyle(color: Colors.white),
+              todayDecoration: BoxDecoration(
+                color: Colors.purpleAccent,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              defaultDecoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              weekendDecoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
             ),
-            bottomBarTextStyle: TextStyle(
-              color: Colors.white,
+            headerStyle: HeaderStyle(
+              formatButtonVisible: true,
+              titleCentered: true,
+              formatButtonShowsNext: false,
+              formatButtonDecoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              formatButtonTextStyle: TextStyle(
+                color: Colors.white,
+              ),
             ),
-            hideBottomBar: false,
-            hideArrows: false,
-            weekDays: [
-              'Mon',
-              'Tue',
-              'Wed',
-              'Thu',
-              'Fri',
-              'Sat',
-              'Sun',
-            ],
           ),
-        ),
+          // ..._getEventsfromDay(selectedDay).map(
+            // (Event event) => ListTile(
+              // title: Text(
+                // event.title,
+              // ),
+            // ),
+          // ),
+        ],
       ),
+      // floatingActionButton: FloatingActionButton.extended(
+        // onPressed: () => showDialog(
+          // context: context,
+          // builder: (context) => AlertDialog(
+            // title: Text("Add Event"),
+            // content: TextFormField(
+              // controller: _eventController,
+            // ),
+            // actions: [
+              // TextButton(
+                // child: Text("Cancel"),
+                // onPressed: () => Navigator.pop(context),
+              // ),
+              // TextButton(
+                // child: Text("Ok"),
+                // onPressed: () {
+                  // if (_eventController.text.isEmpty) {
+
+                  // } else {
+                    // if (selectedEvents[selectedDay] != null) {
+                      // selectedEvents[selectedDay]!.add(
+                        // Event(title: _eventController.text),
+                      // );
+                    // } else {
+                      // selectedEvents[selectedDay] = [
+                        // Event(title: _eventController.text)
+                      // ];
+                    // }
+
+                  // }
+                  // Navigator.pop(context);
+                  // _eventController.clear();
+                  // setState((){});
+                  // return;
+                // },
+              // ),
+            // ],
+          // ),
+        // ),
+        // label: Text("Add Event"),
+        // icon: Icon(Icons.add),
+      // ),
     );
   }
 }

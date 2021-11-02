@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FormtoTechnician extends StatefulWidget {
-  const FormtoTechnician({Key? key}) : super(key: key);
+class PartnerConfirm extends StatefulWidget {
+  const PartnerConfirm({Key? key}) : super(key: key);
 
   @override
-  _FormtoTechnicianState createState() => _FormtoTechnicianState();
+  _PartnerConfirmState createState() => _PartnerConfirmState();
 }
 
-class _FormtoTechnicianState extends State<FormtoTechnician> {
+class _PartnerConfirmState extends State<PartnerConfirm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
             color: Colors.white,
           ),
         ),
-        title: Text('Form to technician'),
+        title: Text('Partner Confirm'),
       ),
       body: Container(
         child: ListView(
@@ -35,18 +35,10 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Customer Name',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 15),
                       Row(
                         children: [
                           Text(
-                            'Order number:',
+                            'Shop Name :',
                           ),
                           SizedBox(width: 10),
                           Text(
@@ -58,7 +50,7 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                       Row(
                         children: [
                           Text(
-                            'Appointment :',
+                            'Customer Name :',
                           ),
                           SizedBox(width: 10),
                           Text(
@@ -70,7 +62,7 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                       Row(
                         children: [
                           Text(
-                            'Order Summit :',
+                            'Order number :',
                           ),
                           SizedBox(width: 10),
                           Text(
@@ -82,21 +74,7 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                       Row(
                         children: [
                           Text(
-                            'Expire time:',
-                            style: GoogleFonts.lato(color: Colors.red),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'xxxxxxxxxx',
-                            style: GoogleFonts.lato(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                      Divider(thickness: 2),
-                      Row(
-                        children: [
-                          Text(
-                            'Remark :',
+                            'Appointment Date :',
                           ),
                           SizedBox(width: 10),
                           Text(
@@ -106,27 +84,52 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                       ),
                       Divider(thickness: 2),
                       Text(
-                        'Job Description :',
+                        'Confirm Job :',
                         style: GoogleFonts.lato(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
                       ),
                       Text(
-                        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                        'xxxxxxxxxxxxxxx',
                       ),
                       Divider(thickness: 2),
-                      Text(
-                        'Detail of work :',
-                        style: GoogleFonts.lato(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                      Text(
-                        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                      Row(
+                        children: [
+                          Text(
+                            'Total Price :',
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text('xxxxx'),
+                        ],
                       ),
                     ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: 50,
+                child: FlatButton(
+                  textColor: Colors.white,
+                  color: Colors.blueAccent,
+                  onPressed: () {},
+                  child: Text(
+                    'Sent foam to Customer',
+                    style: GoogleFonts.lato(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
               ),
