@@ -39,7 +39,7 @@ class _RegisterPartnerState extends State<RegisterPartner> {
   int? indexProvince;
   List<String> provinces = [
     'เชียงใหม่',
-    'กทม',
+    'กรุงเทพ',
     'ชลบุรี',
   ];
 
@@ -181,12 +181,11 @@ class _RegisterPartnerState extends State<RegisterPartner> {
       await FirebaseFirestore.instance
           .collection('user')
           .where('name', isEqualTo: nameController.text)
-          .snapshots()
-          .listen((event) async {
+          .get()
+          .then((event) async {
         print('event ==> ${event.docs}');
         if (event.docs.length == 0) {
           print('ชื่อร้านไม่ซ้ำ');
-
           UserModelOld userModelFirebase = UserModelOld(
             email: emailController.text,
             uid: '',
@@ -203,14 +202,12 @@ class _RegisterPartnerState extends State<RegisterPartner> {
             district: subdistrict!,
             typeTechnics: typeTechnicStrings,
           );
-
           await FirebaseFirestore.instance
               .collection('user')
               .doc()
               .set(userModelFirebase.toMap())
               .then((value) {
             print('Insert Data Success');
-
             insertValueToSheet();
           });
         } else {
@@ -311,7 +308,9 @@ class _RegisterPartnerState extends State<RegisterPartner> {
                   buildScope(),
                   buildAddress(),
                   // buildOldProvince(context),
-                  province == null ? buildProvince() : Text('จังหวัด ${province!}'),
+                  province == null
+                      ? buildProvince()
+                      : Text('จังหวัด ${province!}'),
                   amphurbool
                       ? SizedBox()
                       : amphur == null
@@ -393,7 +392,7 @@ class _RegisterPartnerState extends State<RegisterPartner> {
               findAmphur();
 
               break;
-            case 'กทม':
+            case 'กรุงเทพ':
               province_id = 1;
               findAmphur();
               break;

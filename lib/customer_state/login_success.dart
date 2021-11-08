@@ -67,7 +67,7 @@ class _LoginSuccessState extends State<LoginSuccess> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CommunityPage()));
+                                  builder: (context) => CommunityPage(userSocialbol: true,)));
                         },
                         child: Row(
                           children: [

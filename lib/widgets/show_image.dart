@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ShowImage extends StatelessWidget {
-  const ShowImage({Key? key}) : super(key: key);
+  final String? path;
+  const ShowImage({Key? key, this.path}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset('assets/images/check.png');
+    return Image.asset(path == null ? 'assets/images/check.png' : path!);
   }
 }

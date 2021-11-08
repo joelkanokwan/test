@@ -28,14 +28,16 @@ import 'package:joelfindtechnician/state/show_review.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 
-class ShowProfile extends StatefulWidget {
-  const ShowProfile({Key? key}) : super(key: key);
+class ShowGeneralProfile extends StatefulWidget {
+  final String uidTechnic;
+  const ShowGeneralProfile({Key? key, required this.uidTechnic})
+      : super(key: key);
 
   @override
-  _ShowProfileState createState() => _ShowProfileState();
+  _ShowGeneralProfileState createState() => _ShowGeneralProfileState();
 }
 
-class _ShowProfileState extends State<ShowProfile> {
+class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
   SpeedDial _speedDial() {
     return SpeedDial(
       onPress: () {
@@ -62,10 +64,15 @@ class _ShowProfileState extends State<ShowProfile> {
   List<ReferenceModel> referenceModels = [];
   bool load = true;
   List<String> docIdRefs = [];
+  String? uidTechnic;
 
   @override
   void initState() {
     super.initState();
+
+    uidTechnic = widget.uidTechnic;
+    print('##### uidTechnic => $uidTechnic');
+
     findUser();
   }
 
@@ -75,7 +82,7 @@ class _ShowProfileState extends State<ShowProfile> {
 
       await FirebaseFirestore.instance
           .collection('user')
-          .where('uid', isEqualTo: firebaseUser!.uid)
+          .where('uid', isEqualTo: uidTechnic)
           .get()
           .then((value) {
         for (var item in value.docs) {
@@ -246,39 +253,39 @@ class _ShowProfileState extends State<ShowProfile> {
             ),
           ),
         ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: 8,
-            ),
-            child: FlatButton(
-              height: 40,
-              // minWidth: 170,
-              color: Colors.blue,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        EdditTest(userModelOld: userModelOld!),
-                  ),
-                ).then((value) => findUser());
-              },
-              child: Text(
-                'Eddit Profile',
-                style: GoogleFonts.lato(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17,
-                ),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ),
+        // Expanded(
+        // flex: 1,
+        // child: Padding(
+        // padding: const EdgeInsets.only(
+        // top: 8,
+        // ),
+        // child: FlatButton(
+        // height: 40,
+        // minWidth: 170,
+        // color: Colors.blue,
+        // onPressed: () {
+        // Navigator.push(
+        // context,
+        // MaterialPageRoute(
+        // builder: (context) =>
+        // EdditTest(userModelOld: userModelOld!),
+        // ),
+        // ).then((value) => findUser());
+        // },
+        // child: Text(
+        // 'Eddit Profile',
+        // style: GoogleFonts.lato(
+        // color: Colors.white,
+        // fontWeight: FontWeight.bold,
+        // fontSize: 17,
+        // ),
+        // ),
+        // shape: RoundedRectangleBorder(
+        // borderRadius: BorderRadius.circular(10),
+        // ),
+        // ),
+        // ),
+        // ),
       ],
     );
   } // end column

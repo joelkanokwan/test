@@ -1,21 +1,29 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joelfindtechnician/alertdialog/choose_jobscope.dart';
+import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
 import 'package:joelfindtechnician/model.dart';
+import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/subdistruct_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_model.dart';
+import 'package:joelfindtechnician/models/user_model_old.dart';
+import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class CreatePost extends StatefulWidget {
-  const CreatePost({Key? key}) : super(key: key);
+  final String province;
+  const CreatePost({Key? key, required this.province}) : super(key: key);
 
   @override
   _CreatePostState createState() => _CreatePostState();
@@ -25,12 +33,8 @@ class _CreatePostState extends State<CreatePost> {
   final _formKey = GlobalKey<FormState>();
   File? image;
   String? imgUrl;
+  List<String> provinces = MyConstant.provinces;
 
-  List<String> provinces = [
-    'เชียงใหม่',
-    'กทม',
-    'ชลบุรี',
-  ];
   String? province, amphur, subdistrict, typetechnic;
   bool amphurbool = true;
   bool subdistrictbool = true;
@@ -42,10 +46,55 @@ class _CreatePostState extends State<CreatePost> {
   List<bool> typetechnicBool = [];
   List<String> typeTechnicStrings = [];
 
+  bool imageBol = true; // true ==> Non Image
+  List<File> files = [];
+
+  TextEditingController addressController = TextEditingController();
+  TextEditingController jobDescriptionController = TextEditingController();
+
+
+  List<String> pathImages = [];
+  List<String> titleTypeTechnics = [];
+
+  String? uid, name, pathUrl;
+
   @override
   void initState() {
     super.initState();
+
+    buildSetup();
+    findCurrentUser();
+
+    switch (province) {
+      case 'เชียงใหม่':
+        province_id = 38;
+        findAmphur();
+        break;
+      case 'กรุงเทพ':
+        province_id = 1;
+        findAmphur();
+        break;
+      case 'ชลบุรี':
+        province_id = 11;
+        findAmphur();
+        break;
+      default:
+    }
+
     readAllType();
+  }
+
+  Future<void> findCurrentUser() async {
+    await Firebase.initializeApp().then((value) async {
+      var firebaseUser = await FirebaseAuth.instance.currentUser;
+      uid = firebaseUser!.uid;
+      name = firebaseUser.displayName.toString();
+      pathUrl = firebaseUser.photoURL;
+    });
+  }
+
+  void buildSetup() {
+    province = widget.province;
   }
 
   Future<void> readAllType() async {
@@ -59,7 +108,9 @@ class _CreatePostState extends State<CreatePost> {
           TypeTechnicModel model = TypeTechnicModel.fromMap(item.data());
           setState(() {
             typetechnicModels.add(model);
+            titleTypeTechnics.add(model.name);
             typetechnicBool.add(false);
+            typeTechnicStrings.add('');
             widgets.add(creatWidget(model, index));
           });
           index++;
@@ -80,174 +131,32 @@ class _CreatePostState extends State<CreatePost> {
         },
       );
 
-  // Future<Null> normalDialog(BuildContext context) async {
-    // showDialog(
-      // context: context,
-      // builder: (context) => StatefulBuilder(
-        // builder: (context, setState) => AlertDialog(
-          // title: Column(
-            // children: [
-              // Row(
-                // children: [
-                  // Radio(
-                    // activeColor: Colors.amber,
-                    // value: 0,
-                    // groupValue: indexProvince,
-                    // onChanged: (value) {
-                      // setState(() {
-                        // indexProvince = 0;
-                      // });
-                    // },
-                  // ),
-                  // SizedBox(width: 10),
-                  // Text(
-                    // provinces[0],
-                  // ),
-                // ],
-              // ),
-              // Row(
-                // children: [
-                  // Radio(
-                    // activeColor: Colors.amber,
-                    // value: 1,
-                    // groupValue: indexProvince,
-                    // onChanged: (value) {
-                      // setState(() {
-                        // indexProvince = 1;
-                      // });
-                    // },
-                  // ),
-                  // SizedBox(width: 10),
-                  // Text(
-                    // provinces[1],
-                  // ),
-                // ],
-              // ),
-              // Row(
-                // children: [
-                  // Radio(
-                    // activeColor: Colors.amber,
-                    // value: 2,
-                    // groupValue: indexProvince,
-                    // onChanged: (value) {
-                      // setState(() {
-                        // indexProvince = 2;
-                      // });
-                    // },
-                  // ),
-                  // SizedBox(width: 10),
-                  // Text(
-                    // provinces[2],
-                  // ),
-                // ],
-              // ),
-            // ],
-          // ),
-          // actions: [
-            // TextButton(
-              // onPressed: () {
-                // setState(() {
-                  // print('indexProvince ==> $indexProvince');
-                // });
-                // Navigator.pop(context);
-              // },
-              // child: Text('OK'),
-            // ),
-          // ],
-        // ),
-      // ),
-    // );
-  // }
-
-  TextEditingController addressController = TextEditingController();
-  TextEditingController jobDescriptionController = TextEditingController();
-
   _imageFromCamera() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
+    final pickedImage = await picker.getImage(source: ImageSource.camera, maxWidth: 800, maxHeight: 800);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
+      imageBol = false;
       image = pickedImageFile;
+      files.add(image!);
     });
   }
 
   _imageFromGallery() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImage = await picker.getImage(source: ImageSource.gallery, maxWidth: 800, maxHeight: 800);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
+      imageBol = false;
       image = pickedImageFile;
+      files.add(image!);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-        ),
-        title: Text('Create Post'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Center(
-                        child: Text(
-                          'Choose Profile Photo',
-                          style: GoogleFonts.lato(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purpleAccent,
-                          ),
-                        ),
-                      ),
-                      content: SingleChildScrollView(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FlatButton.icon(
-                              onPressed: () {
-                                _imageFromCamera();
-                                Navigator.of(context).pop();
-                              },
-                              icon: Icon(Icons.camera,
-                                  color: Colors.purpleAccent),
-                              label: Text('Camera'),
-                            ),
-                            FlatButton.icon(
-                              onPressed: () {
-                                _imageFromGallery();
-                                Navigator.of(context).pop();
-                              },
-                              icon: Icon(
-                                Icons.image,
-                                color: Colors.purpleAccent,
-                              ),
-                              label: Text('Gallery'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              icon: Icon(Icons.camera_alt_outlined),
-            ),
-          ),
-        ],
-      ),
+      appBar: buildAppbar(context),
       body: SingleChildScrollView(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
@@ -260,11 +169,12 @@ class _CreatePostState extends State<CreatePost> {
                 children: [
                   buildJobDescription(),
                   SizedBox(height: 15),
+                  imageBol ? SizedBox() : listImage(),
                   buildAddress(),
-                  // buildOldProvince(context),
-                  province == null
-                      ? buildProvince()
-                      : Text('จังหวัด ${province!}'),
+                  ShowText(
+                    title: 'จังหวัด ${province!}',
+                    textStyle: MyConstant().h2Style(),
+                  ),
                   amphurbool
                       ? SizedBox()
                       : amphur == null
@@ -275,7 +185,7 @@ class _CreatePostState extends State<CreatePost> {
                       : subdistrict == null
                           ? buildSubDistrict()
                           : Text('ตำบล ${subdistrict!}'),
-                          buildJobType(context),
+                  buildJobType(context),
                   Container(
                     margin: EdgeInsets.only(top: 30),
                     height: 50,
@@ -284,7 +194,20 @@ class _CreatePostState extends State<CreatePost> {
                       textColor: Colors.white,
                       color: Colors.blueAccent,
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          if (amphur?.isEmpty ?? true) {
+                            MyDialog()
+                                .normalDialog(context, 'โปรดเลือกอำเภอ', '');
+                          } else if (subdistrict?.isEmpty ?? true) {
+                            MyDialog()
+                                .normalDialog(context, 'โปรดเลือกตำบล', '');
+                          } else if (checkChooseType()) {
+                            processPostData();
+                          } else {
+                            MyDialog().normalDialog(
+                                context, 'โปรดเลือกประเภทของงาน', '');
+                          }
+                        }
                       },
                       child: Text(
                         'Post',
@@ -304,6 +227,100 @@ class _CreatePostState extends State<CreatePost> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget listImage() => SizedBox(
+        height: 48,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: files.length,
+          itemBuilder: (context, index) => Container(
+            margin: EdgeInsets.only(right: 4),
+            width: 48,
+            height: 48,
+            child: Image.file(
+              files[index],
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+
+  AppBar buildAppbar(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+      ),
+      title: Text('Create Post'),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            onPressed: () {
+              if (files.length < 6) {
+                buildImageDialog(context);
+              } else {
+                MyDialog().normalDialog(context, 'รูปภาพไม่ควรเกิน 6 รูป', '');
+              }
+            },
+            icon: Icon(Icons.camera_alt_outlined),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<dynamic> buildImageDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              'Choose Profile Photo',
+              style: GoogleFonts.lato(
+                fontWeight: FontWeight.bold,
+                color: Colors.purpleAccent,
+              ),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FlatButton.icon(
+                  onPressed: () {
+                    _imageFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.camera, color: Colors.purpleAccent),
+                  label: Text('Camera'),
+                ),
+                FlatButton.icon(
+                  onPressed: () {
+                    _imageFromGallery();
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.image,
+                    color: Colors.purpleAccent,
+                  ),
+                  label: Text('Gallery'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -437,30 +454,40 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 
-   Widget buildJobType(BuildContext context) {
-   return Column(
-     children: [
-       ShowText(
-         title: 'ประเภทของงาน',
-       ),
-       ListView.builder(
-         shrinkWrap: true,
-         physics: ScrollPhysics(),
-         itemCount: typetechnicModels.length,
-         itemBuilder: (context, index) => CheckboxListTile(
-           controlAffinity: ListTileControlAffinity.leading,
-           title: Text(typetechnicModels[index].name),
-           value: typetechnicBool[index],
-           onChanged: (value) {
-             setState(() {
-               typetechnicBool[index] = value!;
-             });
-           },
-         ),
-       ),
-     ],
-   );
- }
+  Widget buildJobType(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            ShowText(
+              title: 'ประเภทของงาน',
+              textStyle: MyConstant().h2Style(),
+            ),
+          ],
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
+          itemCount: typetechnicModels.length,
+          itemBuilder: (context, index) => CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text(typetechnicModels[index].name),
+            value: typetechnicBool[index],
+            onChanged: (value) {
+              setState(() {
+                typetechnicBool[index] = value!;
+                if (value) {
+                  typeTechnicStrings[index] = titleTypeTechnics[index];
+                } else {
+                  typeTechnicStrings.remove(titleTypeTechnics[index]);
+                }
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   TextFormField buildAddress() {
     return TextFormField(
@@ -484,6 +511,7 @@ class _CreatePostState extends State<CreatePost> {
 
   TextFormField buildJobDescription() {
     return TextFormField(
+      controller: jobDescriptionController,
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please type job description';
@@ -498,5 +526,80 @@ class _CreatePostState extends State<CreatePost> {
         ),
       ),
     );
+  }
+
+  bool checkChooseType() {
+    bool result = false; // false ==> ยังไม่ได้เลือก
+    for (var item in typetechnicBool) {
+      if (item) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  Future<void> processInsertData() async {
+    String job = jobDescriptionController.text;
+    String address = addressController.text;
+    DateTime dateTime = DateTime.now();
+    Timestamp timestamp = Timestamp.fromDate(dateTime);
+    print('##### timestamp = $timestamp');
+    print('##### typeTech ==> $typeTechnicStrings');
+    print([job, address]);
+
+    PostCustomerModel postCustomerModel = PostCustomerModel(
+        address: address,
+        amphur: amphur!,
+        district: subdistrict!,
+        job: job,
+        pathImages: pathImages,
+        province: province!,
+        timePost: timestamp,
+        typeTechnics: typeTechnicStrings,
+        uidCustomer: uid!,
+        name: name!,
+        pathUrl: pathUrl!);
+
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseFirestore.instance
+          .collection('postcustomer')
+          .doc()
+          .set(postCustomerModel.toMap())
+          .then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
+    });
+  }
+
+  Future<void> processPostData() async {
+    MyDialog().processDialog(context);
+    if (!imageBol) {
+      print('##### // Status Have Image');
+      for (var item in files) {
+        int i = Random().nextInt(100000);
+        String nameImage = '${uid}$i.jpg';
+
+        await Firebase.initializeApp().then((value) async {
+          for (var item in files) {
+            FirebaseStorage storage = FirebaseStorage.instance;
+            Reference reference =
+                storage.ref().child('customerpost/$nameImage');
+            UploadTask task = reference.putFile(item);
+            await task.whenComplete(() async {
+              await reference.getDownloadURL().then((value) {
+                pathImages.add(value);
+              });
+            });
+          }
+        });
+      }
+
+      print('pathImages = $pathImages');
+      processInsertData();
+    } else {
+      print('##### // Non Image');
+      processInsertData();
+    }
   }
 }

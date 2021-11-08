@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:joelfindtechnician/models/typetechnic_array.dart';
 import 'package:joelfindtechnician/models/user_model.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 
@@ -18,6 +19,7 @@ class _AdminServiceState extends State<AdminService> {
   List<UserModelFirebase> searchUserModels = [];
   List<String> docsIds = [];
   final debouncer = Debouncer(millisecond: 500);
+  List<TypeTechnicArrayModel> typeTechnicArrayModels = [];
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _AdminServiceState extends State<AdminService> {
       userModels.clear();
       docsIds.clear();
       searchUserModels.clear();
+      typeTechnicArrayModels.clear();
     }
 
     await Firebase.initializeApp().then((value) async {
@@ -41,10 +44,14 @@ class _AdminServiceState extends State<AdminService> {
         for (var item in event.docs) {
           UserModelFirebase userModelFirebase =
               UserModelFirebase.fromMap(item.data());
+
+          TypeTechnicArrayModel typeTechnicArrayModel =
+              TypeTechnicArrayModel.fromMap(item.data());
           setState(() {
             userModels.add(userModelFirebase);
             searchUserModels = userModels;
             docsIds.add(item.id);
+            typeTechnicArrayModels.add(typeTechnicArrayModel);
           });
         }
       });
@@ -52,7 +59,7 @@ class _AdminServiceState extends State<AdminService> {
   }
 
   Future<Null> confirmAcceptDialog(
-      String docs, UserModelFirebase userModelFirebase) async {
+      String docs, UserModelFirebase userModelFirebase, TypeTechnicArrayModel typeTechnicArrayModel) async{
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -64,7 +71,7 @@ class _AdminServiceState extends State<AdminService> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('JobType =>  ${userModelFirebase.jobType}'),
+            Text('TypeTechnic =>  ${typeTechnicArrayModel.typeTechnics.toString()}'),
             Text('JobScope =>  ${userModelFirebase.jobScope}'),
             Text('PhoneNumber =>  ${userModelFirebase.phoneNumber}'),
           ],
@@ -149,7 +156,7 @@ class _AdminServiceState extends State<AdminService> {
                     onChanged: (value) {
                       print('You tap ==>> idDoc ==> ${docsIds[index]}');
                       confirmAcceptDialog(
-                          docsIds[index], searchUserModels[index]);
+                          docsIds[index], searchUserModels[index], typeTechnicArrayModels[index]);
                     },
                   ),
                 ],
