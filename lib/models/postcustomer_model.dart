@@ -14,6 +14,7 @@ class PostCustomerModel {
   final String uidCustomer;
   final String name;
   final String pathUrl;
+  final String status;
   PostCustomerModel({
     required this.address,
     required this.amphur,
@@ -26,6 +27,7 @@ class PostCustomerModel {
     required this.uidCustomer,
     required this.name,
     required this.pathUrl,
+    required this.status,
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +43,7 @@ class PostCustomerModel {
       'uidCustomer': uidCustomer,
       'name': name,
       'pathUrl': pathUrl,
+      'status': status,
     };
   }
 
@@ -57,6 +60,7 @@ class PostCustomerModel {
       uidCustomer: map['uidCustomer'],
       name: map['name'],
       pathUrl: map['pathUrl'],
+      status: map['status'],
     );
   }
 

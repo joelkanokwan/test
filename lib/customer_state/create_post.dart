@@ -558,7 +558,9 @@ class _CreatePostState extends State<CreatePost> {
         typeTechnics: typeTechnicStrings,
         uidCustomer: uid!,
         name: name!,
-        pathUrl: pathUrl!);
+        pathUrl: pathUrl!,
+        status: 'online'
+        );
 
     await Firebase.initializeApp().then((value) async {
       await FirebaseFirestore.instance

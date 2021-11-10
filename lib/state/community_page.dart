@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +23,7 @@ import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/replypost_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_array.dart';
+import 'package:joelfindtechnician/state/edit_post.dart';
 
 import 'package:joelfindtechnician/state/list_technic_where_type.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
@@ -59,23 +62,45 @@ class _CommunityPageState extends State<CommunityPage> {
   bool? userSocial;
   List<String> docIdPostCustomers = [];
 
-  _imageFromCamera() async {
+  // bool showPostIcon = false;
+  List<TextEditingController> replyControllers = [];
+  List<Widget> replyWidgets = [];
+  List<bool> showPostIcons = [];
+  List<File?> files = [];
+
+  List<List<ReplyPostModel>> listReplyPostModels = [];
+  List<List<String>> listDocIdReplys = [];
+
+  String urlImgePostStr = '';
+  List<String> docIdReplys = [];
+
+  void buildSetUp() {
+    postCustomerModels.clear();
+    docIdPostCustomers.clear();
+    listReplyPostModels.clear();
+    listDocIdReplys.clear();
+    docIdReplys.clear();
+    replyControllers.clear();
+    replyWidgets.clear();
+  }
+
+  _imageFromCamera(int index) async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(
         source: ImageSource.camera, maxWidth: 800, maxHeight: 800);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
-      image = pickedImageFile;
+      files[index] = pickedImageFile;
     });
   }
 
-  _imageFromGallery() async {
+  _imageFromGallery(int index) async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(
         source: ImageSource.gallery, maxWidth: 800, maxHeight: 800);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
-      image = pickedImageFile;
+      files[index] = pickedImageFile;
     });
   }
 
@@ -84,6 +109,7 @@ class _CommunityPageState extends State<CommunityPage> {
     super.initState();
 
     userSocial = widget.userSocialbol;
+    print('## userSocial ==> $userSocial');
     if (userSocial == null) {
       userSocial = false;
     }
@@ -129,7 +155,7 @@ class _CommunityPageState extends State<CommunityPage> {
               }
             }
           }
-          print('## serviceProvince ==> $serviceGroups');
+          // print('## serviceProvince ==> $serviceGroups');
         });
       });
     } else {
@@ -161,7 +187,7 @@ class _CommunityPageState extends State<CommunityPage> {
               }
             }
           }
-          print('## serviceProvince ==> $serviceGroups');
+          // print('## serviceProvince ==> $serviceGroups');
         });
       });
     }
@@ -196,7 +222,7 @@ class _CommunityPageState extends State<CommunityPage> {
             setState(() {
               load = false;
               userModelOld = UserModelOld.fromMap(value.data()!);
-              print('## name user login = ${userModelOld!.name}');
+              // print('## name user login = ${userModelOld!.name}');
             });
           });
         }
@@ -207,18 +233,7 @@ class _CommunityPageState extends State<CommunityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-        ),
-        title: Text('Community Page'),
-      ),
+      appBar: buildAppBar(context),
       floatingActionButton: provinceChoosed == null
           ? SizedBox()
           : userSocial!
@@ -249,188 +264,518 @@ class _CommunityPageState extends State<CommunityPage> {
     );
   }
 
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+      ),
+      title: Text('Community Page'),
+    );
+  }
+
   Widget listPost() => loadPost
       ? ShowProgress()
       : Column(
           children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-              child: Row(
-                children: [
-                  Row(
-                    children: [
-                      ShowText(
-                        title: 'List Post',
-                        textStyle: MyConstant().h2Style(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            buildTitleListPost(),
             Divider(thickness: 2),
             ListView.builder(
               shrinkWrap: true,
               physics: ScrollPhysics(),
               itemCount: postCustomerModels.length,
-              itemBuilder: (context, index) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(postCustomerModels[index].pathUrl),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ShowText(
-                            title: protectWord(postCustomerModels[index].name),
-                            textStyle: MyConstant().h2Style(),
-                          ),
-                          ShowText(
-                            title: showData(postCustomerModels[index].timePost),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ShowText(
-                      title: cutWord(postCustomerModels[index].job),
+              itemBuilder: (context, index) {
+                files.add(null);
+                replyControllers.add(TextEditingController());
+                showPostIcons.add(false);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        buildIconAndName(index),
+                        userSocial!
+                            ? User.uid == postCustomerModels[index].uidCustomer
+                                ? buildMenuDeletePost(index)
+                                : SizedBox()
+                            : SizedBox(),
+                      ],
                     ),
-                  ),
-                  showGridImage(postCustomerModels[index].pathImages),
-                  Divider(thickness: 2),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on),
-                      ShowText(title: postCustomerModels[index].district),
-                      SizedBox(width: 8),
-                      Icon(Icons.location_on),
-                      ShowText(title: postCustomerModels[index].amphur),
-                      SizedBox(width: 8),
-                      Icon(Icons.location_on),
-                      ShowText(title: postCustomerModels[index].province),
-                    ],
-                  ),
-                  Divider(thickness: 2),
-                  buildReplyPost(index),
-                  Divider(thickness: 2),
-                ],
-              ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ShowText(
+                        title: cutWord(postCustomerModels[index].job),
+                      ),
+                    ),
+                    showGridImage(postCustomerModels[index].pathImages),
+                    Divider(thickness: 2),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on),
+                        ShowText(title: postCustomerModels[index].district),
+                        SizedBox(width: 8),
+                        Icon(Icons.location_on),
+                        ShowText(title: postCustomerModels[index].amphur),
+                        SizedBox(width: 8),
+                        Icon(Icons.location_on),
+                        ShowText(title: postCustomerModels[index].province),
+                      ],
+                    ),
+                    Divider(thickness: 2),
+                    buildReplyPost(index),
+                    // replyWidgets[index],
+
+                    Divider(thickness: 2),
+                  ],
+                );
+              },
             ),
           ],
         );
 
+  String? chooseAction;
+
+  Widget buildMenuDeletePost(int index) {
+    List<String> title = ['Delete', 'Edit'];
+    return DropdownButton(
+        icon: Icon(Icons.more_horiz),
+        onChanged: (value) {
+          setState(() {
+            switch (value) {
+              case 'Delete':
+                confirlDeletePost(index);
+                break;
+              case 'Edit':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditPost(
+                      docId: docIdPostCustomers[index],
+                    ),
+                  ),
+                ).then((value) => readPostCustomerData());
+                break;
+              default:
+            }
+          });
+        },
+        value: chooseAction,
+        items: title
+            .map(
+              (e) => DropdownMenuItem<String>(
+                child: Text(e),
+                value: e,
+              ),
+            )
+            .toList());
+
+    // return IconButton(
+    // onPressed: () {},
+    // icon: Icon(Icons.more_horiz),
+    // );
+  }
+
+  Future<void> confirlDeletePost(int index) async {
+    // print('### delete post at id = ${docIdPostCustomers[index]}');
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: ListTile(
+          leading: ShowImage(),
+          title: ShowText(
+            title: 'Confirm Delete ?',
+            textStyle: MyConstant().h2Style(),
+          ),
+          subtitle: ShowText(title: ''),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              Map<String, dynamic> data = {};
+              data['status'] = 'offline';
+              await Firebase.initializeApp().then((value) async {
+                await FirebaseFirestore.instance
+                    .collection('postcustomer')
+                    .doc(docIdPostCustomers[index])
+                    .update(data)
+                    .then((value) => readPostCustomerData());
+              });
+
+              Navigator.pop(context);
+            },
+            child: Text('Confirm'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildIconAndName(int index) {
+    return Container(
+      width: 300,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(postCustomerModels[index].pathUrl),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ShowText(
+                title: protectWord(postCustomerModels[index].name),
+                textStyle: MyConstant().h2Style(),
+              ),
+              ShowText(
+                title: showData(postCustomerModels[index].timePost),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildTitleListPost() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      child: Row(
+        children: [
+          Row(
+            children: [
+              ShowText(
+                title: 'List Post',
+                textStyle: MyConstant().h2Style(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   TextEditingController replyController = TextEditingController();
 
   Widget buildReplyPost(int index) {
-    return Row(
+    return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userModelOld!.img),
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CircleAvatar(
+                backgroundImage: userSocial!
+                    ? CachedNetworkImageProvider(User.photoURL.toString())
+                    : CachedNetworkImageProvider(userModelOld!.img),
+              ),
+            ),
+            Column(
+              children: [
+                Container(
+                  width: 250,
+                  height: 80,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 16),
+                    child: TextFormField(
+                      controller: replyControllers[index],
+                      onChanged: (value) {
+                        setState(() {
+                          showPostIcons[index] = true;
+                          if (value.isEmpty) {
+                            showPostIcons[index] = false;
+                          } else {}
+                        });
+                      },
+                      decoration: InputDecoration(
+                        suffix: IconButton(
+                          onPressed: () async {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Center(
+                                    child: Text(
+                                      'Choose Profile Photo',
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.purpleAccent,
+                                      ),
+                                    ),
+                                  ),
+                                  content: SingleChildScrollView(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        FlatButton.icon(
+                                          onPressed: () {
+                                            _imageFromCamera(index);
+                                            Navigator.of(context).pop();
+                                          },
+                                          icon: Icon(Icons.camera,
+                                              color: Colors.purpleAccent),
+                                          label: Text('Camera'),
+                                        ),
+                                        FlatButton.icon(
+                                          onPressed: () {
+                                            _imageFromGallery(index);
+                                            Navigator.of(context).pop();
+                                          },
+                                          icon: Icon(
+                                            Icons.image,
+                                            color: Colors.purpleAccent,
+                                          ),
+                                          label: Text('Gallery'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          icon: Icon(Icons.camera_alt_outlined),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                files[index] == null
+                    ? SizedBox()
+                    : Container(
+                        width: 250,
+                        height: 200,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.file(
+                              files[index]!,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  files[index] = null;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.clear,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              ],
+            ),
+            (showPostIcons[index]) || (files[index] != null)
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: IconButton(
+                      onPressed: () async {
+                        if (files[index] != null) {
+                          String nameFile =
+                              'reply$index${Random().nextInt(1000000)}.jpg';
+                          FirebaseStorage storage = FirebaseStorage.instance;
+                          Reference reference =
+                              storage.ref().child('replypost/$nameFile');
+                          UploadTask task = reference.putFile(files[index]!);
+                          await task.whenComplete(() async {
+                            await reference
+                                .getDownloadURL()
+                                .then((value) async {
+                              urlImgePostStr = value.toString();
+                              files[index] = null;
+                              await processAddReply(index);
+                            });
+                          });
+                        } else {
+                          await processAddReply(index);
+                        }
+                      },
+                      icon: Icon(Icons.send_outlined),
+                    ),
+                  )
+                : SizedBox(),
+          ],
         ),
-        Container(
-          width: 250,
-          height: 80,
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 16),
-            child: TextFormField(
-              controller: replyController,
-              onFieldSubmitted: (value) async {
-                await processAddReply(index);
-              },
-              decoration: InputDecoration(
-                suffix: IconButton(
-                  onPressed: () async {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Center(
-                            child: Text(
-                              'Choose Profile Photo',
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.purpleAccent,
+        ListView.builder(
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
+          itemCount: listReplyPostModels[index].length,
+          itemBuilder: (context, index2) => Container(
+            margin: EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 36, right: 8, top: 4, bottom: 4),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        listReplyPostModels[index][index2].pathImage,
+                      ),
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.black12,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShowText(
+                                title: listReplyPostModels[index][index2].name),
+                            ShowText(
+                              title: dateCut(
+                                  listReplyPostModels[index][index2].timeReply),
+                            ),
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: 220,
+                              ),
+                              child: ShowText(
+                                  title:
+                                      listReplyPostModels[index][index2].reply),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ((listReplyPostModels[index][index2].urlImagePost == null) ||
+                            (listReplyPostModels[index][index2]
+                                .urlImagePost
+                                .isEmpty))
+                        ? SizedBox()
+                        : Container(
+                            margin: EdgeInsets.symmetric(vertical: 16),
+                            width: 250,
+                            height: 200,
+                            child: InkWell(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ShowImagePost(
+                                        pathImage: listReplyPostModels[index]
+                                                [index2]
+                                            .urlImagePost),
+                                  )),
+                              child: CachedNetworkImage(
+                                imageUrl: listReplyPostModels[index][index2]
+                                    .urlImagePost,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          content: SingleChildScrollView(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                FlatButton.icon(
-                                  onPressed: () {
-                                    _imageFromCamera();
-                                    Navigator.of(context).pop();
-                                  },
-                                  icon: Icon(Icons.camera,
-                                      color: Colors.purpleAccent),
-                                  label: Text('Camera'),
-                                ),
-                                FlatButton.icon(
-                                  onPressed: () {
-                                    _imageFromGallery();
-                                    Navigator.of(context).pop();
-                                  },
-                                  icon: Icon(
-                                    Icons.image,
-                                    color: Colors.purpleAccent,
+                  ],
+                ),
+                userSocial!
+                    ? SizedBox()
+                    : User.uid == listReplyPostModels[index][index2].uid
+                        ? IconButton(
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: ListTile(
+                                    leading: ShowImage(),
+                                    title: ShowText(
+                                      title: 'ต้องการลบ ?',
+                                    ),
+                                    subtitle: ShowText(
+                                        title: listReplyPostModels[index][index2]
+                                            .reply),
                                   ),
-                                  label: Text('Gallery'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () async {
+                                        Map<String, dynamic> data = {};
+                                        data['status'] = 'offline';
+                                        print(
+                                            '### docId of PostCustomer ==>> ${docIdPostCustomers[index]}');
+                                        print(
+                                            '### docId of ReplyPost ==>> ${listDocIdReplys[index][index2]}');
+
+                                        await FirebaseFirestore.instance
+                                            .collection('postcustomer')
+                                            .doc(docIdPostCustomers[index])
+                                            .collection('replypost')
+                                            .doc(listDocIdReplys[index][index2])
+                                            .update(data)
+                                            .then((value) {
+                                          print('### update Success');
+                                          readPostCustomerData();
+                                          Navigator.pop(context);
+                                        });
+                                      },
+                                      child: Text('Delete'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text('Cancel'),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              );
+                            },
+                            icon: Icon(
+                              Icons.delete,
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.camera_alt_outlined),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30),
-                  ),
-                ),
-              ),
+                          )
+                        : SizedBox(),
+              ],
             ),
           ),
-        ),
-        IconButton(
-          onPressed: () async {
-            await processAddReply(index);
-          },
-          icon: Icon(Icons.send_outlined),
-        ),
+        )
       ],
     );
   }
 
   Future<void> processAddReply(int index) async {
-    String reply = replyController.text;
-    print('## reply = $reply');
+    String reply = replyControllers[index].text;
+    print('### reply = $reply');
     DateTime dateTime = DateTime.now();
     Timestamp timestamp = Timestamp.fromDate(dateTime);
     String name = userModelOld!.name;
     String pathImage = userModelOld!.img;
     String uid = userModelOld!.uid;
     ReplyPostModel replyPostModel = ReplyPostModel(
-        name: name,
-        pathImage: pathImage,
-        reply: reply,
-        timeReply: timestamp,
-        uid: uid);
+      name: name,
+      pathImage: pathImage,
+      reply: reply,
+      timeReply: timestamp,
+      uid: uid,
+      urlImagePost: urlImgePostStr,
+      status: '',
+    );
     await FirebaseFirestore.instance
         .collection('postcustomer')
         .doc(docIdPostCustomers[index])
@@ -438,7 +783,11 @@ class _CommunityPageState extends State<CommunityPage> {
         .doc()
         .set(replyPostModel.toMap())
         .then((value) {
-      replyController.text = '';
+      setState(() {
+        replyControllers[index].text = '';
+      });
+      showPostIcons[index] = false;
+      readPostCustomerData();
     });
   }
 
@@ -453,7 +802,7 @@ class _CommunityPageState extends State<CommunityPage> {
               height: 150,
               child: InkWell(
                 onTap: () {
-                  print('## ${pathImages[index]}');
+                  // print('## ${pathImages[index]}');
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -541,7 +890,7 @@ class _CommunityPageState extends State<CommunityPage> {
           MaterialPageRoute(
             builder: (context) => CreatePost(province: provinceChoosed!),
           ),
-        );
+        ).then((value) => readPostCustomerData());
       },
       child: Icon(
         Icons.edit_rounded,
@@ -869,21 +1218,51 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 
   Future<void> readPostCustomerData() async {
+    buildSetUp();
+
     await FirebaseFirestore.instance
         .collection('postcustomer')
-        .where('province', isEqualTo: provinceChoosed)
-        // .orderBy('timePost')
+        .orderBy('timePost', descending: true)
         .get()
-        .then((value) {
+        .then((value) async {
       for (var item in value.docs) {
-        docIdPostCustomers.add(item.id);
-
         PostCustomerModel postCustomerModel =
             PostCustomerModel.fromMap(item.data());
-        setState(() {
-          loadPost = false;
-          postCustomerModels.add(postCustomerModel);
-        });
+        if (postCustomerModel.status != 'offline') {
+          if (postCustomerModel.province == provinceChoosed) {
+            List<ReplyPostModel> replyPostModels = [];
+            String docIdPostcustomer = item.id;
+
+            await FirebaseFirestore.instance
+                .collection('postcustomer')
+                .doc(docIdPostcustomer)
+                .collection('replypost')
+                .orderBy('timeReply', descending: true)
+                .get()
+                .then((value) {
+              for (var item in value.docs) {
+                String docIdReply = item.id;
+                ReplyPostModel replyPostModel =
+                    ReplyPostModel.fromMap(item.data());
+
+                if (replyPostModel.status != 'offline') {
+                  replyPostModels.add(replyPostModel);
+                  docIdReplys.add(docIdReply);
+                }
+              }
+            });
+
+            // int i = 0;
+            setState(() {
+              loadPost = false;
+              postCustomerModels.add(postCustomerModel);
+              docIdPostCustomers.add(docIdPostcustomer);
+              listReplyPostModels.add(replyPostModels);
+              listDocIdReplys.add(docIdReplys);
+            });
+            // i++;
+          }
+        }
       }
     });
   }
@@ -906,12 +1285,21 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 
   String showData(Timestamp timePost) {
+    print('### timePost ==> $timePost');
     String result;
 
     DateTime dateTime = timePost.toDate();
+    print('### dateTime ==>> $dateTime');
     DateFormat dateFormt = DateFormat('dd MMM yyyy    HH:mm');
     result = dateFormt.format(dateTime);
 
+    return result;
+  }
+
+  String dateCut(Timestamp timeReply) {
+    DateTime dateTime = timeReply.toDate();
+    DateFormat dateFormat = DateFormat('dd MMM yyyy   HH:mm');
+    String result = dateFormat.format(dateTime);
     return result;
   }
 }

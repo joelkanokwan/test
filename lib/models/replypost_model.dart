@@ -8,12 +8,16 @@ class ReplyPostModel {
   final String reply;
   final Timestamp timeReply;
   final String uid;
+  final String urlImagePost;
+  final String status;
   ReplyPostModel({
     required this.name,
     required this.pathImage,
     required this.reply,
     required this.timeReply,
     required this.uid,
+    required this.urlImagePost,
+    required this.status,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +27,8 @@ class ReplyPostModel {
       'reply': reply,
       'timeReply': timeReply,
       'uid': uid,
+      'urlImagePost': urlImagePost,
+      'status': status,
     };
   }
 
@@ -31,8 +37,10 @@ class ReplyPostModel {
       name: map['name'],
       pathImage: map['pathImage'],
       reply: map['reply'],
-      timeReply: map['timeReply'],
+      timeReply:map['timeReply'],
       uid: map['uid'],
+      urlImagePost: map['urlImagePost'],
+      status: map['status'],
     );
   }
 
