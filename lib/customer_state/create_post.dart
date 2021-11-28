@@ -16,6 +16,7 @@ import 'package:joelfindtechnician/alertdialog/select_province.dart';
 import 'package:joelfindtechnician/model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/subdistruct_model.dart';
+import 'package:joelfindtechnician/models/token_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
@@ -51,7 +52,6 @@ class _CreatePostState extends State<CreatePost> {
 
   TextEditingController addressController = TextEditingController();
   TextEditingController jobDescriptionController = TextEditingController();
-
 
   List<String> pathImages = [];
   List<String> titleTypeTechnics = [];
@@ -133,7 +133,8 @@ class _CreatePostState extends State<CreatePost> {
 
   _imageFromCamera() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.camera, maxWidth: 800, maxHeight: 800);
+    final pickedImage = await picker.getImage(
+        source: ImageSource.camera, maxWidth: 800, maxHeight: 800);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
       imageBol = false;
@@ -144,7 +145,8 @@ class _CreatePostState extends State<CreatePost> {
 
   _imageFromGallery() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.gallery, maxWidth: 800, maxHeight: 800);
+    final pickedImage = await picker.getImage(
+        source: ImageSource.gallery, maxWidth: 800, maxHeight: 800);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
       imageBol = false;
@@ -186,41 +188,7 @@ class _CreatePostState extends State<CreatePost> {
                           ? buildSubDistrict()
                           : Text('ตำบล ${subdistrict!}'),
                   buildJobType(context),
-                  Container(
-                    margin: EdgeInsets.only(top: 30),
-                    height: 50,
-                    width: 330,
-                    child: FlatButton(
-                      textColor: Colors.white,
-                      color: Colors.blueAccent,
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          if (amphur?.isEmpty ?? true) {
-                            MyDialog()
-                                .normalDialog(context, 'โปรดเลือกอำเภอ', '');
-                          } else if (subdistrict?.isEmpty ?? true) {
-                            MyDialog()
-                                .normalDialog(context, 'โปรดเลือกตำบล', '');
-                          } else if (checkChooseType()) {
-                            processPostData();
-                          } else {
-                            MyDialog().normalDialog(
-                                context, 'โปรดเลือกประเภทของงาน', '');
-                          }
-                        }
-                      },
-                      child: Text(
-                        'Post',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
+                  newPostButton(context),
                 ],
               ),
             ),
@@ -228,6 +196,106 @@ class _CreatePostState extends State<CreatePost> {
         ),
       ),
     );
+  }
+
+  Container newPostButton(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 30),
+      height: 50,
+      width: 330,
+      child: FlatButton(
+        textColor: Colors.white,
+        color: Colors.blueAccent,
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            if (amphur?.isEmpty ?? true) {
+              MyDialog().normalDialog(context, 'โปรดเลือกอำเภอ', '');
+            } else if (subdistrict?.isEmpty ?? true) {
+              MyDialog().normalDialog(context, 'โปรดเลือกตำบล', '');
+            } else if (checkChooseType()) {
+              processSentNotification();
+
+              processPostData();
+            } else {
+              MyDialog().normalDialog(context, 'โปรดเลือกประเภทของงาน', '');
+            }
+          }
+        },
+        child: Text(
+          'Post',
+          style: GoogleFonts.lato(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+
+  Future<void> processSentNotification() async {
+    List<String> typeTechnics = [];
+    for (var item in typeTechnicStrings) {
+      if (item.isNotEmpty) {
+        typeTechnics.add(item);
+      }
+    }
+    print(
+        '@@@@ province ==> $province, typeTech ==> $typeTechnics, job ==> ${jobDescriptionController.text}');
+
+    for (var item in typeTechnics) {
+      String typeTechnic = item;
+      // print('@@@@ item ==>> $item');
+      await FirebaseFirestore.instance
+          .collection('user')
+          .where('province', isEqualTo: province)
+          .get()
+          .then((value) async {
+        for (var item2 in value.docs) {
+          UserModelOld userModelOld = UserModelOld.fromMap(item2.data());
+          if (checkHaveTypeTechnic(typeTechnic, userModelOld.typeTechnics)) {
+            String docIdUser = item2.id;
+            await FirebaseFirestore.instance
+                .collection('user')
+                .doc(docIdUser)
+                .collection('mytoken')
+                .doc('doctoken')
+                .get()
+                .then((value) async {
+              if (value.data() != null) {
+                print('@@@@@ value token ==>> ${value.data()}');
+                // ยิ้ง Api
+                TokenModel model = TokenModel.fromMap(value.data()!);
+                String token = model.token;
+                String title = 'หาช่าง $province';
+                String body = jobDescriptionController.text;
+                String apiSentNotification =
+                    'https://www.androidthai.in.th/eye/apiNotification.php?isAdd=true&token=$token&title=$title&body=$body';
+
+                await Dio()
+                    .get(apiSentNotification)
+                    .then((value) => print('@@@@@ success sent Noti'));
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+
+  bool checkHaveTypeTechnic(String typeTechnic, List<String> typeTechnics) {
+    print('@@@@ typeTechnic ==> $typeTechnic');
+    print('@@@@ typeTechnic ==> $typeTechnics');
+    bool result = false; // true มี typeTechnic ใน typeTechnics
+    for (var item in typeTechnics) {
+      if (typeTechnic == item) {
+        result = true;
+      }
+    }
+    print('@@@@ result ==>>> $result');
+    return result;
   }
 
   Widget listImage() => SizedBox(
@@ -559,8 +627,7 @@ class _CreatePostState extends State<CreatePost> {
         uidCustomer: uid!,
         name: name!,
         pathUrl: pathUrl!,
-        status: 'online'
-        );
+        status: 'online');
 
     await Firebase.initializeApp().then((value) async {
       await FirebaseFirestore.instance

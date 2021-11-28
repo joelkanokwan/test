@@ -20,6 +20,7 @@ import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
 import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/models/answer_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/replypost_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_array.dart';
@@ -33,6 +34,7 @@ import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/state/show_image_post.dart';
 import 'package:joelfindtechnician/utility/find_user_by_uid.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
+import 'package:joelfindtechnician/utility/time_to_string.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
@@ -74,6 +76,19 @@ class _CommunityPageState extends State<CommunityPage> {
   String urlImgePostStr = '';
   List<String> docIdReplys = [];
 
+  List<List<bool>> listTextFieldAnswers = [];
+  List<List<bool>> listIconAnswers = [];
+  List<List<File?>> listFilePostAnswers = [];
+  List<List<String>> listAnswers = [];
+  List<List<String>> listDocIdReplyAnswers = [];
+
+  List<List<List<AnswerModel>>> listOflistAnswerModels = [];
+  List<List<List<String>>> listOflistIdAnswers = [];
+
+  List<List<String>> myListDocIdReplyPosts = [];
+
+  late String nameUserLogin;
+
   void buildSetUp() {
     postCustomerModels.clear();
     docIdPostCustomers.clear();
@@ -82,6 +97,14 @@ class _CommunityPageState extends State<CommunityPage> {
     docIdReplys.clear();
     replyControllers.clear();
     replyWidgets.clear();
+    listTextFieldAnswers.clear();
+    listIconAnswers.clear();
+    listFilePostAnswers.clear();
+    listAnswers.clear();
+    listDocIdReplyAnswers.clear();
+    listOflistAnswerModels.clear();
+    listOflistIdAnswers.clear();
+    myListDocIdReplyPosts.clear();
   }
 
   _imageFromCamera(int index) async {
@@ -116,6 +139,8 @@ class _CommunityPageState extends State<CommunityPage> {
 
     if (!userSocial!) {
       readUserProfile();
+    } else {
+      nameUserLogin = User.displayName.toString();
     }
 
     if (User.displayName != null) {
@@ -222,6 +247,7 @@ class _CommunityPageState extends State<CommunityPage> {
             setState(() {
               load = false;
               userModelOld = UserModelOld.fromMap(value.data()!);
+              nameUserLogin = userModelOld!.name;
               // print('## name user login = ${userModelOld!.name}');
             });
           });
@@ -670,7 +696,8 @@ class _CommunityPageState extends State<CommunityPage> {
                         ),
                       ),
                     ),
-                    ((listReplyPostModels[index][index2].urlImagePost == null) ||
+                    ((listReplyPostModels[index][index2].urlImagePost ==
+                                null) ||
                             (listReplyPostModels[index][index2]
                                 .urlImagePost
                                 .isEmpty))
@@ -695,6 +722,229 @@ class _CommunityPageState extends State<CommunityPage> {
                               ),
                             ),
                           ),
+                    listOflistAnswerModels[index][index2].isEmpty
+                        ? SizedBox()
+                        : createGroupAnswer(
+                            listOflistAnswerModels[index][index2],
+                            index,
+                            index2,
+                            listOflistIdAnswers[index][index2]),
+                    TextButton(
+                      onPressed: () {
+                        print(
+                            '### index => $index, index2 => $index2, iconAnswer ==> ${listIconAnswers[index][index2]}');
+                        setState(() {
+                          listTextFieldAnswers[index][index2] = true;
+                        });
+                      },
+                      child: ShowText(
+                        title: 'ตอบกลับ',
+                      ),
+                    ),
+                    listTextFieldAnswers[index][index2]
+                        ? Column(
+                            children: [
+                              Row(
+                                children: [
+                                  userSocial!
+                                      ? Text('iconaa')
+                                      : Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 4),
+                                          width: 36,
+                                          height: 36,
+                                          child: CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    userModelOld!.img),
+                                          ),
+                                        ),
+                                  Container(
+                                    width: 150,
+                                    child: TextFormField(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          if (value.isNotEmpty) {
+                                            listIconAnswers[index][index2] =
+                                                true;
+                                            listAnswers[index][index2] =
+                                                value.trim();
+                                          } else {
+                                            listIconAnswers[index][index2] =
+                                                false;
+                                          }
+                                        });
+                                        print(
+                                            '### iconAnswer fter Click ==> ${listIconAnswers[index][index2]}');
+                                      },
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          onPressed: () async {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: ListTile(
+                                                  leading: ShowImage(),
+                                                  title: ShowText(
+                                                    title:
+                                                        'Choose Source Image',
+                                                  ),
+                                                  subtitle: ShowText(
+                                                    title:
+                                                        'Please Choose Camera or Gallery',
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      answerTakePhoto(
+                                                          ImageSource.camera,
+                                                          index,
+                                                          index2);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('Camera'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      answerTakePhoto(
+                                                          ImageSource.gallery,
+                                                          index,
+                                                          index2);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('Gallery'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: Text('Cancel'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          icon: Icon(
+                                            Icons.camera_alt,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ((listIconAnswers[index][index2]) ||
+                                          (listFilePostAnswers[index][index2] !=
+                                              null))
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            String answer =
+                                                listAnswers[index][index2];
+                                            String namePost, urlPost;
+                                            if (userSocial!) {
+                                              namePost = User.displayName!;
+                                              urlPost = User.photoURL!;
+                                            } else {
+                                              namePost = userModelOld!.name;
+                                              urlPost = userModelOld!.img;
+                                            }
+                                            DateTime dateTime = DateTime.now();
+                                            Timestamp timePost =
+                                                Timestamp.fromDate(dateTime);
+
+                                            if (listFilePostAnswers[index]
+                                                    [index2] ==
+                                                null) {
+                                              AnswerModel answerModel =
+                                                  AnswerModel(
+                                                      answer: answer,
+                                                      namePost: namePost,
+                                                      urlPost: urlPost,
+                                                      urlImage: '',
+                                                      timePost: timePost,
+                                                      status: 'online');
+                                              processInsertAnswer(
+                                                  answerModel, index, index2);
+                                            } else {
+                                              await Firebase.initializeApp()
+                                                  .then((value) async {
+                                                String nameFile =
+                                                    'answer$index$index2${Random().nextInt(1000000)}.jpg';
+                                                FirebaseStorage storage =
+                                                    FirebaseStorage.instance;
+                                                Reference reference = storage
+                                                    .ref()
+                                                    .child('answer/$nameFile');
+                                                UploadTask task =
+                                                    reference.putFile(
+                                                        listFilePostAnswers[
+                                                            index][index2]!);
+                                                await task
+                                                    .whenComplete(() async {
+                                                  await reference
+                                                      .getDownloadURL()
+                                                      .then((value) {
+                                                    String urlImage =
+                                                        value.toString();
+                                                    AnswerModel answerModel =
+                                                        AnswerModel(
+                                                            answer: answer,
+                                                            namePost: namePost,
+                                                            urlPost: urlPost,
+                                                            urlImage: urlImage,
+                                                            timePost: timePost,
+                                                            status: 'online');
+                                                    processInsertAnswer(
+                                                        answerModel,
+                                                        index,
+                                                        index2);
+                                                  });
+                                                });
+                                              });
+                                            }
+                                            print(
+                                                '### answer ==> $answer, namePost ==> $namePost');
+                                            print('### urlPost = $urlPost');
+                                          },
+                                          icon: Icon(
+                                            Icons.send,
+                                          ),
+                                        )
+                                      : SizedBox(),
+                                ],
+                              ),
+                              listFilePostAnswers[index][index2] == null
+                                  ? SizedBox()
+                                  : Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          width: 150,
+                                          height: 130,
+                                          child: Image.file(
+                                            listFilePostAnswers[index][index2]!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              listFilePostAnswers[index]
+                                                  [index2] = null;
+                                            });
+                                          },
+                                          icon: Icon(Icons.cancel_outlined),
+                                        ),
+                                      ],
+                                    ),
+                            ],
+                          )
+                        : SizedBox(),
                   ],
                 ),
                 userSocial!
@@ -711,7 +961,8 @@ class _CommunityPageState extends State<CommunityPage> {
                                       title: 'ต้องการลบ ?',
                                     ),
                                     subtitle: ShowText(
-                                        title: listReplyPostModels[index][index2]
+                                        title: listReplyPostModels[index]
+                                                [index2]
                                             .reply),
                                   ),
                                   actions: [
@@ -719,10 +970,10 @@ class _CommunityPageState extends State<CommunityPage> {
                                       onPressed: () async {
                                         Map<String, dynamic> data = {};
                                         data['status'] = 'offline';
-                                        print(
-                                            '### docId of PostCustomer ==>> ${docIdPostCustomers[index]}');
-                                        print(
-                                            '### docId of ReplyPost ==>> ${listDocIdReplys[index][index2]}');
+                                        // print(
+                                        // '### docId of PostCustomer ==>> ${docIdPostCustomers[index]}');
+                                        // print(
+                                        // '### docId of ReplyPost ==>> ${listDocIdReplys[index][index2]}');
 
                                         await FirebaseFirestore.instance
                                             .collection('postcustomer')
@@ -761,7 +1012,7 @@ class _CommunityPageState extends State<CommunityPage> {
 
   Future<void> processAddReply(int index) async {
     String reply = replyControllers[index].text;
-    print('### reply = $reply');
+    // print('### reply = $reply');
     DateTime dateTime = DateTime.now();
     Timestamp timestamp = Timestamp.fromDate(dateTime);
     String name = userModelOld!.name;
@@ -1232,6 +1483,15 @@ class _CommunityPageState extends State<CommunityPage> {
           if (postCustomerModel.province == provinceChoosed) {
             List<ReplyPostModel> replyPostModels = [];
             String docIdPostcustomer = item.id;
+            List<bool> textFieldAnswers = [];
+            List<bool> iconAnswers = [];
+            List<File?> postFileAnswers = [];
+            List<String> answers = [];
+            List<String> docIdReplyAnswers = [];
+            List<List<AnswerModel>> listAnswerModels = [];
+            List<List<String>> listIdAnswers = [];
+
+            List<String> myDocIdReplyPosts = [];
 
             await FirebaseFirestore.instance
                 .collection('postcustomer')
@@ -1239,15 +1499,46 @@ class _CommunityPageState extends State<CommunityPage> {
                 .collection('replypost')
                 .orderBy('timeReply', descending: true)
                 .get()
-                .then((value) {
+                .then((value) async {
               for (var item in value.docs) {
+                textFieldAnswers.add(false);
+                iconAnswers.add(false);
+                postFileAnswers.add(null);
+                answers.add('');
+                docIdReplyAnswers.add(item.id);
                 String docIdReply = item.id;
                 ReplyPostModel replyPostModel =
                     ReplyPostModel.fromMap(item.data());
 
                 if (replyPostModel.status != 'offline') {
+                  String myDocIdReplyPost = item.id;
+                  myDocIdReplyPosts.add(myDocIdReplyPost);
+
                   replyPostModels.add(replyPostModel);
                   docIdReplys.add(docIdReply);
+                  List<AnswerModel> answerModels = [];
+                  List<String> idAnswers = [];
+
+                  await FirebaseFirestore.instance
+                      .collection('postcustomer')
+                      .doc(docIdPostcustomer)
+                      .collection('replypost')
+                      .doc(docIdReply)
+                      .collection('answer')
+                      .get()
+                      .then((value) {
+                    for (var item in value.docs) {
+                      // print('@@ item ==> ${item.data()}');
+                      AnswerModel answerModel =
+                          AnswerModel.fromMap(item.data());
+                      answerModels.add(answerModel);
+
+                      String idAnswer = item.id;
+                      idAnswers.add(idAnswer);
+                    }
+                  });
+                  listAnswerModels.add(answerModels);
+                  listIdAnswers.add(idAnswers);
                 }
               }
             });
@@ -1259,6 +1550,16 @@ class _CommunityPageState extends State<CommunityPage> {
               docIdPostCustomers.add(docIdPostcustomer);
               listReplyPostModels.add(replyPostModels);
               listDocIdReplys.add(docIdReplys);
+              listTextFieldAnswers.add(textFieldAnswers);
+              listIconAnswers.add(iconAnswers);
+              listFilePostAnswers.add(postFileAnswers);
+              listAnswers.add(answers);
+              listDocIdReplyAnswers.add(docIdReplyAnswers);
+              listOflistAnswerModels.add(listAnswerModels);
+              listOflistIdAnswers.add(listIdAnswers);
+
+              myListDocIdReplyPosts.add(myDocIdReplyPosts);
+              ;
             });
             // i++;
           }
@@ -1301,5 +1602,193 @@ class _CommunityPageState extends State<CommunityPage> {
     DateFormat dateFormat = DateFormat('dd MMM yyyy   HH:mm');
     String result = dateFormat.format(dateTime);
     return result;
+  }
+
+  Future<void> answerTakePhoto(
+      ImageSource source, int index, int index2) async {
+    try {
+      var result = await ImagePicker()
+          .getImage(source: source, maxHeight: 800, maxWidth: 800);
+      setState(() {
+        listFilePostAnswers[index][index2] = File(result!.path);
+      });
+    } catch (e) {}
+  }
+
+  Future<void> processInsertAnswer(
+      AnswerModel answerModel, int index, int index2) async {
+    // print('@@ processInsertAnswer Work');
+    String docIdPostCustomer = docIdPostCustomers[index];
+    String docIdReplyAnswer = listDocIdReplyAnswers[index][index2];
+    // print('@@ docIdPostCustomer = $docIdPostCustomer');
+    // print('@@ docIdReplyAnswer = $docIdReplyAnswer');
+
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseFirestore.instance
+          .collection('postcustomer')
+          .doc(docIdPostCustomer)
+          .collection('replypost')
+          .doc(docIdReplyAnswer)
+          .collection('answer')
+          .doc()
+          .set(answerModel.toMap())
+          .then((value) {
+        readPostCustomerData();
+      });
+    });
+  }
+
+  Widget createGroupAnswer(List<AnswerModel> answerModels, int index,
+      int index2, List<String> idAnswers) {
+    List<Widget> widgets = [];
+
+    int i = 0;
+    for (var item in answerModels) {
+      if (item.status == 'online') {
+        widgets.add(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8),
+                    width: 36,
+                    height: 36,
+                    child: CircleAvatar(
+                      backgroundImage: CachedNetworkImageProvider(item.urlPost),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.black12,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShowText(title: item.namePost),
+                          ShowText(
+                              title: TimeToString(timestamp: item.timePost)
+                                  .findString()),
+                          Container(
+                            constraints: BoxConstraints(
+                              maxWidth: 150,
+                            ),
+                            child: ShowText(title: item.answer),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  nameUserLogin == item.namePost
+                      ? IconButton(
+                          onPressed: () async {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: ListTile(
+                                  leading: ShowImage(),
+                                  title: ShowText(title: 'Confirm Delete'),
+                                  subtitle: ShowText(title: item.answer),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      Timestamp timestamp = item.timePost;
+                                      print(
+                                          '@@@ index = $index, index2 = $index2');
+                                      print(
+                                          '@@@ docPostcustomer ==> ${docIdPostCustomers[index]}');
+                                      print(
+                                          '@@@ myDocId ==>>> ${myListDocIdReplyPosts[index]}');
+                                      // print(
+                                      // '@@@ docPostcustomer ==> ${docIdPostCustomers}');
+                                      print(
+                                          '@@@ docReplypost ==> ${myListDocIdReplyPosts[index][index2]}');
+                                      Map<String, dynamic> map = {};
+                                      map['status'] = 'offline';
+                                      await FirebaseFirestore.instance
+                                          .collection('postcustomer')
+                                          .doc(docIdPostCustomers[index])
+                                          .collection('replypost')
+                                          .doc(myListDocIdReplyPosts[index]
+                                              [index2])
+                                          .collection('answer')
+                                          .where('timePost',
+                                              isEqualTo: timestamp)
+                                          .get()
+                                          .then((value) async {
+                                        for (var item in value.docs) {
+                                          String docAnswer = item.id;
+                                          print('@@@ docAnswer ==> $docAnswer');
+                                          await FirebaseFirestore.instance
+                                              .collection('postcustomer')
+                                              .doc(docIdPostCustomers[index])
+                                              .collection('replypost')
+                                              .doc(myListDocIdReplyPosts[index]
+                                                  [index2])
+                                              .collection('answer')
+                                              .doc(docAnswer)
+                                              .update(map)
+                                              .then((value) =>
+                                                  readPostCustomerData());
+                                        }
+                                      });
+                                    },
+                                    child: Text('Delete'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text('Cancel'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.delete_outline),
+                        )
+                      : SizedBox()
+                ],
+              ),
+              item.urlImage.isEmpty
+                  ? SizedBox()
+                  : Container(
+                      margin: EdgeInsets.only(left: 52),
+                      width: 150,
+                      height: 120,
+                      child: InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ShowImagePost(pathImage: item.urlImage),
+                          ),
+                        ),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: item.urlImage,
+                          placeholder: (context, url) => ShowProgress(),
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        );
+      }
+      i++;
+    }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: widgets,
+      ),
+    );
   }
 }

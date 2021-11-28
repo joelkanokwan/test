@@ -5,7 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:joelfindtechnician/customer_state/create_post.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
+import 'package:joelfindtechnician/forms/creditcard_form.dart';
 import 'package:joelfindtechnician/partner_state/home_page.dart';
+import 'package:joelfindtechnician/state/c.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
 

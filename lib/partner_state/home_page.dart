@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
+import 'package:joelfindtechnician/models/notification_model.dart';
+import 'package:joelfindtechnician/models/token_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/partner_state/mywallet.dart';
 import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
@@ -14,6 +18,7 @@ import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
 import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
+import 'package:joelfindtechnician/state/showDetail_Noti.dart';
 import 'package:joelfindtechnician/state/show_profile.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
@@ -26,11 +31,114 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? docUser;
   UserModelOld? userModelOld;
+  FirebaseMessaging? firebaseMessaging;
+
+  FlutterLocalNotificationsPlugin flutterLocalNoti =
+      FlutterLocalNotificationsPlugin();
+  AndroidInitializationSettings? androidInitializationSettings;
+
+  InitializationSettings? initializationSettings;
+
+  String? myTitle;
+
+  String? myMessage;
+
   @override
   void initState() {
     super.initState();
     findUser();
+    setupLocalNoti();
+  }
+
+  Future<void> setupLocalNoti() async {
+    androidInitializationSettings =
+        AndroidInitializationSettings('ic_launcher');
+    initializationSettings =
+        InitializationSettings(android: androidInitializationSettings);
+    await flutterLocalNoti.initialize(initializationSettings!,
+        onSelectNotification: onSelectNoti);
+  }
+
+  Future<void> onSelectNoti(String? string) async {
+    if (string != null) {
+      print('#28Nov สิ่งที่ได้จาการคลิก Notification ตอนเปิดแอปอยู่');
+      processAfterClickNoti(myTitle!, myMessage!);
+    }
+  }
+
+  Future<void> findToken(String docUser) async {
+    print('@@@@ docUser ==> $docUser');
+
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseMessaging.instance.getToken().then((value) async {
+        String token = value!;
+        print('@@@@ token ==>> $value');
+
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(docUser)
+            .collection('mytoken')
+            .get()
+            .then((value) async {
+          print('@@@@ value ==>>> ${value.docs}');
+          TokenModel model = TokenModel(token: token);
+          Map<String, dynamic> data = model.toMap();
+          if (value.docs.isEmpty) {
+            //insert
+
+            await FirebaseFirestore.instance
+                .collection('user')
+                .doc(docUser)
+                .collection('mytoken')
+                .doc('doctoken')
+                .set(data)
+                .then((value) => print('@@@@ success insert token'));
+          } else {
+            //update
+            await FirebaseFirestore.instance
+                .collection('user')
+                .doc(docUser)
+                .collection('mytoken')
+                .doc('doctoken')
+                .update(data)
+                .then((value) => print('@@@@ success Update token'));
+          }
+        });
+      });
+    });
+
+    await FirebaseMessaging.onMessage.listen((event) {
+      String title = event.notification!.title.toString();
+      String message = event.notification!.body.toString();
+      print('#28Nov onMessage ทำงาน title = $title, message = $message');
+      myTitle = title;
+      myMessage = message;
+      alertNotifiction(title, message);
+    });
+    await FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      String title = event.notification!.title.toString();
+      String message = event.notification!.body.toString();
+      myTitle = title;
+      myMessage = message;
+
+      processAfterClickNoti(title, message);
+    });
+  }
+
+  Future<void> processAfterClickNoti(String title, String message) async {
+    print(
+        '#28Nov processAfterClickNoti Work ==>>> title = $title, message = $message');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ShowDetailNoti(
+            title: title,
+            message: message,
+            userModelOld: userModelOld!,
+          ),
+        ));
   }
 
   Future<Null> findUser() async {
@@ -42,6 +150,8 @@ class _HomePageState extends State<HomePage> {
           .get()
           .then((value) {
         for (var item in value.docs) {
+          docUser = item.id;
+          findToken(docUser!);
           setState(() {
             userModelOld = UserModelOld.fromMap(item.data());
           });
@@ -93,7 +203,9 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CommunityPage(userSocialbol: false,)));
+                                builder: (context) => CommunityPage(
+                                      userSocialbol: false,
+                                    )));
                       },
                       child: Row(
                         children: [
@@ -169,7 +281,10 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PartnerNotification()));
+                                builder: (context) => PartnerNotification(
+                                      docUser: docUser!,
+                                      userModelold: userModelOld,
+                                    )));
                       },
                       child: Row(
                         children: [
@@ -481,5 +596,45 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  Future<void> alertNotifiction(String title, String message) async {
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      'channelId',
+      'channelName',
+      priority: Priority.high,
+      importance: Importance.max,
+      ticker: 'test',
+    );
+
+    NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+
+    await flutterLocalNoti
+        .show(0, title, message, notificationDetails)
+        .then((value) async {
+      print('@@@@@@ ค่าที่ได้จาก Noti ==> $title');
+      // insert data to firebase
+
+      await Firebase.initializeApp().then((value) async {
+        DateTime dateTime = DateTime.now();
+        Timestamp timeNoti = Timestamp.fromDate(dateTime);
+
+        NotificationModel model = NotificationModel(
+            title: title,
+            message: message,
+            status: 'unread',
+            timeNoti: timeNoti);
+
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(docUser)
+            .collection('mynotification')
+            .doc()
+            .set(model.toMap())
+            .then((value) => print('@@@@@@ insert Noti success'));
+      });
+    });
   }
 }
