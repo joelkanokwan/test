@@ -104,7 +104,8 @@ class _PartnerNotificationState extends State<PartnerNotification> {
     );
   }
 
-  Widget buildContent(String message, String dateStr, String status, String title) {
+  Widget buildContent(
+      String message, String dateStr, String status, String title) {
     return GestureDetector(
       onTap: () {
         print('#28Nov Click message ==> $message');
@@ -113,7 +114,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
             MaterialPageRoute(
               builder: (context) => ShowDetailNoti(
                   userModelOld: userModelOld!, title: title, message: message),
-            ));
+            )).then((value) => readAllNoti());
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
