@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/widgets/show_image.dart';
+import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class ConfirmJob extends StatefulWidget {
   const ConfirmJob({Key? key}) : super(key: key);
@@ -10,6 +12,94 @@ class ConfirmJob extends StatefulWidget {
 }
 
 class _ConfirmJobState extends State<ConfirmJob> {
+  DateTime? date;
+TimeOfDay? time;
+
+ String getTime() {
+   if (time == null) {
+     return 'Appointment Time';
+   } else {
+     final hours = time!.hour.toString().padLeft(2, '0');
+     final minutes = time!.minute.toString().padLeft(2, '0');
+     return '$hours:$minutes';
+   }
+ }
+ String getDate() {
+   if (date == null) {
+     return 'Appointment Date';
+   } else {
+     return '${date!.day}/${date!.month}/${date!.year}';
+   }
+ }
+
+ Future pickDate(BuildContext context) async {
+  final initialDate = DateTime.now();
+  final newDate = await showDatePicker(
+    context: context,
+    initialDate: initialDate,
+    firstDate: DateTime.now(),
+    lastDate: DateTime(2023),
+  );
+  if (newDate == null) return;
+  setState(() => date = newDate);
+}
+Future pickTime(BuildContext context) async {
+  final initialTime = TimeOfDay(hour: 9, minute: 0);
+  final newTime = await showTimePicker(
+    context: context,
+    initialTime: time ?? initialTime,
+  );
+  if (newTime == null) return;
+  setState(() {
+    time = newTime;
+  });
+}
+ 
+ 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,30 +191,177 @@ class _ConfirmJobState extends State<ConfirmJob> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Divider(thickness: 2),
-                      Row(
-                        children: [
-                          Text(
-                            'Status :',
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Paid',
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
+                     
                     ],
                   ),
                 ),
               ),
             ),
+            SizedBox(height: 15),
+            // Padding(
+            // padding: const EdgeInsets.all(8.0),
+            // child: Text(
+            // 'Shop Name/Customer Name',
+            // style: GoogleFonts.lato(
+            // fontWeight: FontWeight.bold,
+            // color: Colors.red,
+            // fontSize: 18),
+            // ),
+            // ),
+            // Padding(
+            // padding: const EdgeInsets.all(8.0),
+            // child: Text(
+            // 'Want to change appointmet to :',
+            // style: GoogleFonts.lato(color: Colors.red),
+            // ),
+            // ),
+            // Padding(
+            // padding: const EdgeInsets.all(8.0),
+            // child: Text(
+            // 'Rejected to change appointment :',
+            // style: GoogleFonts.lato(color: Colors.red),
+            // ),
+            // ),
+            // Padding(
+            // padding: const EdgeInsets.all(8.0),
+            // child: Text(
+            // 'Accept to change appointment to :',
+            // style: GoogleFonts.lato(color: Colors.red),
+            // ),
+            // ),
+            Row(
+              children: [
+                FlatButton.icon(
+                  onPressed: () {
+                    pickDate(context);
+                  },
+                  icon: Icon(
+                    Icons.date_range_outlined,
+                    size: 30,
+                    color: Colors.orange,
+                  ),
+                  label: Text(getDate()),
+                ),
+                FlatButton.icon(
+                  padding: EdgeInsets.only(right: 10),
+                  onPressed: () {
+                    pickTime(context);
+                  },
+                  icon: Icon(
+                    Icons.watch_later_outlined,
+                    size: 30,
+                    color: Colors.orange,
+                  ),
+                  label: Text(getTime()),
+                ),
+              ],
+            ),
+            Container(
+              height: 50,
+              width: 150,
+              child: FlatButton(
+                textColor: Colors.white,
+                color: Colors.blueAccent,
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: ListTile(
+                        leading: ShowImage(),
+                        title: ShowText(title: 'Confirm Change Appointment ?'),
+                        subtitle: ShowText(
+                            title: 'Do you want to confirm appointment ?'),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {},
+                          child: Text('OK'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: Text(
+                  'submit',
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            // Row(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // children: [
+            // ElevatedButton(
+            // onPressed: () {
+            // showDialog(
+            // context: context,
+            // builder: (context) => AlertDialog(
+            // title: ListTile(
+            // leading: ShowImage(),
+            // title:
+            // ShowText(title: 'Confirm Change Appointment ?'),
+            // subtitle: ShowText(
+            // title:
+            // 'If press OK the will change to new appointment time'),
+            // ),
+            // actions: [
+            // TextButton(
+            // onPressed: () {},
+            // child: Text('OK'),
+            // ),
+            // TextButton(
+            // onPressed: () {
+            // Navigator.pop(context);
+            // },
+            // child: Text('Cancel'),
+            // ),
+            // ],
+            // ),
+            // );
+            // },
+            // child: Text('Confirm'),
+            // ),
+            // SizedBox(width: 10),
+            // ElevatedButton(
+            // onPressed: () {
+            // showDialog(
+            // context: context,
+            // builder: (context) => AlertDialog(
+            // title: ListTile(
+            // leading: ShowImage(),
+            // title: ShowText(title: 'Confirm to cancel ?'),
+            // subtitle: ShowText(title: 'Appointment still same'),
+            // ),
+            // actions: [
+            // TextButton(
+            // onPressed: () {},
+            // child: Text('OK'),
+            // ),
+            // TextButton(
+            // onPressed: () {
+            // Navigator.pop(context);
+            // },
+            // child: Text('Cancel'),
+            // ),
+            // ],
+            // ),
+            // );
+            // },
+            // child: Text('Cancel'),
+            // ),
+            // ],
+            // ),
           ],
         ),
       ),

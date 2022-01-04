@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
 
-class PartnerrCancel {
+class PartnerCancel {
   Future<Null> normalDialog(
       BuildContext context, String title, String message) async {
     showDialog(

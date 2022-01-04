@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joelfindtechnician/forms/creditcard_form.dart';
+import 'package:joelfindtechnician/state/c.dart';
 
 class CheckDetail extends StatefulWidget {
   const CheckDetail({Key? key}) : super(key: key);
@@ -60,6 +62,16 @@ class _CheckDetailState extends State<CheckDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        'Please pay before :',
+                        style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                        
+                      ),
+                      SizedBox(height: 8),
                       Text(
                         'Shop name :',
                         style: GoogleFonts.lato(
@@ -223,7 +235,13 @@ class _CheckDetailState extends State<CheckDetail> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => c()),
+                                            );
+                                          },
                                           child: Icon(Icons.credit_card)),
                                       Text(
                                         'Credit card',
@@ -311,7 +329,7 @@ class _CheckDetailState extends State<CheckDetail> {
                   color: Colors.blueAccent,
                   onPressed: () {},
                   child: Text(
-                    'Continue Payment',
+                    'Confirm Payment',
                     style: GoogleFonts.lato(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

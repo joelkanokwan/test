@@ -17,7 +17,7 @@ class FormContactPartner extends StatefulWidget {
 class _FormContactPartnerState extends State<FormContactPartner> {
   DateTime? date;
   TimeOfDay? time;
-  int? _selectChoice;
+  
   File? image;
   String? imgUrl;
 
@@ -66,7 +66,7 @@ class _FormContactPartnerState extends State<FormContactPartner> {
       context: context,
       initialDate: initialDate,
       firstDate: DateTime.now(),
-      lastDate: DateTime(2022),
+      lastDate: DateTime(2023),
     );
     if (newDate == null) return;
 
@@ -223,21 +223,6 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                     label: Text('Please Add your post to job Description'),
                   ),
                   SizedBox(height: 10),
-                  TextFormField(
-                    validator: (value) {
-                      // if (value!.isEmpty) {
-                      // return 'Please type job description';
-                      // } else {}
-                    },
-                    maxLines: 8,
-                    decoration: InputDecoration(
-                      labelText: 'Job Description',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 10),
                   TextFormField(
                     validator: (value) {
@@ -296,68 +281,26 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Radio(
-                            activeColor: Colors.amber,
-                            value: 1,
-                            groupValue: _selectChoice,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectChoice = 1;
-                              });
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'ให้ช่างส่งใบเสนอราคาให้',
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Radio(
-                            activeColor: Colors.amber,
-                            value: 2,
-                            groupValue: _selectChoice,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectChoice = 2;
-                              });
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'นัดหมายช่างเพื่อดูหน้างานจริง',
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 40),
-                      Container(
-                        height: 50,
-                        width: 330,
-                        child: FlatButton(
-                          textColor: Colors.white,
-                          color: Colors.blueAccent,
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
-                          },
-                          child: Text(
-                            'Sent foam to technician',
-                            style: GoogleFonts.lato(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                  Container(
+                    height: 50,
+                    width: 330,
+                    child: FlatButton(
+                      textColor: Colors.white,
+                      color: Colors.blueAccent,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {}
+                      },
+                      child: Text(
+                        'Sent foam to technician',
+                        style: GoogleFonts.lato(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -21,6 +21,15 @@ class _cState extends State<c> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         leading: IconButton(
+   onPressed: () {
+     Navigator.pop(context);
+   },
+   icon: Icon(
+     Icons.arrow_back_ios,
+     color: Colors.white,
+   ),
+ ),
         automaticallyImplyLeading: false,
         title: Text('Credit Card Form'),
       ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
+import 'package:joelfindtechnician/forms/formcontact_partner.dart';
 import 'package:joelfindtechnician/models/reference_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/partner_state/choose_image.dart';
@@ -38,22 +39,22 @@ class ShowGeneralProfile extends StatefulWidget {
 }
 
 class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
-  SpeedDial _speedDial() {
-    return SpeedDial(
-      onPress: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChooseImage(
-              userModelOld: userModelOld!,
-            ),
-          ),
-        ).then((value) => findReference());
-      },
-      animatedIconTheme: IconThemeData(size: 25),
-      child: Icon(Icons.add),
-    );
-  }
+  // SpeedDial _speedDial() {
+  // return SpeedDial(
+  // onPress: () {
+  // Navigator.push(
+  // context,
+  // MaterialPageRoute(
+  // builder: (context) => ChooseImage(
+  // userModelOld: userModelOld!,
+  // ),
+  // ),
+  // ).then((value) => findReference());
+  // },
+  // animatedIconTheme: IconThemeData(size: 25),
+  // child: Icon(Icons.add),
+  // );
+  // }
 
   final databaseReference = FirebaseFirestore.instance;
   var firebaseUser = FirebaseAuth.instance.currentUser!;
@@ -141,7 +142,7 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppbar(context),
-      floatingActionButton: _speedDial(),
+      // floatingActionButton: _speedDial(),
       endDrawer: buildDrawer(context),
       body: userModelOld == null ? ShowProgress() : buildContent(),
     );
@@ -253,6 +254,37 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
             ),
           ),
         ),
+        Expanded(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 8,
+            ),
+            child: FlatButton(
+              height: 40,
+              // minWidth: 170,
+              color: Colors.blue,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FormContactPartner(),
+                    ));
+              },
+              child: Text(
+                'Contact',
+                style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ),
         // Expanded(
         // flex: 1,
         // child: Padding(
@@ -290,118 +322,118 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
     );
   } // end column
 
-  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> buildStream() {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('user').snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return ListView(
-            children: snapshot.data!.docs.map(
-          (e) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                  child: CircleAvatar(
-                    radius: 35,
-                    backgroundImage: NetworkImage(e['img']),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20, top: 5),
-                  child: Text(
-                    e['name'],
-                    style: GoogleFonts.lato(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                  child: Text(
-                    e['about'],
-                    style: GoogleFonts.lato(
-                      fontSize: 17,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 20, right: 5, top: 8),
-                      child: FlatButton(
-                        height: 40,
-                        minWidth: 170,
-                        color: Colors.blue,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ShowReview()));
-                        },
-                        child: Text(
-                          'Review',
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8,
-                      ),
-                      child: FlatButton(
-                        height: 40,
-                        minWidth: 170,
-                        color: Colors.blue,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EdditTest(userModelOld: userModelOld!),
-                            ),
-                          ).then((value) => findUser());
-                        },
-                        child: Text(
-                          'Eddit Profile',
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ); // end column
-          },
-        ).toList());
-      },
-    );
-  }
+  // StreamBuilder<QuerySnapshot<Map<String, dynamic>>> buildStream() {
+  // return StreamBuilder(
+  // stream: FirebaseFirestore.instance.collection('user').snapshots(),
+  // builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+  // if (!snapshot.hasData) {
+  // return Center(
+  // child: CircularProgressIndicator(),
+  // );
+  // }
+  // return ListView(
+  // children: snapshot.data!.docs.map(
+  // (e) {
+  // return Column(
+  // crossAxisAlignment: CrossAxisAlignment.start,
+  // children: [
+  // Padding(
+  // padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+  // ),
+  // Padding(
+  // padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+  // child: CircleAvatar(
+  // radius: 35,
+  // backgroundImage: NetworkImage(e['img']),
+  // ),
+  // ),
+  // Padding(
+  // padding: EdgeInsets.only(left: 20, top: 5),
+  // child: Text(
+  // e['name'],
+  // style: GoogleFonts.lato(
+  // fontSize: 20,
+  // fontWeight: FontWeight.bold,
+  // color: Colors.black,
+  // ),
+  // ),
+  // ),
+  // Padding(
+  // padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+  // child: Text(
+  // e['about'],
+  // style: GoogleFonts.lato(
+  // fontSize: 17,
+  // color: Colors.grey,
+  // ),
+  // ),
+  // ),
+  // Row(
+  // children: [
+  // Padding(
+  // padding: EdgeInsets.only(left: 20, right: 5, top: 8),
+  // child: FlatButton(
+  // height: 40,
+  // minWidth: 170,
+  // color: Colors.blue,
+  // onPressed: () {
+  // Navigator.push(
+  // context,
+  // MaterialPageRoute(
+  // builder: (context) => ShowReview()));
+  // },
+  // child: Text(
+  // 'Review',
+  // style: GoogleFonts.lato(
+  // color: Colors.white,
+  // fontWeight: FontWeight.bold,
+  // fontSize: 17,
+  // ),
+  // ),
+  // shape: RoundedRectangleBorder(
+  // borderRadius: BorderRadius.circular(10),
+  // ),
+  // ),
+  // ),
+  // Padding(
+  // padding: const EdgeInsets.only(
+  // top: 8,
+  // ),
+  // child: FlatButton(
+  // height: 40,
+  // minWidth: 170,
+  // color: Colors.blue,
+  // onPressed: () {
+  // Navigator.push(
+  // context,
+  // MaterialPageRoute(
+  // builder: (context) =>
+  // EdditTest(userModelOld: userModelOld!),
+  // ),
+  // ).then((value) => findUser());
+  // },
+  // child: Text(
+  // 'Eddit Profile',
+  // style: GoogleFonts.lato(
+  // color: Colors.white,
+  // fontWeight: FontWeight.bold,
+  // fontSize: 17,
+  // ),
+  // ),
+  // shape: RoundedRectangleBorder(
+  // borderRadius: BorderRadius.circular(10),
+  // ),
+  // ),
+  // ),
+  // ],
+  // ),
+  // ],
+  // ); // end column
+  // },
+  // ).toList());
+  // },
+  // );
+  // }
 
   Drawer buildDrawer(BuildContext context) {
     return Drawer(
@@ -591,7 +623,7 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
           color: Colors.white,
         ),
       ),
-      title: Text('Show Profile'),
+      title: Text('Show General Profile'),
     );
   }
 }

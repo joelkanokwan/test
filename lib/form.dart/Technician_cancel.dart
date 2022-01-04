@@ -35,41 +35,21 @@ class _TechnicianCancelState extends State<TechnicianCancel> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '**If technician reply Cancel**',
-                        style: GoogleFonts.lato(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Shop Name',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 15),
                       Row(
                         children: [
                           Text(
-                            'Reply time :',
+                            'Order number :',
                           ),
                           SizedBox(width: 10),
                           Text(
-                            'xxxxxxxxxx',
+                            'XXXXXX',
                           ),
                         ],
                       ),
                       Divider(thickness: 2),
                       Text(
-                        'Details :',
-                        style: GoogleFonts.lato(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
+                        'Job Description :',
                       ),
-                      Text('xxxxxxxxxxxxxxx'),
                     ],
                   ),
                 ),

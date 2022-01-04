@@ -43,6 +43,8 @@ class _RegisterPartnerState extends State<RegisterPartner> {
     'ชลบุรี',
   ];
 
+  int? _selectChoice;
+
   String? province, amphur, subdistrict, typetechnic;
   bool amphurbool = true;
   bool subdistrictbool = true;
@@ -302,6 +304,36 @@ class _RegisterPartnerState extends State<RegisterPartner> {
               key: _formKey,
               child: Column(
                 children: [
+                  Row(
+                    children: [
+                      Radio(
+                        value: 1,
+                        groupValue: _selectChoice,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectChoice = 1;
+                          });
+                        },
+                      ),
+                      Text(
+                        'Personal',
+                      ),
+                      SizedBox(width: 18),
+                      Radio(
+                        value: 2,
+                        groupValue: _selectChoice,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectChoice = 2;
+                          });
+                        },
+                      ),
+                      Text(
+                        'Corporation',
+                      ),
+                    ],
+                  ),
+
                   buildName(),
                   buildPhone(),
                   buildEmail(),

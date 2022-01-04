@@ -104,8 +104,8 @@ class _ShowMessagePartnerState extends State<ShowMessagePartner> {
         ),
         SpeedDialChild(
           onTap: () {
-           PartnerrCancel().normalDialog(context, 'ยกเลิกงาน', 'คุณแน่ใจที่จะยกเลิกงานใช่ไหม ?');
-           
+          //  PartnerrCancel().normalDialog(context, 'ยกเลิกงาน', 'คุณแน่ใจที่จะยกเลิกงานใช่ไหม ?');
+          //  
           },
           backgroundColor: Colors.amber,
           child: Icon(
