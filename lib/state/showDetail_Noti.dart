@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,8 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
   List<File?> fileAnswers = [];
   List<TextEditingController> answerControllers = [];
 
+  var permissionAnswers = <bool>[];
+
   @override
   void initState() {
     super.initState();
@@ -103,6 +106,7 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
       showIconSentAnswers.clear();
       showAnswerTextFields.clear();
       answerControllers.clear();
+      permissionAnswers.clear();
     }
 
     await Firebase.initializeApp().then((value) async {
@@ -210,6 +214,8 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
                     listAnswerModels.add(answerModels);
                     docIdReplyPosts.add(docIdReplyPost2);
                     listDocIdAnswers.add(docIdAnswers);
+                    permissionAnswers
+                        .add(userModelOld!.uid == replyPostModel.uid);
                   });
                 }
               }
@@ -287,44 +293,162 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
       itemBuilder: (context, index) => Row(
         children: [
           Container(
-            margin: EdgeInsets.only(left: 80, bottom: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 8),
-                      child: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                            replyPostModels[index].pathImage),
-                      ),
+              margin: EdgeInsets.only(left: 80, bottom: 4),
+              child: newContent(index, context)),
+        ],
+      ),
+    );
+  }
+
+  Widget newContent(int index, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(
+                    replyPostModels[index].pathImage),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              width: 180,
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShowText(title: replyPostModels[index].name),
+                  ShowText(
+                      title: TimeToString(
+                              timestamp: replyPostModels[index].timeReply)
+                          .findString()),
+                  ShowText(title: replyPostModels[index].reply),
+                ],
+              ),
+            ),
+            userModelOld!.uid != replyPostModels[index].uid
+                ? SizedBox()
+                : IconButton(
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: ListTile(
+                            leading: ShowImage(),
+                            title: ShowText(
+                              title: 'Confirm Delete ?',
+                            ),
+                            subtitle: ShowText(
+                              title: 'คุณต้องการจะลบ ?',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                Map<String, dynamic> map = {};
+                                map['status'] = 'offline';
+
+                                print('##4Dec map => $map');
+                                print(
+                                    '##4Dec docIdNoti = ${docIdNotifications[index]}');
+
+                                await FirebaseFirestore.instance
+                                    .collection('postcustomer')
+                                    .doc(docIdReply)
+                                    .collection('replypost')
+                                    .doc(docIdNotifications[index])
+                                    .update(map)
+                                    .then((value) => readDataNotifiction());
+                              },
+                              child: Text('ok'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('No'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      Icons.delete,
                     ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                      width: 180,
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ShowText(title: replyPostModels[index].name),
-                          ShowText(
-                              title: TimeToString(
-                                      timestamp:
-                                          replyPostModels[index].timeReply)
-                                  .findString()),
-                          ShowText(title: replyPostModels[index].reply),
-                        ],
-                      ),
-                    ),
-                    userModelOld!.uid != replyPostModels[index].uid
-                        ? SizedBox()
-                        : IconButton(
+                  ),
+          ],
+        ), // answer Row
+        replyPostModels[index].urlImagePost.isEmpty
+            ? SizedBox()
+            : Container(
+                margin: EdgeInsets.symmetric(vertical: 8),
+                width: 150,
+                height: 120,
+                child: InkWell(
+                  onTap: () {
+                    print('Click');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ShowImagePost(
+                                  pathImage:
+                                      replyPostModels[index].urlImagePost,
+                                )));
+                  },
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => ShowImage(),
+                    placeholder: (context, url) => ShowProgress(),
+                    imageUrl: replyPostModels[index].urlImagePost,
+                  ),
+                ),
+              ),
+        listAnswerModels[index].isEmpty
+            ? SizedBox()
+            : newListAnswer(listAnswerModels[index], docIdReplyPosts[index]),
+
+        permissionAnswers[index]
+            ? TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAnswerTextFields[index] = true;
+                  });
+                },
+                child: Text(
+                  'ตอบกลับ',
+                ),
+              )
+            : SizedBox(),
+        showAnswerTextFields[index]
+            ? Row(
+                children: [
+                  SizedBox(
+                    width: 30,
+                  ),
+                  newCircleAvatar(userModelOld!.img),
+                  Container(
+                    height: 50,
+                    width: 150,
+                    child: TextFormField(
+                      controller: answerControllers[index],
+                      onChanged: (value) {
+                        if (value.isEmpty) {
+                          setState(() {
+                            showIconSentAnswers[index] = false;
+                          });
+                        } else {
+                          setState(() {
+                            showIconSentAnswers[index] = true;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        suffix: IconButton(
                             onPressed: () async {
                               showDialog(
                                 context: context,
@@ -332,234 +456,109 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
                                   title: ListTile(
                                     leading: ShowImage(),
                                     title: ShowText(
-                                      title: 'Confirm Delete ?',
+                                      title: 'Take Photo Answer',
                                     ),
                                     subtitle: ShowText(
-                                      title: 'คุณต้องการจะลบ ?',
-                                    ),
+                                        title: 'Please Choose your photo'),
                                   ),
                                   actions: [
                                     TextButton(
-                                      onPressed: () async {
+                                      onPressed: () {
                                         Navigator.pop(context);
-                                        Map<String, dynamic> map = {};
-                                        map['status'] = 'offline';
-
-                                        print('##4Dec map => $map');
-                                        print(
-                                            '##4Dec docIdNoti = ${docIdNotifications[index]}');
-
-                                        await FirebaseFirestore.instance
-                                            .collection('postcustomer')
-                                            .doc(docIdReply)
-                                            .collection('replypost')
-                                            .doc(docIdNotifications[index])
-                                            .update(map)
-                                            .then((value) =>
-                                                readDataNotifiction());
+                                        processTakePhotoAnswer(
+                                            ImageSource.camera, index);
                                       },
-                                      child: Text('ok'),
+                                      child: Text(
+                                        'Camera',
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        processTakePhotoAnswer(
+                                            ImageSource.gallery, index);
+                                      },
+                                      child: Text(
+                                        'Gallery',
+                                      ),
                                     ),
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
-                                      child: Text('No'),
+                                      child: Text(
+                                        'Cancel',
+                                      ),
                                     ),
                                   ],
                                 ),
                               );
                             },
-                            icon: Icon(
-                              Icons.delete,
-                            ),
-                          ),
-                  ],
-                ),
-                replyPostModels[index].urlImagePost.isEmpty
-                    ? SizedBox()
-                    : Container(
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        width: 150,
-                        height: 120,
-                        child: InkWell(
-                          onTap: () {
-                            print('Click');
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ShowImagePost(
-                                          pathImage: replyPostModels[index]
-                                              .urlImagePost,
-                                        )));
-                          },
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) => ShowImage(),
-                            placeholder: (context, url) => ShowProgress(),
-                            imageUrl: replyPostModels[index].urlImagePost,
-                          ),
+                            icon: Icon(Icons.add_a_photo)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                listAnswerModels[index].isEmpty
-                    ? SizedBox()
-                    : newListAnswer(
-                        listAnswerModels[index], docIdReplyPosts[index]),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      showAnswerTextFields[index] = true;
-                    });
-                  },
-                  child: Text(
-                    'ตอบกลับ',
+                    ),
                   ),
-                ),
-                showAnswerTextFields[index]
-                    ? Row(
-                        children: [
-                          SizedBox(
-                            width: 30,
-                          ),
-                          newCircleAvatar(userModelOld!.img),
-                          Container(
-                            height: 50,
-                            width: 150,
-                            child: TextFormField(
-                              controller: answerControllers[index],
-                              onChanged: (value) {
-                                if (value.isEmpty) {
-                                  setState(() {
-                                    showIconSentAnswers[index] = false;
-                                  });
-                                } else {
-                                  setState(() {
-                                    showIconSentAnswers[index] = true;
-                                  });
-                                }
-                              },
-                              decoration: InputDecoration(
-                                suffix: IconButton(
-                                    onPressed: () async {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: ListTile(
-                                            leading: ShowImage(),
-                                            title: ShowText(
-                                              title: 'Take Photo Answer',
-                                            ),
-                                            subtitle: ShowText(
-                                                title:
-                                                    'Please Choose your photo'),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                processTakePhotoAnswer(
-                                                    ImageSource.camera, index);
-                                              },
-                                              child: Text(
-                                                'Camera',
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                processTakePhotoAnswer(
-                                                    ImageSource.gallery, index);
-                                              },
-                                              child: Text(
-                                                'Gallery',
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text(
-                                                'Cancel',
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(Icons.add_a_photo)),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                            ),
-                          ),
-                          ((showIconSentAnswers[index]) ||
-                                  (fileAnswers[index] != null))
-                              ? IconButton(
-                                  onPressed: () async {
-                                    if (fileAnswers[index] == null) {
-                                      // No Image Upload
-                                      processInsertNewAnswer(
-                                          answerControllers[index].text,
-                                          '',
-                                          index);
-                                    } else {
-                                      String nameImage =
-                                          'answer/${Random().nextInt(10000000)}.jpg';
-                                      FirebaseStorage storage =
-                                          FirebaseStorage.instance;
-                                      Reference reference = storage
-                                          .ref()
-                                          .child('answer/$nameImage');
-                                      UploadTask uploadTask = reference
-                                          .putFile(fileAnswers[index]!);
-                                      await uploadTask.whenComplete(() async {
-                                        await reference
-                                            .getDownloadURL()
-                                            .then((value) {
-                                          String urlImage = value;
-                                          processInsertNewAnswer(
-                                              answerControllers[index].text,
-                                              urlImage,
-                                              index);
-                                        });
-                                      });
-                                    }
-                                  },
-                                  icon: Icon(Icons.send),
-                                )
-                              : SizedBox(),
-                        ],
-                      )
-                    : SizedBox(),
-                fileAnswers[index] == null
-                    ? SizedBox()
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(
-                              left: 100,
-                            ),
-                            width: 120,
-                            height: 100,
-                            child: Image.file(
-                              fileAnswers[index]!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                fileAnswers[index] = null;
+                  ((showIconSentAnswers[index]) || (fileAnswers[index] != null))
+                      ? IconButton(
+                          onPressed: () async {
+                            if (fileAnswers[index] == null) {
+                              // No Image Upload
+                              processInsertNewAnswer(
+                                  answerControllers[index].text, '', index);
+                            } else {
+                              String nameImage =
+                                  'answer/${Random().nextInt(10000000)}.jpg';
+                              FirebaseStorage storage =
+                                  FirebaseStorage.instance;
+                              Reference reference =
+                                  storage.ref().child('answer/$nameImage');
+                              UploadTask uploadTask =
+                                  reference.putFile(fileAnswers[index]!);
+                              await uploadTask.whenComplete(() async {
+                                await reference.getDownloadURL().then((value) {
+                                  String urlImage = value;
+                                  processInsertNewAnswer(
+                                      answerControllers[index].text,
+                                      urlImage,
+                                      index);
+                                });
                               });
-                            },
-                            icon: Icon(Icons.clear),
-                          ),
-                        ],
-                      ),
-              ],
-            ),
-          ),
-        ],
-      ),
+                            }
+                          },
+                          icon: Icon(Icons.send),
+                        )
+                      : SizedBox(),
+                ],
+              )
+            : SizedBox(),
+        fileAnswers[index] == null
+            ? SizedBox()
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 100,
+                    ),
+                    width: 120,
+                    height: 100,
+                    child: Image.file(
+                      fileAnswers[index]!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        fileAnswers[index] = null;
+                      });
+                    },
+                    icon: Icon(Icons.clear),
+                  ),
+                ],
+              ),
+      ],
     );
   }
 
@@ -835,6 +834,9 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
   }
 
   Future<void> processInsertPostCustomer(String urlImagePost) async {
+    String token = postCustomerModels[0].token;
+    print('#6jan processInsertPostCustomer Work token Owner Post ==> $token');
+
     String name = userModelOld!.name;
     String pathImage = userModelOld!.img;
     String reply = textEditingController.text;
@@ -854,18 +856,29 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
         urlImagePost: urlImagePost,
         status: status);
 
-    await Firebase.initializeApp().then((value) async {
-      await FirebaseFirestore.instance
-          .collection('postcustomer')
-          .doc(docIdReply)
-          .collection('replypost')
-          .doc()
-          .set(model.toMap())
-          .then((value) {
-        print('#28Nov Insert Reply Success');
-        textEditingController.text = '';
-        file = null;
-        readDataNotifiction();
+    String titleNoti = 'Answer from ${userModelOld!.name}';
+    String bodyNoti = model.reply;
+
+    String apiSentNotification =
+        'https://www.androidthai.in.th/eye/apiNotification.php?isAdd=true&token=$token&title=$titleNoti&body=$bodyNoti';
+
+    await Dio().get(apiSentNotification).then((value) async {
+      print('#6jan Sent Noti to Owner Post Success value ==> $value');
+
+      await Firebase.initializeApp().then((value) async {
+        await FirebaseFirestore.instance
+            .collection('postcustomer')
+            .doc(docIdReply)
+            .collection('replypost')
+            .doc()
+            .set(model.toMap())
+            .then((value) {
+             // require sent notification
+          print('#28Nov Insert Reply Success');
+          textEditingController.text = '';
+          file = null;
+          readDataNotifiction();
+        });
       });
     });
   }
@@ -891,6 +904,9 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
         .collection('answer')
         .doc()
         .set(answerModel.toMap())
-        .then((value) => readDataNotifiction());
+        .then((value) {
+          // required sent notification
+          return readDataNotifiction();
+        });
   }
 }

@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
 
   String? myTitle;
 
-  String? myMessage;
+  String? myMessage, token;
 
   @override
   void initState() {
@@ -73,8 +73,8 @@ class _HomePageState extends State<HomePage> {
 
     await Firebase.initializeApp().then((value) async {
       await FirebaseMessaging.instance.getToken().then((value) async {
-        String token = value!;
-        print('@@@@ token ==>> $value');
+        token = value!;
+        print('#6jan token ที่ Login อยู่ ==>> $value');
 
         await FirebaseFirestore.instance
             .collection('user')
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
             .get()
             .then((value) async {
           print('@@@@ value ==>>> ${value.docs}');
-          TokenModel model = TokenModel(token: token);
+          TokenModel model = TokenModel(token: token!);
           Map<String, dynamic> data = model.toMap();
           if (value.docs.isEmpty) {
             //insert
@@ -122,6 +122,7 @@ class _HomePageState extends State<HomePage> {
       String message = event.notification!.body.toString();
       myTitle = title;
       myMessage = message;
+      alertNotifiction(title, message);
 
       processAfterClickNoti(title, message);
     });
@@ -616,25 +617,6 @@ class _HomePageState extends State<HomePage> {
         .then((value) async {
       print('@@@@@@ ค่าที่ได้จาก Noti ==> $title');
       // insert data to firebase
-
-      await Firebase.initializeApp().then((value) async {
-        DateTime dateTime = DateTime.now();
-        Timestamp timeNoti = Timestamp.fromDate(dateTime);
-
-        NotificationModel model = NotificationModel(
-            title: title,
-            message: message,
-            status: 'unread',
-            timeNoti: timeNoti);
-
-        await FirebaseFirestore.instance
-            .collection('user')
-            .doc(docUser)
-            .collection('mynotification')
-            .doc()
-            .set(model.toMap())
-            .then((value) => print('@@@@@@ insert Noti success'));
-      });
     });
   }
 }

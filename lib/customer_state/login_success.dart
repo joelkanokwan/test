@@ -1,5 +1,10 @@
+// ignore_for_file: await_only_futures
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/ctm_aboutus.dart';
 import 'package:joelfindtechnician/customer_state/ctm_contactus.dart';
@@ -7,9 +12,12 @@ import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
 import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/models/token_social_model.dart';
+import 'package:joelfindtechnician/state/detail_noti_social.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
+import 'package:joelfindtechnician/utility/find_token.dart';
 
 class LoginSuccess extends StatefulWidget {
   @override
@@ -18,6 +26,112 @@ class LoginSuccess extends StatefulWidget {
 
 class _LoginSuccessState extends State<LoginSuccess> {
   final User = FirebaseAuth.instance.currentUser!;
+  String? token, myTitle, myMessage;
+
+  FlutterLocalNotificationsPlugin flutterLocalNoti =
+      FlutterLocalNotificationsPlugin();
+  AndroidInitializationSettings? androidInitializationSettings;
+  InitializationSettings? initializationSettings;
+  @override
+  initState() {
+    super.initState();
+    findToken();
+    setupLocalNoti();
+  }
+
+  Future<void> setupLocalNoti() async {
+    androidInitializationSettings =
+        AndroidInitializationSettings('ic_launcher');
+    initializationSettings =
+        InitializationSettings(android: androidInitializationSettings);
+    await flutterLocalNoti.initialize(initializationSettings!,
+        onSelectNotification: onSelectNoti);
+  }
+
+  Future<void> onSelectNoti(String? string) async {
+    if (string != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailNotiSocial(
+              reply: myMessage!,
+            ),
+          ));
+    }
+  }
+
+  Future<void> alertNotifiction(String title, String message) async {
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      'channelId',
+      'channelName',
+      priority: Priority.high,
+      importance: Importance.max,
+      ticker: 'test2',
+    );
+    NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNoti
+        .show(0, title, message, notificationDetails)
+        .then((value) async {
+      print('#6jan ค่าที่ได้จาก Noti ==> $title');
+    });
+  }
+
+  Future<void> findToken() async {
+    token = await FindToken().processFindToken();
+    print('#6jan token ที่ userSocial Login อยู่ ==>$token');
+
+    String uidSocialLogin = User.uid;
+    String nameSocial = User.displayName ?? '';
+    String avatarSocial = User.photoURL ?? '';
+    print(
+        '#6jan uid ==> $uidSocialLogin, name ==> $nameSocial, avatar ==> $avatarSocial');
+    TokenSocialModel tokenSocialModel = TokenSocialModel(
+        token: token!, nameSocial: nameSocial, avatarSocial: avatarSocial);
+    await FirebaseFirestore.instance
+        .collection('social')
+        .doc(uidSocialLogin)
+        .get()
+        .then((value) async {
+      print('#6jan value ==> ${value.data()}');
+      if (value.data() == null) {
+        await FirebaseFirestore.instance
+            .collection('social')
+            .doc(uidSocialLogin)
+            .set(tokenSocialModel.toMap())
+            .then((value) => print('#6jan setToken Success'));
+      } else {
+        await FirebaseFirestore.instance
+            .collection('social')
+            .doc(uidSocialLogin)
+            .update(tokenSocialModel.toMap())
+            .then((value) => print('#6jan updateToken Success'));
+      }
+    });
+
+    await FirebaseMessaging.onMessage.listen((event) {
+      myTitle = event.notification!.title.toString();
+      myMessage = event.notification!.body.toString();
+      print('#6jan onMessage ทำงาน title = $myTitle, message = $myMessage');
+      alertNotifiction(myTitle!, myMessage!);
+    });
+    await FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      myTitle = event.notification!.title.toString();
+      myMessage = event.notification!.body.toString();
+      print(
+          '#6jan onMessageOpenApp ทำงาน title = $myTitle, message = $myMessage');
+      // alertNotifiction(myTitle!, myMessage!);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailNotiSocial(
+              reply: myMessage!,
+            ),
+          ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +181,9 @@ class _LoginSuccessState extends State<LoginSuccess> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CommunityPage(userSocialbol: true,)));
+                                  builder: (context) => CommunityPage(
+                                        userSocialbol: true,
+                                      )));
                         },
                         child: Row(
                           children: [

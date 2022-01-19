@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:joelfindtechnician/alertdialog/choose_post.dart';
+
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
 
@@ -17,7 +17,7 @@ class FormContactPartner extends StatefulWidget {
 class _FormContactPartnerState extends State<FormContactPartner> {
   DateTime? date;
   TimeOfDay? time;
-  
+
   File? image;
   String? imgUrl;
 
@@ -101,62 +101,6 @@ class _FormContactPartnerState extends State<FormContactPartner> {
           ),
         ),
         title: Text('Foam contact technician'),
-        // actions: [
-        // InkWell(
-        // onTap: () {},
-        // child: Padding(
-        // padding: const EdgeInsets.all(15),
-        // child: IconButton(
-        // onPressed: () {
-        // showDialog(
-        // context: context,
-        // builder: (BuildContext context) {
-        // return AlertDialog(
-        // title: Center(
-        // child: Text(
-        // 'Choose Profile Photo',
-        // style: GoogleFonts.lato(
-        // fontWeight: FontWeight.bold,
-        // color: Colors.purpleAccent,
-        // ),
-        // ),
-        // ),
-        // content: SingleChildScrollView(
-        // child: Row(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        // children: [
-        // FlatButton.icon(
-        // onPressed: () {
-        // _imageFromCamera();
-        // Navigator.of(context).pop();
-        // },
-        // icon: Icon(Icons.camera,
-        // color: Colors.purpleAccent),
-        // label: Text('Camera'),
-        // ),
-        // FlatButton.icon(
-        // onPressed: () {
-        // _imageFromGallery();
-        // Navigator.of(context).pop();
-        // },
-        // icon: Icon(
-        // Icons.image,
-        // color: Colors.purpleAccent,
-        // ),
-        // label: Text('Gallery'),
-        // ),
-        // ],
-        // ),
-        // ),
-        // );
-        // },
-        // );
-        // },
-        // icon: Icon(Icons.camera_alt_outlined),
-        // ),
-        // ),
-        // ),
-        // ],
       ),
       body: SingleChildScrollView(
         child: GestureDetector(
@@ -214,15 +158,15 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                       ),
                     ),
                   ),
-                  TextButton.icon(
-                    onPressed: () {
-                      ChoosePost()
-                          .normalDialog(context, 'Please choose your post', '');
-                    },
-                    icon: Icon(Icons.add),
-                    label: Text('Please Add your post to job Description'),
-                  ),
-                  SizedBox(height: 10),
+                  // TextButton.icon(
+                    // onPressed: () {
+                      // ChoosePost()
+                          // .normalDialog(context, 'Please choose your post', '');
+                    // },
+                    // icon: Icon(Icons.add),
+                    // label: Text('Please Add your post to job Description'),
+                  // ),
+                 
                   SizedBox(height: 10),
                   TextFormField(
                     validator: (value) {

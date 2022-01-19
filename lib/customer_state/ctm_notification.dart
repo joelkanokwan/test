@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/ctm_aboutus.dart';
@@ -6,10 +8,15 @@ import 'package:joelfindtechnician/customer_state/ctm_contactus.dart';
 import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/models/postcustomer_model.dart';
+import 'package:joelfindtechnician/state/ctm_list_answer.dart';
+import 'package:joelfindtechnician/state/detail_noti_social.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
+import 'package:joelfindtechnician/utility/time_to_string.dart';
+import 'package:joelfindtechnician/widgets/show_progress.dart';
 
 class CustomerNotification extends StatefulWidget {
   const CustomerNotification({Key? key}) : super(key: key);
@@ -19,23 +26,109 @@ class CustomerNotification extends StatefulWidget {
 }
 
 class _CustomerNotificationState extends State<CustomerNotification> {
+  var postCustomerModels = <PostCustomerModel>[];
+
+  String? uidLogin;
+
+  var docIdPostCustomers = <String>[];
+  @override
+  void initState() {
+    super.initState();
+    readPostCustomer();
+  }
+
+  Future<void> readPostCustomer() async {
+    await Firebase.initializeApp().then((value) async {
+      final User = FirebaseAuth.instance.currentUser!;
+      uidLogin = User.uid;
+
+      print('#6jan uidLogin ==> $uidLogin');
+
+      await FirebaseFirestore.instance
+          .collection('postcustomer')
+          .orderBy('timePost', descending: true)
+          .get()
+          .then((value) async {
+        for (var item in value.docs) {
+          PostCustomerModel postCustomerModel =
+              PostCustomerModel.fromMap(item.data());
+          if (postCustomerModel.uidCustomer == uidLogin) {
+            String docIdPostCustomer = item.id;
+            print(
+                '#13jan docIdPostCustomer ที่ ctm_notification ==> $docIdPostCustomer');
+            await FirebaseFirestore.instance
+                .collection('postcustomer')
+                .doc(docIdPostCustomer)
+                .collection('replypost')
+                .get()
+                .then((value) {
+              if (value.docs.isNotEmpty) {
+                setState(() {
+                  postCustomerModels.add(postCustomerModel);
+                  docIdPostCustomers.add(docIdPostCustomer);
+                });
+              }
+            });
+          }
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final User = FirebaseAuth.instance.currentUser!;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
+      appBar: newAppBar(context),
+      body: postCustomerModels.isEmpty
+          ? ShowProgress()
+          : ListView.builder(
+              itemCount: postCustomerModels.length,
+              itemBuilder: (context, index) => newContent(
+                postCustomerModels[index].job,
+                TimeToString(timestamp: postCustomerModels[index].timePost)
+                    .findString(),
+                postCustomerModels[index],
+                index,
+              ),
+            ),
+    );
+  }
+
+  AppBar newAppBar(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
         ),
-        title: Text('Customer Notification'),
       ),
-      body: Row(
+      title: Text('Customer Notification'),
+    );
+  }
+
+  Widget newContent(
+    String job,
+    String timePost,
+    PostCustomerModel postCustomerModel,
+    int index,
+  ) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CtmListAnswer(
+              job: job,
+              postCustomerModel: postCustomerModel,
+            ),
+          ),
+        );
+      },
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -52,7 +145,7 @@ class _CustomerNotificationState extends State<CustomerNotification> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 30, 0),
                 child: Text(
-                  'Name of senter',
+                  job,
                   style: GoogleFonts.lato(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -62,7 +155,7 @@ class _CustomerNotificationState extends State<CustomerNotification> {
               Padding(
                 padding: const EdgeInsets.only(top: 5),
                 child: Text(
-                  'Time',
+                  timePost,
                   style: GoogleFonts.lato(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -72,179 +165,6 @@ class _CustomerNotificationState extends State<CustomerNotification> {
             ],
           ),
         ],
-      ),
-      endDrawer: Drawer(
-        child: Material(
-          color: Colors.blue,
-          child: ListView(
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginSuccess(),
-                      ),
-                      (route) => false);
-                },
-                child: DrawerHeader(
-                  padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(User.photoURL!)),
-                      SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            User.displayName!,
-                            style: GoogleFonts.lato(
-                              fontSize: 17,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            User.email!,
-                            style: GoogleFonts.lato(
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.person_outline,
-                  ),
-                  title: Text('Go to services'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CommunityPage()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.notification_important_outlined,
-                  ),
-                  title: Text('Notification'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerNotification()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.shopping_bag_outlined,
-                  ),
-                  title: Text('Order History'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerOrderHistory()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(Icons.person_pin_circle_sharp),
-                  title: Text('About Us'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerAboutUs()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.message_outlined,
-                  ),
-                  title: Text(
-                    'Contact Us',
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerContactUs()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.label_important_outlined,
-                  ),
-                  title: Text('How to use App'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerHowtouseApp()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.warning_amber_outlined,
-                  ),
-                  title: Text('Term and Conditon'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerTermandConditon()));
-                  },
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.power_settings_new,
-                  ),
-                  title: Text('SignOut'),
-                  onTap: () {
-                    SocialService().signOut();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

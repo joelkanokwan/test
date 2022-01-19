@@ -31,7 +31,7 @@ class _cState extends State<c> {
    ),
  ),
         automaticallyImplyLeading: false,
-        title: Text('Credit Card Form'),
+        title: Text('C'),
       ),
       resizeToAvoidBottomInset: true,
       body: SafeArea(

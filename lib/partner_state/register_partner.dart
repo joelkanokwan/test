@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,19 +7,20 @@ import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:joelfindtechnician/alertdialog/alert_detail.dart';
-import 'package:joelfindtechnician/alertdialog/choose_jobscope.dart';
+
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
 import 'package:joelfindtechnician/alertdialog/success_register.dart';
-import 'package:joelfindtechnician/gsheet/controller.dart';
-import 'package:joelfindtechnician/gsheet/model.dart';
+
 import 'package:joelfindtechnician/model.dart';
 import 'package:joelfindtechnician/models/subdistruct_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_model.dart';
 import 'package:joelfindtechnician/models/user_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
+import 'package:joelfindtechnician/widgets/show_image.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class RegisterPartner extends StatefulWidget {
@@ -31,11 +33,16 @@ class _RegisterPartnerState extends State<RegisterPartner> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController nameController = TextEditingController();
+  TextEditingController idCardlController = TextEditingController();
   TextEditingController phonenumberlController = TextEditingController();
   TextEditingController jobtypeController = TextEditingController();
   TextEditingController jobscopeController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController accountNumberController = TextEditingController();
+  TextEditingController nameOfBankController = TextEditingController();
+  TextEditingController ownerAccountController = TextEditingController();
+  TextEditingController branchController = TextEditingController();
   int? indexProvince;
   List<String> provinces = [
     'เชียงใหม่',
@@ -60,10 +67,22 @@ class _RegisterPartnerState extends State<RegisterPartner> {
 
   List<String> typeTechnicStrings = [];
 
+  File? file;
+
   @override
   void initState() {
     super.initState();
     readAllType();
+  }
+
+  processTakePhoto(ImageSource source) async {
+    try {
+      var result = await ImagePicker()
+          .getImage(source: source, maxWidth: 800, maxHeight: 800);
+      setState(() {
+        file = File(result!.path);
+      });
+    } catch (e) {}
   }
 
   Future<void> readAllType() async {
@@ -210,7 +229,6 @@ class _RegisterPartnerState extends State<RegisterPartner> {
               .set(userModelFirebase.toMap())
               .then((value) {
             print('Insert Data Success');
-            insertValueToSheet();
           });
         } else {
           print('ชื่อร้านซ้ำ');
@@ -221,35 +239,36 @@ class _RegisterPartnerState extends State<RegisterPartner> {
     });
   }
 
-  void insertValueToSheet() {
-    RegisterFoam registerFoam = RegisterFoam(
-      nameController.text,
-      phonenumberlController.text,
-      jobtypeController.text,
-      jobscopeController.text,
-      addressController.text,
-      emailController.text,
-    );
-    FormController formController = FormController();
-    showDialog(
-      context: context,
-      builder: (context) => SuccessRegister(
-        title: "",
-        discription: "",
-        buttonText: "",
-      ),
-    );
-    _formKey.currentState!.reset();
-    _showSnackbar("");
-    formController.submitForm(registerFoam, (String response) {
-      print("Response: $response");
-      if (response == FormController.STATUS_SUCCESS) {
-        _showSnackbar("Submitted");
-      } else {
-        _showSnackbar("Error Occurred!");
-      }
-    });
-  }
+  // void insertValueToSheet() {
+  // RegisterFoam registerFoam = RegisterFoam(
+  // nameController.text,
+  //
+  // phonenumberlController.text,
+  // jobtypeController.text,
+  // jobscopeController.text,
+  // addressController.text,
+  // emailController.text,
+  // );
+  // FormController formController = FormController();
+  // showDialog(
+  // context: context,
+  // builder: (context) => SuccessRegister(
+  // title: "",
+  // discription: "",
+  // buttonText: "",
+  // ),
+  // );
+  // _formKey.currentState!.reset();
+  // _showSnackbar("");
+  // formController.submitForm(registerFoam, (String response) {
+  // print("Response: $response");
+  // if (response == FormController.STATUS_SUCCESS) {
+  // _showSnackbar("Submitted");
+  // } else {
+  // _showSnackbar("Error Occurred!");
+  // }
+  // });
+  // }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -334,7 +353,12 @@ class _RegisterPartnerState extends State<RegisterPartner> {
                     ],
                   ),
 
+                  Text(
+                    'ข้อมูลส่วนบุคคล',
+                  ),
+
                   buildName(),
+                  buildIdCard(),
                   buildPhone(),
                   buildEmail(),
                   buildScope(),
@@ -353,8 +377,50 @@ class _RegisterPartnerState extends State<RegisterPartner> {
                       : subdistrict == null
                           ? buildSubDistrict()
                           : Text('ตำบล ${subdistrict!}'),
+
                   buildJobType(context),
                   SizedBox(height: 20),
+                  Text('ข้อมูลการโอนเงิน'),
+                  buildNameOfBank(),
+                  buildOwnerAccount(),
+                  buildAccountNumber(),
+
+                  buildbranch(),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: ListTile(
+                            leading: ShowImage(),
+                            title: ShowText(title: 'Choose Image'),
+                            subtitle: ShowText(title: 'Please Choose Image'),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                processTakePhoto(ImageSource.camera);
+                              },
+                              child: Text('Camera'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                processTakePhoto(ImageSource.gallery);
+                              },
+                              child: Text('Gallery'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Cancel'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text('Browse'),
+                  ),
                   SizedBox(height: 20),
                   Container(
                     height: 50,
@@ -618,13 +684,95 @@ class _RegisterPartnerState extends State<RegisterPartner> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "ที่อยู่ปัจจุบัน/ที่ตั้งห้างร้าน/บริษัท",
+        labelText: "ที่อยู่ปัจจุบัน/ที่ตั้งบริษัท",
         labelStyle: GoogleFonts.lato(
           color: Colors.grey,
           fontSize: 15,
           fontWeight: FontWeight.w700,
         ),
       ),
+    );
+  }
+
+  TextFormField buildNameOfBank() {
+    return TextFormField(
+      controller: nameOfBankController,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'กรุณาระบุชื่อธนาคาร';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "ชื่อธนาคาร",
+        labelStyle: GoogleFonts.lato(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildOwnerAccount() {
+    return TextFormField(
+      controller: ownerAccountController,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'กรุณาระบุชื่อเจ้าของบัญชี';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "ชื่อเจ้าของบัญชี",
+        labelStyle: GoogleFonts.lato(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildbranch() {
+    return TextFormField(
+      controller: branchController,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'กรุณาระบุสาขา';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "สาขา",
+        labelStyle: GoogleFonts.lato(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildAccountNumber() {
+    return TextFormField(
+      maxLength: 10,
+      controller: accountNumberController,
+      validator: (value) {
+        if (value!.trim().length != 10) {
+          return 'กรุณาระบุหมายเลขบัญชีธนาคาร';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "หมายเลขบัญชีธนาคาร",
+        labelStyle: GoogleFonts.lato(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      keyboardType: TextInputType.number,
     );
   }
 
@@ -668,6 +816,28 @@ class _RegisterPartnerState extends State<RegisterPartner> {
     );
   }
 
+  TextFormField buildIdCard() {
+    return TextFormField(
+      maxLength: 13,
+      controller: idCardlController,
+      validator: (value) {
+        if (value!.trim().length != 13) {
+          return 'กรุณาระบุหมายเลขบัตรให้ถูกต้อง';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "หมายเลขบัตรประจำตัวประชาชน/หมายเลขประจำตัวผู้เสียภาษี",
+        labelStyle: GoogleFonts.lato(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      keyboardType: TextInputType.number,
+    );
+  }
+
   TextFormField buildPhone() {
     return TextFormField(
       maxLength: 10,
@@ -695,12 +865,12 @@ class _RegisterPartnerState extends State<RegisterPartner> {
       controller: nameController,
       validator: (value) {
         if (value!.isEmpty) {
-          return 'กรุณาระบุชื่อสกุล/ห้างร้าน/บริษัท';
+          return 'กรุณาระบุชื่อสกุล/บริษัท';
         }
         return null;
       },
       decoration: InputDecoration(
-        labelText: "ชื่อสกุล/ห้างร้าน/บริษัท",
+        labelText: "ชื่อสกุล/บริษัท",
         labelStyle: GoogleFonts.lato(
           color: Colors.grey,
           fontSize: 15,

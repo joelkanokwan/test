@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
 
 class PartnerCancel {
   Future<Null> normalDialog(
@@ -12,15 +11,7 @@ class PartnerCancel {
           title: Text(title),
           subtitle: Text(message),
         ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomerCancelSuccess()),
-                  (route) => true),
-              child: Text('OK'))
-        ],
+        actions: [TextButton(onPressed: () {}, child: Text('OK'))],
       ),
     );
   }

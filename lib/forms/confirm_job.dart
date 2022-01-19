@@ -13,92 +13,49 @@ class ConfirmJob extends StatefulWidget {
 
 class _ConfirmJobState extends State<ConfirmJob> {
   DateTime? date;
-TimeOfDay? time;
+  TimeOfDay? time;
 
- String getTime() {
-   if (time == null) {
-     return 'Appointment Time';
-   } else {
-     final hours = time!.hour.toString().padLeft(2, '0');
-     final minutes = time!.minute.toString().padLeft(2, '0');
-     return '$hours:$minutes';
-   }
- }
- String getDate() {
-   if (date == null) {
-     return 'Appointment Date';
-   } else {
-     return '${date!.day}/${date!.month}/${date!.year}';
-   }
- }
+  String getTime() {
+    if (time == null) {
+      return 'Appointment Time';
+    } else {
+      final hours = time!.hour.toString().padLeft(2, '0');
+      final minutes = time!.minute.toString().padLeft(2, '0');
+      return '$hours:$minutes';
+    }
+  }
 
- Future pickDate(BuildContext context) async {
-  final initialDate = DateTime.now();
-  final newDate = await showDatePicker(
-    context: context,
-    initialDate: initialDate,
-    firstDate: DateTime.now(),
-    lastDate: DateTime(2023),
-  );
-  if (newDate == null) return;
-  setState(() => date = newDate);
-}
-Future pickTime(BuildContext context) async {
-  final initialTime = TimeOfDay(hour: 9, minute: 0);
-  final newTime = await showTimePicker(
-    context: context,
-    initialTime: time ?? initialTime,
-  );
-  if (newTime == null) return;
-  setState(() {
-    time = newTime;
-  });
-}
- 
- 
+  String getDate() {
+    if (date == null) {
+      return 'Appointment Date';
+    } else {
+      return '${date!.day}/${date!.month}/${date!.year}';
+    }
+  }
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  Future pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2023),
+    );
+    if (newDate == null) return;
+    setState(() => date = newDate);
+  }
 
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  Future pickTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: time ?? initialTime,
+    );
+    if (newTime == null) return;
+    setState(() {
+      time = newTime;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,13 +148,20 @@ Future pickTime(BuildContext context) async {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                     
+                      Divider(thickness: 3),
+                      Text(
+                        'Payment method :',
+                        style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 15),
+            // SizedBox(height: 15),
             // Padding(
             // padding: const EdgeInsets.all(8.0),
             // child: Text(
@@ -215,19 +179,68 @@ Future pickTime(BuildContext context) async {
             // style: GoogleFonts.lato(color: Colors.red),
             // ),
             // ),
-            // Padding(
-            // padding: const EdgeInsets.all(8.0),
-            // child: Text(
-            // 'Rejected to change appointment :',
-            // style: GoogleFonts.lato(color: Colors.red),
+            // Row(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // children: [
+            // ElevatedButton(
+            // onPressed: () {
+            // showDialog(
+            // context: context,
+            // builder: (context) => AlertDialog(
+            // title: ListTile(
+            // leading: ShowImage(),
+            // title:
+            // ShowText(title: 'Confirm Change Appointment ?'),
+            // subtitle: ShowText(
+            // title:
+            // 'If press OK the will change to new appointment time'),
             // ),
+            // actions: [
+            // TextButton(
+            // onPressed: () {},
+            // child: Text('OK'),
             // ),
-            // Padding(
-            // padding: const EdgeInsets.all(8.0),
-            // child: Text(
-            // 'Accept to change appointment to :',
-            // style: GoogleFonts.lato(color: Colors.red),
+            // TextButton(
+            // onPressed: () {
+            // Navigator.pop(context);
+            // },
+            // child: Text('Cancel'),
             // ),
+            // ],
+            // ),
+            // );
+            // },
+            // child: Text('Confirm'),
+            // ),
+            // SizedBox(width: 10),
+            // ElevatedButton(
+            // onPressed: () {
+            // showDialog(
+            // context: context,
+            // builder: (context) => AlertDialog(
+            // title: ListTile(
+            // leading: ShowImage(),
+            // title: ShowText(title: 'Confirm to cancel ?'),
+            // subtitle: ShowText(title: 'Appointment still same'),
+            // ),
+            // actions: [
+            // TextButton(
+            // onPressed: () {},
+            // child: Text('OK'),
+            // ),
+            // TextButton(
+            // onPressed: () {
+            // Navigator.pop(context);
+            // },
+            // child: Text('Cancel'),
+            // ),
+            // ],
+            // ),
+            // );
+            // },
+            // child: Text('Cancel'),
+            // ),
+            // ],
             // ),
             Row(
               children: [
@@ -299,69 +312,6 @@ Future pickTime(BuildContext context) async {
                 ),
               ),
             ),
-            // Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // children: [
-            // ElevatedButton(
-            // onPressed: () {
-            // showDialog(
-            // context: context,
-            // builder: (context) => AlertDialog(
-            // title: ListTile(
-            // leading: ShowImage(),
-            // title:
-            // ShowText(title: 'Confirm Change Appointment ?'),
-            // subtitle: ShowText(
-            // title:
-            // 'If press OK the will change to new appointment time'),
-            // ),
-            // actions: [
-            // TextButton(
-            // onPressed: () {},
-            // child: Text('OK'),
-            // ),
-            // TextButton(
-            // onPressed: () {
-            // Navigator.pop(context);
-            // },
-            // child: Text('Cancel'),
-            // ),
-            // ],
-            // ),
-            // );
-            // },
-            // child: Text('Confirm'),
-            // ),
-            // SizedBox(width: 10),
-            // ElevatedButton(
-            // onPressed: () {
-            // showDialog(
-            // context: context,
-            // builder: (context) => AlertDialog(
-            // title: ListTile(
-            // leading: ShowImage(),
-            // title: ShowText(title: 'Confirm to cancel ?'),
-            // subtitle: ShowText(title: 'Appointment still same'),
-            // ),
-            // actions: [
-            // TextButton(
-            // onPressed: () {},
-            // child: Text('OK'),
-            // ),
-            // TextButton(
-            // onPressed: () {
-            // Navigator.pop(context);
-            // },
-            // child: Text('Cancel'),
-            // ),
-            // ],
-            // ),
-            // );
-            // },
-            // child: Text('Cancel'),
-            // ),
-            // ],
-            // ),
           ],
         ),
       ),

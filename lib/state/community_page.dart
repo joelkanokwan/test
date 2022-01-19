@@ -89,6 +89,10 @@ class _CommunityPageState extends State<CommunityPage> {
 
   late String nameUserLogin;
 
+  var permissionAnswerSocials = <bool>[];
+
+  bool? boolPostcustomer;
+
   void buildSetUp() {
     postCustomerModels.clear();
     docIdPostCustomers.clear();
@@ -105,6 +109,7 @@ class _CommunityPageState extends State<CommunityPage> {
     listOflistAnswerModels.clear();
     listOflistIdAnswers.clear();
     myListDocIdReplyPosts.clear();
+    permissionAnswerSocials.clear();
   }
 
   _imageFromCamera(int index) async {
@@ -286,7 +291,6 @@ class _CommunityPageState extends State<CommunityPage> {
           ),
         ),
       ),
-      endDrawer: load ? Drawer() : buildDrawer(context),
     );
   }
 
@@ -589,20 +593,7 @@ class _CommunityPageState extends State<CommunityPage> {
                             index2,
                             listOflistIdAnswers[index][index2]),
                     userSocial!
-                        ? TextButton(
-                            onPressed: () {
-                              print(
-                                  '### index => $index, index2 => $index2, iconAnswer ==> ${listIconAnswers[index][index2]}');
-                              setState(() {
-                                listTextFieldAnswers[index][index2] = true;
-                              });
-                            },
-                            child: ShowText(
-                              title: 'ตอบกลับ',
-                            ),
-                          )
-                        : checkPermissionType(
-                                postCustomerModels[index].typeTechnics)
+                        ? permissionAnswerSocials[index]
                             ? TextButton(
                                 onPressed: () {
                                   print(
@@ -615,6 +606,25 @@ class _CommunityPageState extends State<CommunityPage> {
                                   title: 'ตอบกลับ',
                                 ),
                               )
+                            : SizedBox()
+                        : checkPermissionType(
+                                postCustomerModels[index].typeTechnics)
+                            ? (User.uid ==
+                                    listReplyPostModels[index][index2].uid)
+                                ? TextButton(
+                                    onPressed: () {
+                                      print(
+                                          '### index => $index, index2 => $index2, iconAnswer ==> ${listIconAnswers[index][index2]}');
+                                      setState(() {
+                                        listTextFieldAnswers[index][index2] =
+                                            true;
+                                      });
+                                    },
+                                    child: ShowText(
+                                      title: 'ตอบกลับ',
+                                    ),
+                                  )
+                                : SizedBox()
                             : SizedBox(),
                     listTextFieldAnswers[index][index2]
                         ? Column(
@@ -889,115 +899,120 @@ class _CommunityPageState extends State<CommunityPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: CircleAvatar(
-            backgroundImage: userSocial!
-                ? CachedNetworkImageProvider(User.photoURL.toString())
-                : CachedNetworkImageProvider(userModelOld!.img),
-          ),
-        ),
-        Column(
-          children: [
-            Container(
-              width: 250,
-              height: 80,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 16),
-                child: TextFormField(
-                  controller: replyControllers[index],
-                  onChanged: (value) {
-                    setState(() {
-                      showPostIcons[index] = true;
-                      if (value.isEmpty) {
-                        showPostIcons[index] = false;
-                      } else {}
-                    });
-                  },
-                  decoration: InputDecoration(
-                    suffix: IconButton(
-                      onPressed: () async {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Center(
-                                child: Text(
-                                  'Choose Profile Photo',
-                                  style: GoogleFonts.lato(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.purpleAccent,
-                                  ),
-                                ),
-                              ),
-                              content: SingleChildScrollView(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    FlatButton.icon(
-                                      onPressed: () {
-                                        _imageFromCamera(index);
-                                        Navigator.of(context).pop();
-                                      },
-                                      icon: Icon(Icons.camera,
-                                          color: Colors.purpleAccent),
-                                      label: Text('Camera'),
-                                    ),
-                                    FlatButton.icon(
-                                      onPressed: () {
-                                        _imageFromGallery(index);
-                                        Navigator.of(context).pop();
-                                      },
-                                      icon: Icon(
-                                        Icons.image,
-                                        color: Colors.purpleAccent,
+        permissionAnswerSocials[index]
+            ? Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CircleAvatar(
+                  backgroundImage: userSocial!
+                      ? CachedNetworkImageProvider(User.photoURL.toString())
+                      : CachedNetworkImageProvider(userModelOld!.img),
+                ),
+              )
+            : SizedBox(),
+        permissionAnswerSocials[index]
+            ? Column(
+                children: [
+                  Container(
+                    width: 250,
+                    height: 80,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 16),
+                      child: TextFormField(
+                        controller: replyControllers[index],
+                        onChanged: (value) {
+                          setState(() {
+                            showPostIcons[index] = true;
+                            if (value.isEmpty) {
+                              showPostIcons[index] = false;
+                            } else {}
+                          });
+                        },
+                        decoration: InputDecoration(
+                          suffix: IconButton(
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Center(
+                                      child: Text(
+                                        'Choose Profile Photo',
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.purpleAccent,
+                                        ),
                                       ),
-                                      label: Text('Gallery'),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      icon: Icon(Icons.camera_alt_outlined),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(30),
+                                    content: SingleChildScrollView(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          FlatButton.icon(
+                                            onPressed: () {
+                                              _imageFromCamera(index);
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(Icons.camera,
+                                                color: Colors.purpleAccent),
+                                            label: Text('Camera'),
+                                          ),
+                                          FlatButton.icon(
+                                            onPressed: () {
+                                              _imageFromGallery(index);
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(
+                                              Icons.image,
+                                              color: Colors.purpleAccent,
+                                            ),
+                                            label: Text('Gallery'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            icon: Icon(Icons.camera_alt_outlined),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            files[index] == null
-                ? SizedBox()
-                : Container(
-                    width: 250,
-                    height: 200,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.file(
-                          files[index]!,
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              files[index] = null;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.clear,
+                  files[index] == null
+                      ? SizedBox()
+                      : Container(
+                          width: 250,
+                          height: 200,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.file(
+                                files[index]!,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    files[index] = null;
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.clear,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-          ],
-        ),
+                ],
+              )
+            : SizedBox(),
         (showPostIcons[index]) || (files[index] != null)
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1320,173 +1335,6 @@ class _CommunityPageState extends State<CommunityPage> {
     );
   }
 
-  Drawer buildDrawer(BuildContext context) {
-    return Drawer(
-      child: Material(
-        color: Colors.blue,
-        child: ListView(
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginSuccess(),
-                    ),
-                    (route) => false);
-              },
-              child: DrawerHeader(
-                padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(User.photoURL == null
-                            ? userModelOld!.img.isEmpty
-                                ? MyConstant.urlNoAvatar
-                                : userModelOld!.img
-                            : User.photoURL!)),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          User.displayName == null
-                              ? userModelOld!.name
-                              : User.displayName!,
-                          style: GoogleFonts.lato(
-                            fontSize: 17,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          User.email!,
-                          style: GoogleFonts.lato(
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.notification_important_outlined,
-                ),
-                title: Text('Notification'),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CustomerNotification()));
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.shopping_bag_outlined,
-                ),
-                title: Text('Order History'),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CustomerOrderHistory()));
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(Icons.person_pin_circle_sharp),
-                title: Text('About Us'),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CustomerAboutUs()));
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.message_outlined,
-                ),
-                title: Text(
-                  'Contact Us',
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CustomerContactUs()));
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.label_important_outlined,
-                ),
-                title: Text('How to use App'),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CustomerHowtouseApp()));
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.warning_amber_outlined,
-                ),
-                title: Text('Term and Conditon'),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CustomerTermandConditon()));
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.power_settings_new,
-                ),
-                title: Text('SignOut'),
-                onTap: () {
-                  SocialService().signOut();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                      (route) => false);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<void> readPostCustomerData() async {
     buildSetUp();
 
@@ -1495,6 +1343,8 @@ class _CommunityPageState extends State<CommunityPage> {
         .orderBy('timePost', descending: true)
         .get()
         .then((value) async {
+      print('#13jan value readPostCustomerData ==>> ${value.docs}');
+
       for (var item in value.docs) {
         PostCustomerModel postCustomerModel =
             PostCustomerModel.fromMap(item.data());
@@ -1509,9 +1359,7 @@ class _CommunityPageState extends State<CommunityPage> {
             List<String> docIdReplyAnswers = [];
             List<List<AnswerModel>> listAnswerModels = [];
             List<List<String>> listIdAnswers = [];
-
             List<String> myDocIdReplyPosts = [];
-
             await FirebaseFirestore.instance
                 .collection('postcustomer')
                 .doc(docIdPostcustomer)
@@ -1528,16 +1376,13 @@ class _CommunityPageState extends State<CommunityPage> {
                 String docIdReply = item.id;
                 ReplyPostModel replyPostModel =
                     ReplyPostModel.fromMap(item.data());
-
                 if (replyPostModel.status != 'offline') {
                   String myDocIdReplyPost = item.id;
                   myDocIdReplyPosts.add(myDocIdReplyPost);
-
                   replyPostModels.add(replyPostModel);
                   docIdReplys.add(docIdReply);
                   List<AnswerModel> answerModels = [];
                   List<String> idAnswers = [];
-
                   await FirebaseFirestore.instance
                       .collection('postcustomer')
                       .doc(docIdPostcustomer)
@@ -1552,7 +1397,6 @@ class _CommunityPageState extends State<CommunityPage> {
                       AnswerModel answerModel =
                           AnswerModel.fromMap(item.data());
                       answerModels.add(answerModel);
-
                       String idAnswer = item.id;
                       idAnswers.add(idAnswer);
                     }
@@ -1562,9 +1406,13 @@ class _CommunityPageState extends State<CommunityPage> {
                 }
               }
             });
-
+            bool permissionBool = true;
+            if (userSocial!) {
+              permissionBool = User.uid == postCustomerModel.uidCustomer;
+            }
             // int i = 0;
             setState(() {
+              boolPostcustomer = true;
               loadPost = false;
               postCustomerModels.add(postCustomerModel);
               docIdPostCustomers.add(docIdPostcustomer);
@@ -1577,15 +1425,16 @@ class _CommunityPageState extends State<CommunityPage> {
               listDocIdReplyAnswers.add(docIdReplyAnswers);
               listOflistAnswerModels.add(listAnswerModels);
               listOflistIdAnswers.add(listIdAnswers);
-
               myListDocIdReplyPosts.add(myDocIdReplyPosts);
-              ;
+              permissionAnswerSocials.add(permissionBool);
             });
             // i++;
           }
         }
       }
     });
+
+    //end
   }
 
   String protectWord(String name) {
@@ -1818,7 +1667,7 @@ class _CommunityPageState extends State<CommunityPage> {
     print('##5Dec userModelOld.province ==> ${userModelOld!.province}');
     print('##5Dec province ==> $provinces');
 
-    if (userModelOld!.province == provinceChoosed){
+    if (userModelOld!.province == provinceChoosed) {
       for (var typePost in typeTechnicsPost) {
         if (typePost.isNotEmpty) {
           for (var typeUser in userModelOld!.typeTechnics) {

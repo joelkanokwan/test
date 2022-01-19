@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/alertdialog/ctm_appointment.dart';
-import 'package:joelfindtechnician/alertdialog/ctm_cancel.dart';
-import 'package:joelfindtechnician/alertdialog/ctmAppointment_success.dart';
-import 'package:joelfindtechnician/alertdialog/ctmCancel_success.dart';
+
+
+
+
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
-import 'package:joelfindtechnician/partner/job_done.dart';
+import 'package:joelfindtechnician/forms/job_done.dart';
 
 class ShowMessageCustomer extends StatefulWidget {
   const ShowMessageCustomer({Key? key}) : super(key: key);

@@ -15,6 +15,7 @@ class PostCustomerModel {
   final String name;
   final String pathUrl;
   final String status;
+  final String token;
   PostCustomerModel({
     required this.address,
     required this.amphur,
@@ -28,6 +29,7 @@ class PostCustomerModel {
     required this.name,
     required this.pathUrl,
     required this.status,
+    required this.token,
   });
 
   Map<String, dynamic> toMap() {
@@ -44,23 +46,25 @@ class PostCustomerModel {
       'name': name,
       'pathUrl': pathUrl,
       'status': status,
+      'token': token,
     };
   }
 
   factory PostCustomerModel.fromMap(Map<String, dynamic> map) {
     return PostCustomerModel(
-      address: map['address'],
-      amphur: map['amphur'],
-      district: map['district'],
-      job: map['job'],
+      address: map['address'] ?? '',
+      amphur: map['amphur'] ?? '',
+      district: map['district'] ?? '',
+      job: map['job'] ?? '',
       pathImages: List<String>.from(map['pathImages']),
-      province: map['province'],
-      timePost: map['timePost'],
+      province: map['province'] ?? '',
+      timePost:( map['timePost']),
       typeTechnics: List<String>.from(map['typeTechnics']),
-      uidCustomer: map['uidCustomer'],
-      name: map['name'],
-      pathUrl: map['pathUrl'],
-      status: map['status'],
+      uidCustomer: map['uidCustomer'] ?? '',
+      name: map['name'] ?? '',
+      pathUrl: map['pathUrl'] ?? '',
+      status: map['status'] ?? '',
+      token: map['token'] ?? '',
     );
   }
 

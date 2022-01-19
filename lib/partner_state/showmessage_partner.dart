@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/alertdialog/cancelReportform_success.dart';
-import 'package:joelfindtechnician/alertdialog/jobdone_success.dart';
 import 'package:joelfindtechnician/alertdialog/partner_cancel.dart';
-import 'package:joelfindtechnician/forms/partner_confirm.dart';
+
 
 
 

@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:joelfindtechnician/forms/creditcard_form.dart';
-import 'package:joelfindtechnician/state/c.dart';
+
+import 'package:joelfindtechnician/forms/c.dart';
 
 class CheckDetail extends StatefulWidget {
   const CheckDetail({Key? key}) : super(key: key);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/alertdialog/cancel_success.dart';
+
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/alertdialog/partner_cancel.dart';
-import 'package:joelfindtechnician/form.dart/Technician_cancel.dart';
-import 'package:joelfindtechnician/form.dart/check_detail.dart';
-import 'package:joelfindtechnician/form.dart/confirm_job.dart';
+
+import 'package:joelfindtechnician/forms/check_detail.dart';
+import 'package:joelfindtechnician/forms/confirm_job.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
 
@@ -181,14 +181,7 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CancelSuccess(),
-                                  ),
-                                  (route) => false);
-                            },
+                            onPressed: () {},
                             child: Text('OK'),
                           ),
                           TextButton(

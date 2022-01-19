@@ -6,19 +6,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:joelfindtechnician/alertdialog/choose_jobscope.dart';
+
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/alertdialog/select_province.dart';
 import 'package:joelfindtechnician/model.dart';
+import 'package:joelfindtechnician/models/notification_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/subdistruct_model.dart';
 import 'package:joelfindtechnician/models/token_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
+import 'package:joelfindtechnician/utility/find_token.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
 
@@ -56,7 +59,7 @@ class _CreatePostState extends State<CreatePost> {
   List<String> pathImages = [];
   List<String> titleTypeTechnics = [];
 
-  String? uid, name, pathUrl;
+  String? uid, name, pathUrl, token;
 
   @override
   void initState() {
@@ -82,6 +85,13 @@ class _CreatePostState extends State<CreatePost> {
     }
 
     readAllType();
+
+    findToken();
+  }
+
+  Future<void> findToken() async {
+    token = await FindToken().processFindToken();
+    print('#6jan token ที่ Create Account Post ==> $token');
   }
 
   Future<void> findCurrentUser() async {
@@ -274,9 +284,30 @@ class _CreatePostState extends State<CreatePost> {
                 String apiSentNotification =
                     'https://www.androidthai.in.th/eye/apiNotification.php?isAdd=true&token=$token&title=$title&body=$body';
 
-                await Dio()
-                    .get(apiSentNotification)
-                    .then((value) => print('@@@@@ success sent Noti'));
+                await Dio().get(apiSentNotification).then((value) async {
+                  print('#6jan success sent Noti');
+
+                  await Firebase.initializeApp().then((value) async {
+                    DateTime dateTime = DateTime.now();
+                    Timestamp timeNoti = Timestamp.fromDate(dateTime);
+                    NotificationModel model = NotificationModel(
+                      title: title,
+                      message: body,
+                      status: 'unread',
+                      timeNoti: timeNoti,
+                      token: this.token!, 
+                      uidCustomer: uid!,
+                      
+                    );
+                    await FirebaseFirestore.instance
+                        .collection('user')
+                        .doc(docIdUser)
+                        .collection('mynotification')
+                        .doc()
+                        .set(model.toMap())
+                        .then((value) => print('@@@@@@ insert Noti success'));
+                  });
+                });
               }
             });
           }
@@ -627,7 +658,8 @@ class _CreatePostState extends State<CreatePost> {
         uidCustomer: uid!,
         name: name!,
         pathUrl: pathUrl!,
-        status: 'online');
+        status: 'online',
+        token: token ?? '');
 
     await Firebase.initializeApp().then((value) async {
       await FirebaseFirestore.instance
