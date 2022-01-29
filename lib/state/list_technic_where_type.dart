@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/state/show_general_profile.dart';
 import 'package:joelfindtechnician/state/show_profile.dart';
+import 'package:joelfindtechnician/utility/check_user_social.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
@@ -24,6 +26,8 @@ class ListTechnicWhereType extends StatefulWidget {
 class _ListTechnicWhereTypeState extends State<ListTechnicWhereType> {
   String? province, typeTechnic;
   List<UserModelOld> userModelOlds = [];
+
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -78,12 +82,38 @@ class _ListTechnicWhereTypeState extends State<ListTechnicWhereType> {
           : ListView.builder(
               itemCount: userModelOlds.length,
               itemBuilder: (context, index) => InkWell(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ShowGeneralProfile(
-                              uidTechnic: userModelOlds[index].uid,
-                            ))),
+                onTap: () async {
+                  var showContact = false;
+                  bool resultSocial =
+                      await CheckUserSocial(uidChecked: user!.uid)
+                          .processCheckUserSocial();
+                  if (!resultSocial) {
+                    if (user!.uid == userModelOlds[index].uid) {
+                      showContact = true;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShowProfile(),
+                          ));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShowGeneralProfile(
+                                    uidTechnic: userModelOlds[index].uid,
+                                    showContact: false,
+                                  )));
+                    }
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ShowGeneralProfile(
+                                  uidTechnic: userModelOlds[index].uid,
+                                  showContact: false,
+                                )));
+                  }
+                },
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

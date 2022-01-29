@@ -15,6 +15,7 @@ import 'package:joelfindtechnician/models/replypost_model.dart';
 import 'package:joelfindtechnician/models/token_model.dart';
 
 import 'package:joelfindtechnician/state/show_circleavatar.dart';
+import 'package:joelfindtechnician/state/show_general_profile.dart';
 
 import 'package:joelfindtechnician/utility/time_to_string.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
@@ -22,12 +23,12 @@ import 'package:joelfindtechnician/widgets/show_progress.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class CtmListAnswer extends StatefulWidget {
-  final String job;
+  final String? job;
   final PostCustomerModel postCustomerModel;
 
   const CtmListAnswer({
     Key? key,
-    required this.job,
+    this.job,
     required this.postCustomerModel,
   }) : super(key: key);
 
@@ -51,11 +52,14 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
   var showListAnswers = <bool>[];
   List<List<AnswerModel>> listAnswerModels = [];
 
+  final user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
     super.initState();
-    job = widget.job;
+    // job = widget.job;
     postCustomerModel = widget.postCustomerModel;
+    job = postCustomerModel!.job;
 
     readReplyPost();
     findUserLogin();
@@ -201,8 +205,14 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                             children: [
                               Row(
                                 children: [
-                                  ShowCircleAvatar(
-                                    url: replyPostModels[index].pathImage,
+                                  InkWell(
+                                    onTap: () {
+                                      processMoveGenProfile(
+                                          replyPostModels[index].uid);
+                                    },
+                                    child: ShowCircleAvatar(
+                                      url: replyPostModels[index].pathImage,
+                                    ),
                                   ),
                                   Column(
                                     crossAxisAlignment:
@@ -222,6 +232,19 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                   ),
                                 ],
                               ),
+                              replyPostModels[index].urlImagePost.isEmpty
+                                  ? SizedBox()
+                                  : Container(
+                                      width: 160,
+                                      height: 140,
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl:
+                                            replyPostModels[index].urlImagePost,
+                                        placeholder: (context, url) =>
+                                            ShowProgress(),
+                                      ),
+                                    ),
                               showListAnswers[index]
                                   ? Padding(
                                       padding: const EdgeInsets.only(left: 30),
@@ -235,10 +258,18 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                           children: [
                                             Row(
                                               children: [
-                                                ShowCircleAvatar(
+                                                InkWell(
+                                                  onTap: () =>
+                                                      processMoveGenProfile(
+                                                          listAnswerModels[
+                                                                  index][index2]
+                                                              .uidPost),
+                                                  child: ShowCircleAvatar(
                                                     url: listAnswerModels[index]
                                                             [index2]
-                                                        .urlPost),
+                                                        .urlPost,
+                                                  ),
+                                                ),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -291,17 +322,34 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                       ),
                                     )
                                   : SizedBox(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              Column(
                                 children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        showTextFormAnswers[index] =
-                                            !showTextFormAnswers[index];
-                                      });
-                                    },
-                                    child: Text('ตอบกลับ'),
+                                  // replyPostModels[index].urlImagePost.isEmpty
+                                  // ? SizedBox()
+                                  // : Container(
+                                  // width: 160,
+                                  // height: 140,
+                                  // child: CachedNetworkImage(
+                                  // fit: BoxFit.cover,
+                                  // imageUrl: replyPostModels[index]
+                                  // .urlImagePost,
+                                  // placeholder: (context, url) =>
+                                  // ShowProgress(),
+                                  // ),
+                                  // ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            showTextFormAnswers[index] =
+                                                !showTextFormAnswers[index];
+                                          });
+                                        },
+                                        child: Text('ตอบกลับ'),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -481,7 +529,9 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
   Row newShowOwnerPost() {
     return Row(
       children: [
-        ShowCircleAvatar(url: postCustomerModel!.pathUrl),
+        ShowCircleAvatar(
+          url: postCustomerModel!.pathUrl,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -505,7 +555,8 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
         urlPost: urlPost!,
         urlImage: urlImage,
         timePost: Timestamp.fromDate(DateTime.now()),
-        status: 'online');
+        status: 'online',
+        uidPost: user!.uid);
 
     print('#13jan answerModel ==> ${answerModel.toMap()}');
     print('#13jan docIdPostCustomer ==> $docIdPostCustomer');
@@ -561,5 +612,15 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
         });
       });
     });
+  }
+
+  void processMoveGenProfile(String uidAvatar) {
+    print('##23jan uid of Avatar ==> $uidAvatar');
+    if (uidAvatar != user!.uid) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ShowGeneralProfile(uidTechnic: uidAvatar, showContact: true,)));
+    }
   }
 }

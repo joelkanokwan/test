@@ -9,15 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joelfindtechnician/alertdialog/alert_detail.dart';
-
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
-import 'package:joelfindtechnician/alertdialog/select_province.dart';
-import 'package:joelfindtechnician/alertdialog/success_register.dart';
-
 import 'package:joelfindtechnician/model.dart';
 import 'package:joelfindtechnician/models/subdistruct_model.dart';
 import 'package:joelfindtechnician/models/typetechnic_model.dart';
-import 'package:joelfindtechnician/models/user_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/partner_state/partner_signin.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
@@ -323,36 +318,6 @@ class _RegisterPartnerState extends State<RegisterPartner> {
               key: _formKey,
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Radio(
-                        value: 1,
-                        groupValue: _selectChoice,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectChoice = 1;
-                          });
-                        },
-                      ),
-                      Text(
-                        'Personal',
-                      ),
-                      SizedBox(width: 18),
-                      Radio(
-                        value: 2,
-                        groupValue: _selectChoice,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectChoice = 2;
-                          });
-                        },
-                      ),
-                      Text(
-                        'Corporation',
-                      ),
-                    ],
-                  ),
-
                   Text(
                     'ข้อมูลส่วนบุคคล',
                   ),

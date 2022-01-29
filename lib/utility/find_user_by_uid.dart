@@ -8,16 +8,6 @@ class FindUserByUid {
     required this.uid,
   });
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
   Future<UserModelOld> getUserModel() async {
     UserModelOld? userModelOld;
 

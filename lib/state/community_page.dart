@@ -31,7 +31,11 @@ import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/login_success.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
+import 'package:joelfindtechnician/state/show_circleavatar.dart';
+import 'package:joelfindtechnician/state/show_general_profile.dart';
 import 'package:joelfindtechnician/state/show_image_post.dart';
+import 'package:joelfindtechnician/state/show_profile.dart';
+import 'package:joelfindtechnician/utility/check_user_social.dart';
 import 'package:joelfindtechnician/utility/find_user_by_uid.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/utility/time_to_string.dart';
@@ -449,6 +453,44 @@ class _CommunityPageState extends State<CommunityPage> {
     );
   }
 
+  Future<void> processMove(String uidAvatar, String uidPost, int index) async {
+    print('#23jan uidPost ==>> $uidPost');
+
+    var result =
+        await CheckUserSocial(uidChecked: uidAvatar).processCheckUserSocial();
+    print('#23jan uidAvatar ==>> $uidAvatar === result ==> $result');
+
+    if (!result) {
+      if (uidAvatar == User.uid) {
+        // for Technician
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ShowProfile()));
+      } else {
+        // for Social and Other Technician
+
+        String uidSocial = User.uid;
+        print('#23jan uidSocial ===> $uidSocial uidPost ===> $uidPost');
+
+        bool showContact = false;
+        if (userSocial!) {
+          if (User.uid == uidPost) {
+            showContact = true;
+          }
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ShowGeneralProfile(
+              uidTechnic: uidAvatar,
+              showContact: showContact,
+              postCustomerModel: postCustomerModels[index],
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   Container buildIconAndName(int index) {
     return Container(
       width: 300,
@@ -456,9 +498,14 @@ class _CommunityPageState extends State<CommunityPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(postCustomerModels[index].pathUrl),
-            ),
+            child: InkWell(
+                onTap: () => processMove(
+                      postCustomerModels[index].uidCustomer,
+                      postCustomerModels[index].uidCustomer,
+                      index,
+                    ),
+                child:
+                    ShowCircleAvatar(url: postCustomerModels[index].pathUrl)),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -515,19 +562,14 @@ class _CommunityPageState extends State<CommunityPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 36, right: 8, top: 4, bottom: 4),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        listReplyPostModels[index][index2].pathImage,
-                      ),
-                    ),
-                  ),
-                ),
+                InkWell(
+                    onTap: () => processMove(
+                          listReplyPostModels[index][index2].uid,
+                          postCustomerModels[index].uidCustomer,
+                          index,
+                        ),
+                    child: ShowCircleAvatar(
+                        url: listReplyPostModels[index][index2].pathImage)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -633,17 +675,15 @@ class _CommunityPageState extends State<CommunityPage> {
                                 children: [
                                   userSocial!
                                       ? Text('iconaa')
-                                      : Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 4),
-                                          width: 36,
-                                          height: 36,
-                                          child: CircleAvatar(
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                                    userModelOld!.img),
-                                          ),
-                                        ),
+                                      : InkWell(
+                                          onTap: () => processMove(
+                                                userModelOld!.uid,
+                                                postCustomerModels[index]
+                                                    .uidCustomer,
+                                                index,
+                                              ),
+                                          child: ShowCircleAvatar(
+                                              url: userModelOld!.img)),
                                   Container(
                                     width: 150,
                                     child: TextFormField(
@@ -749,7 +789,8 @@ class _CommunityPageState extends State<CommunityPage> {
                                                       urlPost: urlPost,
                                                       urlImage: '',
                                                       timePost: timePost,
-                                                      status: 'online');
+                                                      status: 'online',
+                                                      uidPost: User.uid);
                                               processInsertAnswer(
                                                   answerModel, index, index2);
                                             } else {
@@ -780,7 +821,8 @@ class _CommunityPageState extends State<CommunityPage> {
                                                             urlPost: urlPost,
                                                             urlImage: urlImage,
                                                             timePost: timePost,
-                                                            status: 'online');
+                                                            status: 'online',
+                                                            uidPost: User.uid);
                                                     processInsertAnswer(
                                                         answerModel,
                                                         index,
@@ -902,10 +944,27 @@ class _CommunityPageState extends State<CommunityPage> {
         permissionAnswerSocials[index]
             ? Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: CircleAvatar(
-                  backgroundImage: userSocial!
-                      ? CachedNetworkImageProvider(User.photoURL.toString())
-                      : CachedNetworkImageProvider(userModelOld!.img),
+                child: InkWell(
+                  onTap: () {
+                    if (userSocial!) {
+                      processMove(
+                        User.uid,
+                        postCustomerModels[index].uidCustomer,
+                        index,
+                      );
+                    } else {
+                      processMove(
+                        userModelOld!.uid,
+                        postCustomerModels[index].uidCustomer,
+                        index,
+                      );
+                    }
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: userSocial!
+                        ? CachedNetworkImageProvider(User.photoURL.toString())
+                        : CachedNetworkImageProvider(userModelOld!.img),
+                  ),
                 ),
               )
             : SizedBox(),
@@ -1521,14 +1580,13 @@ class _CommunityPageState extends State<CommunityPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8),
-                    width: 36,
-                    height: 36,
-                    child: CircleAvatar(
-                      backgroundImage: CachedNetworkImageProvider(item.urlPost),
-                    ),
-                  ),
+                  InkWell(
+                      onTap: () => processMove(
+                            item.uidPost,
+                            postCustomerModels[index].uidCustomer,
+                            index,
+                          ),
+                      child: ShowCircleAvatar(url: item.urlPost)),
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
                     decoration: BoxDecoration(

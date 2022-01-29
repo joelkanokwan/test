@@ -4,16 +4,23 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:joelfindtechnician/models/answer_model.dart';
 import 'package:joelfindtechnician/models/notification_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/replypost_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
+import 'package:joelfindtechnician/state/show_circleavatar.dart';
+import 'package:joelfindtechnician/state/show_general_profile.dart';
 import 'package:joelfindtechnician/state/show_image_post.dart';
+import 'package:joelfindtechnician/state/show_profile.dart';
+import 'package:joelfindtechnician/utility/check_user_social.dart';
+import 'package:joelfindtechnician/utility/process_sent_noti_by_token.dart';
 import 'package:joelfindtechnician/utility/time_to_string.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
@@ -306,13 +313,11 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
       children: [
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                    replyPostModels[index].pathImage),
-              ),
-            ),
+            InkWell(
+                onTap: () {
+                  processMove(replyPostModels[index].uid);
+                },
+                child: ShowCircleAvatar(url: replyPostModels[index].pathImage)),
             Container(
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
               width: 180,
@@ -430,7 +435,9 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
                   SizedBox(
                     width: 30,
                   ),
-                  newCircleAvatar(userModelOld!.img),
+                  InkWell(
+                      onTap: () => processMove(userModelOld!.uid),
+                      child: ShowCircleAvatar(url: userModelOld!.img)),
                   Container(
                     height: 50,
                     width: 150,
@@ -573,7 +580,9 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
               Row(
                 children: [
                   SizedBox(width: 30),
-                  newCircleAvatar(model.urlPost),
+                  InkWell(
+                      onTap: () => processMove(model.uidPost),
+                      child: ShowCircleAvatar(url: model.urlPost)),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 4),
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -715,7 +724,9 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
       margin: EdgeInsets.only(left: 16),
       child: Row(
         children: [
-          newCircleAvatar(userModelOld!.img),
+          InkWell(
+              onTap: () => processMove(userModelOld!.uid),
+              child: ShowCircleAvatar(url: userModelOld!.img)),
           Container(
             width: 200,
             height: 80,
@@ -873,7 +884,7 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
             .doc()
             .set(model.toMap())
             .then((value) {
-             // require sent notification
+          // require sent notification
           print('#28Nov Insert Reply Success');
           textEditingController.text = '';
           file = null;
@@ -891,7 +902,8 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
         urlPost: userModelOld!.img,
         urlImage: urlImage,
         timePost: Timestamp.fromDate(DateTime.now()),
-        status: 'online');
+        status: 'online',
+        uidPost: userModelOld!.uid);
 
     print('docPostCustomer ==> $docIdReply');
     print('docReplyPost ==>> ${docIdReplyPosts[index]}');
@@ -905,8 +917,37 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
         .doc()
         .set(answerModel.toMap())
         .then((value) {
-          // required sent notification
-          return readDataNotifiction();
-        });
+      // required sent notification
+      String tokenSocialPost = postCustomerModels[0].token;
+      String titile = 'Have New Messge';
+      String body = answer;
+
+      ProcessSentNotiByToken(token: tokenSocialPost, title: titile, body: body)
+          .sentNoti();
+
+      readDataNotifiction();
+    });
+  }
+
+  Future<void> processMove(String uidAvatar) async {
+    print('#23jan uidAvatar ==>> $uidAvatar');
+
+    var result =
+        await CheckUserSocial(uidChecked: uidAvatar).processCheckUserSocial();
+    print('#23jan uidAvatar ==>> $uidAvatar === result ==> $result');
+
+    if (!result) {
+      if (uidAvatar == userModelOld!.uid) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ShowProfile()));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ShowGeneralProfile(
+                      uidTechnic: uidAvatar, showContact: false,
+                    )));
+      }
+    }
   }
 }

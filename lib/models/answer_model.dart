@@ -9,6 +9,7 @@ class AnswerModel {
   final String urlImage;
   final Timestamp timePost;
   final String status;
+  final String uidPost;
   AnswerModel({
     required this.answer,
     required this.namePost,
@@ -16,6 +17,7 @@ class AnswerModel {
     required this.urlImage,
     required this.timePost,
     required this.status,
+    required this.uidPost,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,17 +28,19 @@ class AnswerModel {
       'urlImage': urlImage,
       'timePost': timePost,
       'status': status,
+      'uidPost': uidPost,
     };
   }
 
   factory AnswerModel.fromMap(Map<String, dynamic> map) {
     return AnswerModel(
-      answer: map['answer'],
-      namePost: map['namePost'],
-      urlPost: map['urlPost'],
-      urlImage: map['urlImage'],
-      timePost: map['timePost'],
-      status: map['status'],
+      answer: map['answer'] ?? '',
+      namePost: map['namePost'] ?? '',
+      urlPost: map['urlPost'] ?? '',
+      urlImage: map['urlImage'] ?? '',
+      timePost: (map['timePost']),
+      status: map['status'] ?? '',
+      uidPost: map['uidPost'] ?? '',
     );
   }
 

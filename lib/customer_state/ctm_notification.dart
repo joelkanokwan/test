@@ -3,20 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/customer_state/ctm_aboutus.dart';
-import 'package:joelfindtechnician/customer_state/ctm_contactus.dart';
-import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
-import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
-import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/state/ctm_list_answer.dart';
-import 'package:joelfindtechnician/state/detail_noti_social.dart';
-import 'package:joelfindtechnician/state/login_page.dart';
-import 'package:joelfindtechnician/customer_state/login_success.dart';
-import 'package:joelfindtechnician/customer_state/social_service.dart';
-import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/utility/time_to_string.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
+import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class CustomerNotification extends StatefulWidget {
   const CustomerNotification({Key? key}) : super(key: key);
@@ -31,6 +22,12 @@ class _CustomerNotificationState extends State<CustomerNotification> {
   String? uidLogin;
 
   var docIdPostCustomers = <String>[];
+
+  bool load = true;
+  bool? haveData;
+
+  var socialReadeds = <bool>[];
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +35,11 @@ class _CustomerNotificationState extends State<CustomerNotification> {
   }
 
   Future<void> readPostCustomer() async {
+    if (postCustomerModels.isNotEmpty) {
+      postCustomerModels.clear();
+      docIdPostCustomers.clear();
+      socialReadeds.clear();
+    }
     await Firebase.initializeApp().then((value) async {
       final User = FirebaseAuth.instance.currentUser!;
       uidLogin = User.uid;
@@ -53,9 +55,9 @@ class _CustomerNotificationState extends State<CustomerNotification> {
           PostCustomerModel postCustomerModel =
               PostCustomerModel.fromMap(item.data());
           if (postCustomerModel.uidCustomer == uidLogin) {
+            load = false;
             String docIdPostCustomer = item.id;
-            print(
-                '#13jan docIdPostCustomer ที่ ctm_notification ==> $docIdPostCustomer');
+
             await FirebaseFirestore.instance
                 .collection('postcustomer')
                 .doc(docIdPostCustomer)
@@ -64,12 +66,16 @@ class _CustomerNotificationState extends State<CustomerNotification> {
                 .then((value) {
               if (value.docs.isNotEmpty) {
                 setState(() {
+                  haveData = true;
                   postCustomerModels.add(postCustomerModel);
                   docIdPostCustomers.add(docIdPostCustomer);
+                  socialReadeds.add(postCustomerModel.socialReaded);
                 });
+              } else {
+                haveData = false;
               }
             });
-          }
+          } // if
         }
       });
     });
@@ -80,18 +86,20 @@ class _CustomerNotificationState extends State<CustomerNotification> {
     final User = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       appBar: newAppBar(context),
-      body: postCustomerModels.isEmpty
+      body: load
           ? ShowProgress()
-          : ListView.builder(
-              itemCount: postCustomerModels.length,
-              itemBuilder: (context, index) => newContent(
-                postCustomerModels[index].job,
-                TimeToString(timestamp: postCustomerModels[index].timePost)
-                    .findString(),
-                postCustomerModels[index],
-                index,
-              ),
-            ),
+          : haveData!
+              ? ListView.builder(
+                  itemCount: postCustomerModels.length,
+                  itemBuilder: (context, index) => newContent(
+                    postCustomerModels[index].job,
+                    TimeToString(timestamp: postCustomerModels[index].timePost)
+                        .findString(),
+                    postCustomerModels[index],
+                    index,
+                  ),
+                )
+              : Center(child: ShowText(title: 'No Message')),
     );
   }
 
@@ -117,7 +125,21 @@ class _CustomerNotificationState extends State<CustomerNotification> {
     int index,
   ) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
+        String docIdPostCustomer = docIdPostCustomers[index];
+        print('##23jan docIdPostCustomer ==>> $docIdPostCustomer');
+        bool socialReaded = postCustomerModels[index].socialReaded;
+        print('##23jan socialReaded ==> $socialReaded');
+        if (!socialReaded) {
+          Map<String, dynamic> data = {};
+          data['socialReaded'] = true;
+          await FirebaseFirestore.instance
+              .collection('postcustomer')
+              .doc(docIdPostCustomer)
+              .update(data)
+              .then((value) => print('##23jan Update Success'));
+        }
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -126,7 +148,7 @@ class _CustomerNotificationState extends State<CustomerNotification> {
               postCustomerModel: postCustomerModel,
             ),
           ),
-        );
+        ).then((value) => readPostCustomer());
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +170,9 @@ class _CustomerNotificationState extends State<CustomerNotification> {
                   job,
                   style: GoogleFonts.lato(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: socialReadeds[index]
+                        ? FontWeight.normal
+                        : FontWeight.bold,
                   ),
                 ),
               ),

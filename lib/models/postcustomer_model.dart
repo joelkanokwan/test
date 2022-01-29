@@ -16,6 +16,7 @@ class PostCustomerModel {
   final String pathUrl;
   final String status;
   final String token;
+  final bool socialReaded;
   PostCustomerModel({
     required this.address,
     required this.amphur,
@@ -30,6 +31,7 @@ class PostCustomerModel {
     required this.pathUrl,
     required this.status,
     required this.token,
+    required this.socialReaded,
   });
 
   Map<String, dynamic> toMap() {
@@ -47,6 +49,7 @@ class PostCustomerModel {
       'pathUrl': pathUrl,
       'status': status,
       'token': token,
+      'socialReaded': socialReaded,
     };
   }
 
@@ -58,17 +61,19 @@ class PostCustomerModel {
       job: map['job'] ?? '',
       pathImages: List<String>.from(map['pathImages']),
       province: map['province'] ?? '',
-      timePost:( map['timePost']),
+      timePost: (map['timePost']),
       typeTechnics: List<String>.from(map['typeTechnics']),
       uidCustomer: map['uidCustomer'] ?? '',
       name: map['name'] ?? '',
       pathUrl: map['pathUrl'] ?? '',
       status: map['status'] ?? '',
       token: map['token'] ?? '',
+      socialReaded: map['socialReaded'] ?? false,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory PostCustomerModel.fromJson(String source) => PostCustomerModel.fromMap(json.decode(source));
+  factory PostCustomerModel.fromJson(String source) =>
+      PostCustomerModel.fromMap(json.decode(source));
 }

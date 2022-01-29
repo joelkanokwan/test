@@ -2,37 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/forms/formcontact_partner.dart';
+import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/reference_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
-import 'package:joelfindtechnician/partner_state/choose_image.dart';
-import 'package:joelfindtechnician/partner_state/edditTest.dart';
-
-import 'package:joelfindtechnician/partner_state/home_page.dart';
-import 'package:joelfindtechnician/partner_state/mywallet.dart';
-import 'package:joelfindtechnician/partner_state/partner_aboutus.dart';
-import 'package:joelfindtechnician/partner_state/partner_contactus.dart';
-import 'package:joelfindtechnician/partner_state/partner_howtouseapp.dart';
-import 'package:joelfindtechnician/partner_state/partner_notification.dart';
-import 'package:joelfindtechnician/partner_state/partner_orderhistory.dart';
-import 'package:joelfindtechnician/partner_state/partner_signin.dart';
-import 'package:joelfindtechnician/partner_state/partner_termandconditon.dart';
-
-import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/state/show_photo_ref.dart';
-
 import 'package:joelfindtechnician/state/show_review.dart';
-
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 
 class ShowGeneralProfile extends StatefulWidget {
   final String uidTechnic;
-  const ShowGeneralProfile({Key? key, required this.uidTechnic})
-      : super(key: key);
+  final bool showContact;
+  final PostCustomerModel? postCustomerModel;
+  const ShowGeneralProfile({
+    Key? key,
+    required this.uidTechnic,
+    required this.showContact,
+    this.postCustomerModel,
+  }) : super(key: key);
 
   @override
   _ShowGeneralProfileState createState() => _ShowGeneralProfileState();
@@ -49,6 +38,7 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
   bool load = true;
   List<String> docIdRefs = [];
   String? uidTechnic;
+  bool? showContact;
 
   @override
   void initState() {
@@ -56,6 +46,11 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
 
     uidTechnic = widget.uidTechnic;
     print('##### uidTechnic => $uidTechnic');
+
+    showContact = widget.showContact;
+    if (showContact == null) {
+      showContact = false;
+    }
 
     findUser();
   }
@@ -241,32 +236,38 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
             padding: const EdgeInsets.only(
               top: 8,
             ),
-            child: FlatButton(
-              height: 40,
-              // minWidth: 170,
-              color: Colors.blue,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FormContactPartner(),
-                    ));
-              },
-              child: Text(
-                'Contact',
-                style: GoogleFonts.lato(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17,
-                ),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+            child: showContact! ? buttonContact() : SizedBox(),
           ),
         ),
       ],
+    );
+  }
+
+  FlatButton buttonContact() {
+    return FlatButton(
+      height: 40,
+      // minWidth: 170,
+      color: Colors.blue,
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FormContactPartner(
+                postCustomerModel: widget.postCustomerModel,
+              ),
+            ));
+      },
+      child: Text(
+        'Contact',
+        style: GoogleFonts.lato(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 17,
+        ),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
     );
   }
 

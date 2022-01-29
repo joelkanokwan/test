@@ -1,19 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
-import 'package:joelfindtechnician/alertdialog/select_province.dart';
 import 'package:joelfindtechnician/model.dart';
 import 'package:joelfindtechnician/models/notification_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
@@ -42,7 +38,7 @@ class _CreatePostState extends State<CreatePost> {
   String? province, amphur, subdistrict, typetechnic;
   bool amphurbool = true;
   bool subdistrictbool = true;
-  int? province_id;
+  int? provinceId;
   List<AmphurModel> amphurModels = [];
   List<SubDistrictModel> subdistrictModel = [];
   List<TypeTechnicModel> typetechnicModels = [];
@@ -70,15 +66,15 @@ class _CreatePostState extends State<CreatePost> {
 
     switch (province) {
       case 'เชียงใหม่':
-        province_id = 38;
+        provinceId = 38;
         findAmphur();
         break;
       case 'กรุงเทพ':
-        province_id = 1;
+        provinceId = 1;
         findAmphur();
         break;
       case 'ชลบุรี':
-        province_id = 11;
+        provinceId = 11;
         findAmphur();
         break;
       default:
@@ -438,16 +434,16 @@ class _CreatePostState extends State<CreatePost> {
 
           switch (province) {
             case 'เชียงใหม่':
-              province_id = 38;
+              provinceId = 38;
               findAmphur();
 
               break;
             case 'กทม':
-              province_id = 1;
+              provinceId = 1;
               findAmphur();
               break;
             case 'ชลบุรี':
-              province_id = 11;
+              provinceId = 11;
               findAmphur();
               break;
             default:
@@ -467,9 +463,9 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   Future<void> findAmphur() async {
-    print('### province_id = $province_id');
+    print('### province_id = $provinceId');
     String apiAmphur =
-        'https://www.androidthai.in.th/eye/Amphur.php?isAdd=true&province_id=$province_id';
+        'https://www.androidthai.in.th/eye/Amphur.php?isAdd=true&province_id=$provinceId';
     await Dio().get(apiAmphur).then((value) {
       for (var item in json.decode(value.data)) {
         AmphurModel model = AmphurModel.fromMap(item);
@@ -659,7 +655,7 @@ class _CreatePostState extends State<CreatePost> {
         name: name!,
         pathUrl: pathUrl!,
         status: 'online',
-        token: token ?? '');
+        token: token ?? '', socialReaded: false);
 
     await Firebase.initializeApp().then((value) async {
       await FirebaseFirestore.instance

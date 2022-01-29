@@ -12,7 +12,10 @@ import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
 import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/models/postcustomer_model.dart';
+import 'package:joelfindtechnician/models/replypost_model.dart';
 import 'package:joelfindtechnician/models/token_social_model.dart';
+import 'package:joelfindtechnician/state/ctm_list_answer.dart';
 import 'package:joelfindtechnician/state/detail_noti_social.dart';
 import 'package:joelfindtechnician/state/login_page.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
@@ -32,6 +35,9 @@ class _LoginSuccessState extends State<LoginSuccess> {
       FlutterLocalNotificationsPlugin();
   AndroidInitializationSettings? androidInitializationSettings;
   InitializationSettings? initializationSettings;
+
+  PostCustomerModel? postCustomerModel;
+
   @override
   initState() {
     super.initState();
@@ -50,14 +56,40 @@ class _LoginSuccessState extends State<LoginSuccess> {
 
   Future<void> onSelectNoti(String? string) async {
     if (string != null) {
+      processClickNoti();
+    }
+  }
+
+  Future<void> processClickNoti() async {
+    await FirebaseFirestore.instance
+        .collection('postcustomer')
+        .get()
+        .then((value) async {
+      for (var item in value.docs) {
+        PostCustomerModel postCustomerModel =
+            PostCustomerModel.fromMap(item.data());
+        await FirebaseFirestore.instance
+            .collection('postcustomer')
+            .doc(item.id)
+            .collection('replypost')
+            .get()
+            .then((value) {
+          for (var item in value.docs) {
+            ReplyPostModel replyPostModel = ReplyPostModel.fromMap(item.data());
+            if (replyPostModel.reply == myMessage) {
+              this.postCustomerModel = postCustomerModel;
+            }
+          }
+        });
+      }
+
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailNotiSocial(
-              reply: myMessage!,
-            ),
+            builder: (context) =>
+                CtmListAnswer(postCustomerModel: this.postCustomerModel!),
           ));
-    }
+    });
   }
 
   Future<void> alertNotifiction(String title, String message) async {
@@ -122,13 +154,7 @@ class _LoginSuccessState extends State<LoginSuccess> {
       print(
           '#6jan onMessageOpenApp ทำงาน title = $myTitle, message = $myMessage');
       // alertNotifiction(myTitle!, myMessage!);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailNotiSocial(
-              reply: myMessage!,
-            ),
-          ));
+      processClickNoti();
     });
   }
 
