@@ -1,18 +1,37 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
-import 'package:joelfindtechnician/alertdialog/select_province.dart';
+import 'package:joelfindtechnician/models/answer_model.dart';
+
+import 'package:joelfindtechnician/models/appointment_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
+import 'package:joelfindtechnician/models/replypost_model.dart';
+import 'package:joelfindtechnician/models/user_model_old.dart';
+import 'package:joelfindtechnician/state/show_circleavatar.dart';
+import 'package:joelfindtechnician/state/show_image_post.dart';
+import 'package:joelfindtechnician/utility/find_token.dart';
+import 'package:joelfindtechnician/utility/find_user_by_uid.dart';
+import 'package:joelfindtechnician/utility/process_sent_noti_by_token.dart';
+import 'package:joelfindtechnician/widgets/show_image.dart';
+import 'package:joelfindtechnician/widgets/show_image_network.dart';
+import 'package:joelfindtechnician/widgets/show_progress.dart';
+import 'package:joelfindtechnician/widgets/show_text.dart';
 
 class FormContactPartner extends StatefulWidget {
   final PostCustomerModel? postCustomerModel;
+  final UserModelOld userModelOl;
+  final String docIdPostCustomer;
   const FormContactPartner({
     Key? key,
-    this.postCustomerModel,
+    required this.postCustomerModel,
+    required this.userModelOl,
+    required this.docIdPostCustomer,
   }) : super(key: key);
 
   @override
@@ -27,6 +46,19 @@ class _FormContactPartnerState extends State<FormContactPartner> {
   String? imgUrl;
 
   PostCustomerModel? postCustomerModel;
+
+  UserModelOld? userModelOld;
+
+  String? customerName, phoneNumber, emailAddress;
+  Timestamp? timeStamp;
+  String? docIdCustomer;
+  bool load = true;
+
+  var listAnswerModels = <List<AnswerModel>>[];
+
+  var replypostModels = <ReplyPostModel>[];
+
+  var user = FirebaseAuth.instance.currentUser;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -77,6 +109,59 @@ class _FormContactPartnerState extends State<FormContactPartner> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    userModelOld = widget.userModelOl;
+    postCustomerModel = widget.postCustomerModel;
+    docIdCustomer = widget.docIdPostCustomer;
+    readData();
+  }
+
+  Future<void> readData() async {
+    if (replypostModels.isNotEmpty) {
+      replypostModels.clear();
+      listAnswerModels.clear();
+    }
+
+    await FirebaseFirestore.instance
+        .collection('postcustomer')
+        .doc(docIdCustomer)
+        .collection('replypost')
+        .orderBy('timeReply', descending: true)
+        .get()
+        .then((value) async {
+      for (var item in value.docs) {
+        ReplyPostModel replyPostModel = ReplyPostModel.fromMap(item.data());
+        setState(() {
+          load = false;
+        });
+        if (userModelOld!.uid == replyPostModel.uid) {
+          var answerModels = <AnswerModel>[];
+
+          await FirebaseFirestore.instance
+              .collection('postcustomer')
+              .doc(docIdCustomer)
+              .collection('replypost')
+              .doc(item.id)
+              .collection('answer')
+              .get()
+              .then((value) {
+            for (var item in value.docs) {
+              AnswerModel answerModel = AnswerModel.fromMap(item.data());
+              answerModels.add(answerModel);
+            }
+          });
+
+          setState(() {
+            replypostModels.add(replyPostModel);
+            listAnswerModels.add(answerModels);
+          });
+        }
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: newAppBar(context),
@@ -96,11 +181,117 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                   SizedBox(height: 10),
                   newEmail(),
                   SizedBox(height: 10),
-                  newAddress(),
+                  postCustomerModel == null ? SizedBox() : newAddress(),
                   SizedBox(height: 15),
-                  newLocation(),
+                  postCustomerModel == null ? SizedBox() : newLocation(),
                   SizedBox(height: 15),
                   newAppointment(context),
+                  newWhoPost(),
+                  newJobPost(),
+                  load
+                      ? ShowProgress()
+                      : replypostModels.isEmpty
+                          ? SizedBox()
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: ScrollPhysics(),
+                              itemCount: replypostModels.length,
+                              itemBuilder: (context, index) => Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      ShowCircleAvatar(
+                                          url:
+                                              replypostModels[index].pathImage),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ShowText(
+                                              title:
+                                                  replypostModels[index].name),
+                                          ShowText(
+                                              title:
+                                                  replypostModels[index].reply),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  ShowImageNetWork(
+                                    urlPath:
+                                        replypostModels[index].urlImagePost,
+                                    tapFunc: () {
+                                      print('Image Reply');
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ShowImagePost(
+                                                pathImage:
+                                                    replypostModels[index]
+                                                        .urlImagePost),
+                                          ));
+                                    },
+                                  ),
+                                  listAnswerModels[index].isEmpty
+                                      ? SizedBox()
+                                      : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: ScrollPhysics(),
+                                          itemCount:
+                                              listAnswerModels[index].length,
+                                          itemBuilder: (context, index2) =>
+                                              Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  SizedBox(width: 32),
+                                                  ShowCircleAvatar(
+                                                      url: listAnswerModels[
+                                                              index][index2]
+                                                          .urlPost),
+                                                  Column(
+                                                    children: [
+                                                      ShowText(
+                                                          title:
+                                                              listAnswerModels[
+                                                                          index]
+                                                                      [index2]
+                                                                  .namePost),
+                                                      ShowText(
+                                                          title:
+                                                              listAnswerModels[
+                                                                          index]
+                                                                      [index2]
+                                                                  .answer),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              ShowImageNetWork(
+                                                urlPath: listAnswerModels[index]
+                                                        [index2]
+                                                    .urlImage,
+                                                tapFunc: () {
+                                                  print('Image Answer');
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ShowImagePost(
+                                                                pathImage: listAnswerModels[
+                                                                            index]
+                                                                        [index2]
+                                                                    .urlImage),
+                                                      ));
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                  SizedBox(height: 36),
+                                ],
+                              ),
+                            ),
                   buttonSentForm(),
                 ],
               ),
@@ -111,6 +302,23 @@ class _FormContactPartnerState extends State<FormContactPartner> {
     );
   }
 
+  Row newJobPost() {
+    return Row(
+      children: [
+        ShowText(title: postCustomerModel!.job),
+      ],
+    );
+  }
+
+  Row newWhoPost() {
+    return Row(
+      children: [
+        ShowCircleAvatar(url: postCustomerModel!.pathUrl),
+        ShowText(title: postCustomerModel!.name),
+      ],
+    );
+  }
+
   Container buttonSentForm() {
     return Container(
       height: 50,
@@ -118,8 +326,64 @@ class _FormContactPartnerState extends State<FormContactPartner> {
       child: FlatButton(
         textColor: Colors.white,
         color: Colors.blueAccent,
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {}
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            print(
+                'name = $customerName, phone = $phoneNumber, email = $emailAddress');
+
+            if (date == null) {
+              MyDialog().normalDialog(
+                  context, 'Applint date ?', 'Please select date');
+            } else if (time == null) {
+              MyDialog().normalDialog(
+                  context, 'Applint time ?', 'Please select time');
+            } else {
+              DateTime appointDateTime = DateTime(
+                  date!.year, date!.month, date!.day, time!.hour, time!.minute);
+              print('date ==> $appointDateTime');
+
+              timeStamp = Timestamp.fromDate(appointDateTime);
+
+              String token = await FindToken().processFindToken();
+
+              AppointmentModel appointmentModel = AppointmentModel(
+                approve: 'unread',
+                avatarSocial: user!.photoURL ?? '',
+                customerName: customerName!,
+                docIdPostcustomer: docIdCustomer!,
+                emailAddress: emailAddress!,
+                nameSocial: user!.displayName ?? '',
+                phoneNumber: phoneNumber!,
+                timeAppointment: timeStamp!,
+                tokenSocial: token,
+                uidSocial: user!.uid,
+                timeContact: Timestamp.fromDate(DateTime.now()),
+              );
+              print('#1feb appointment ===> ${appointmentModel.toMap()}');
+
+              var docUser =
+                  await FindUserByUid(uid: userModelOld!.uid).getDocUser();
+
+              var tokenTechnician = await FindToken()
+                  .processFindTokenByDocUser(docUser: docUser!);
+
+              await FirebaseFirestore.instance
+                  .collection('user')
+                  .doc(docUser)
+                  .collection('appointment')
+                  .doc()
+                  .set(appointmentModel.toMap())
+                  .then((value) async {
+                print('Sent Success');
+                ProcessSentNotiByToken(
+                  token: tokenTechnician!,
+                  title: postCustomerModel!.job,
+                  body: 'Contact @ From $customerName',
+                ).sentNoti().then((value) => Navigator.pop(context));
+              });
+            }
+          }
         },
         child: Text(
           'Sent foam to technician',
@@ -169,38 +433,36 @@ class _FormContactPartnerState extends State<FormContactPartner> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Container(
-          child: Text('ตำบล'),
-        ),
-        Container(
-          child: Text('อำเภอ'),
-        ),
-        Container(
-          child: Text('จังหวัด'),
+        ShowText(title: postCustomerModel!.district),
+        ShowText(title: postCustomerModel!.amphur),
+        ShowText(title: postCustomerModel!.province),
+      ],
+    );
+  }
+
+  Widget newAddress() {
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ShowText(title: 'Address'),
+            ShowText(title: postCustomerModel!.address),
+          ],
         ),
       ],
     );
   }
 
-  TextFormField newAddress() {
-    return TextFormField(
-      validator: (value) {},
-      decoration: InputDecoration(
-        labelText: 'Address',
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-    );
-  }
-
   TextFormField newEmail() {
     return TextFormField(
+      onSaved: (newValue) => emailAddress = newValue!.trim(),
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please type your email address';
-        } else {}
+        } else {
+          return null;
+        }
       },
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
@@ -215,10 +477,13 @@ class _FormContactPartnerState extends State<FormContactPartner> {
 
   TextFormField newPhone() {
     return TextFormField(
+      onSaved: (newValue) => phoneNumber = newValue!.trim(),
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please type your phone number';
-        } else {}
+        } else {
+          return null;
+        }
       },
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
@@ -233,10 +498,13 @@ class _FormContactPartnerState extends State<FormContactPartner> {
 
   TextFormField newName() {
     return TextFormField(
+      onSaved: (newValue) => customerName = newValue!.trim(),
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please type your name';
-        } else {}
+        } else {
+          return null;
+        }
       },
       decoration: InputDecoration(
         labelText: 'Customer Name',

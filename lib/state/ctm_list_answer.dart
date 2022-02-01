@@ -16,9 +16,11 @@ import 'package:joelfindtechnician/models/token_model.dart';
 
 import 'package:joelfindtechnician/state/show_circleavatar.dart';
 import 'package:joelfindtechnician/state/show_general_profile.dart';
+import 'package:joelfindtechnician/state/show_image_post.dart';
 
 import 'package:joelfindtechnician/utility/time_to_string.dart';
 import 'package:joelfindtechnician/widgets/show_image.dart';
+import 'package:joelfindtechnician/widgets/show_image_network.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 import 'package:joelfindtechnician/widgets/show_text.dart';
 
@@ -60,6 +62,7 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
     // job = widget.job;
     postCustomerModel = widget.postCustomerModel;
     job = postCustomerModel!.job;
+    print('#1feb job ที่ส่งมาจาก ctm_Notification ==>> $job');
 
     readReplyPost();
     findUserLogin();
@@ -208,7 +211,9 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                   InkWell(
                                     onTap: () {
                                       processMoveGenProfile(
-                                          replyPostModels[index].uid);
+                                        uidAvatar: replyPostModels[index].uid,
+                                        postCustomerModel: postCustomerModel!,
+                                      );
                                     },
                                     child: ShowCircleAvatar(
                                       url: replyPostModels[index].pathImage,
@@ -237,12 +242,18 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                   : Container(
                                       width: 160,
                                       height: 140,
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl:
+                                      child: ShowImageNetWork(
+                                        urlPath:
                                             replyPostModels[index].urlImagePost,
-                                        placeholder: (context, url) =>
-                                            ShowProgress(),
+                                        tapFunc: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ShowImagePost(
+                                                pathImage:
+                                                    replyPostModels[index]
+                                                        .urlImagePost),
+                                          ),
+                                        ),
                                       ),
                                     ),
                               showListAnswers[index]
@@ -261,9 +272,13 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                                 InkWell(
                                                   onTap: () =>
                                                       processMoveGenProfile(
-                                                          listAnswerModels[
-                                                                  index][index2]
-                                                              .uidPost),
+                                                    uidAvatar:
+                                                        listAnswerModels[index]
+                                                                [index2]
+                                                            .uidPost,
+                                                    postCustomerModel:
+                                                        postCustomerModel!,
+                                                  ),
                                                   child: ShowCircleAvatar(
                                                     url: listAnswerModels[index]
                                                             [index2]
@@ -303,19 +318,20 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                                 : Container(
                                                     width: 200,
                                                     height: 160,
-                                                    child: CachedNetworkImage(
-                                                        fit: BoxFit.cover,
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            ShowImage(),
-                                                        placeholder:
-                                                            (context, url) =>
-                                                                ShowProgress(),
-                                                        imageUrl:
-                                                            listAnswerModels[
-                                                                        index]
-                                                                    [index2]
-                                                                .urlImage),
+                                                    child: ShowImageNetWork(
+                                                      tapFunc: () =>
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    ShowImagePost(
+                                                                        pathImage:
+                                                                            listAnswerModels[index][index2].urlImage),
+                                                              )),
+                                                      urlPath: listAnswerModels[
+                                                              index][index2]
+                                                          .urlImage,
+                                                    ),
                                                   ),
                                           ],
                                         ),
@@ -324,19 +340,6 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
                                   : SizedBox(),
                               Column(
                                 children: [
-                                  // replyPostModels[index].urlImagePost.isEmpty
-                                  // ? SizedBox()
-                                  // : Container(
-                                  // width: 160,
-                                  // height: 140,
-                                  // child: CachedNetworkImage(
-                                  // fit: BoxFit.cover,
-                                  // imageUrl: replyPostModels[index]
-                                  // .urlImagePost,
-                                  // placeholder: (context, url) =>
-                                  // ShowProgress(),
-                                  // ),
-                                  // ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -614,13 +617,20 @@ class _CtmListAnswerState extends State<CtmListAnswer> {
     });
   }
 
-  void processMoveGenProfile(String uidAvatar) {
-    print('##23jan uid of Avatar ==> $uidAvatar');
+  void processMoveGenProfile(
+      {required String uidAvatar,
+      required PostCustomerModel postCustomerModel}) {
+    print('#1feb uid of Avatar ==> $uidAvatar');
     if (uidAvatar != user!.uid) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ShowGeneralProfile(uidTechnic: uidAvatar, showContact: true,)));
+              builder: (context) => ShowGeneralProfile(
+                    uidTechnic: uidAvatar,
+                    showContact: true,
+                    postCustomerModel: postCustomerModel,
+                    docIdPostCustomer: docIdPostCustomer,
+                  )));
     }
   }
 }

@@ -16,11 +16,13 @@ class ShowGeneralProfile extends StatefulWidget {
   final String uidTechnic;
   final bool showContact;
   final PostCustomerModel? postCustomerModel;
+  final String? docIdPostCustomer;
   const ShowGeneralProfile({
     Key? key,
     required this.uidTechnic,
     required this.showContact,
-    this.postCustomerModel,
+     this.postCustomerModel,
+    this.docIdPostCustomer,
   }) : super(key: key);
 
   @override
@@ -253,7 +255,8 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
             context,
             MaterialPageRoute(
               builder: (context) => FormContactPartner(
-                postCustomerModel: widget.postCustomerModel,
+                userModelOl: userModelOld!,
+                postCustomerModel: widget.postCustomerModel, docIdPostCustomer: widget.docIdPostCustomer ?? '',
               ),
             ));
       },

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
+import 'package:joelfindtechnician/forms/formto_technician.dart';
 import 'package:joelfindtechnician/models/notification_model.dart';
 import 'package:joelfindtechnician/models/token_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
@@ -130,7 +131,28 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> processAfterClickNoti(String title, String message) async {
     print(
-        '#28Nov processAfterClickNoti Work ==>>> title = $title, message = $message');
+        '#1feb processAfterClickNoti Work ==>>> title = $title, message = $message');
+
+    List<String> strings = message.split('@');
+    print('string[0] ==>> ${strings[0]}');
+    if (strings[0].isNotEmpty) {
+      strings[0] = strings[0].trim();
+      if (strings[0] == 'Contact') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FormtoTechnician(),
+          ),
+        );
+      } else {
+        moveToGeneralNoti(title, message);
+      }
+    } else {
+      moveToGeneralNoti(title, message);
+    }
+  }
+
+  void moveToGeneralNoti(String title, String message) {
     Navigator.push(
         context,
         MaterialPageRoute(

@@ -4,7 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
+import 'package:joelfindtechnician/forms/formto_technician.dart';
+import 'package:joelfindtechnician/models/appointment_model.dart';
 import 'package:joelfindtechnician/models/notification_model.dart';
+import 'package:joelfindtechnician/models/partner_noti_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/state/community_page.dart';
 import 'package:joelfindtechnician/partner_state/home_page.dart';
@@ -38,6 +41,11 @@ class _PartnerNotificationState extends State<PartnerNotification> {
   UserModelOld? userModelOld;
 
   List<NotificationModel> notificationModels = [];
+
+  var appointMentModels = <AppointmentModel>[];
+  var partnerNotiModels = <PartnerNotiModel>[];
+  var partnerNotiModelsorteds = <PartnerNotiModel>[];
+
   @override
   void initState() {
     super.initState();
@@ -46,9 +54,11 @@ class _PartnerNotificationState extends State<PartnerNotification> {
     readAllNoti();
   }
 
+  // for myNotification
   Future<void> readAllNoti() async {
     if (notificationModels.isNotEmpty) {
       notificationModels.clear();
+      appointMentModels.clear();
     }
     await Firebase.initializeApp().then((value) async {
       await FirebaseFirestore.instance
@@ -66,15 +76,66 @@ class _PartnerNotificationState extends State<PartnerNotification> {
         } else {
           for (var item in value.docs) {
             NotificationModel model = NotificationModel.fromMap(item.data());
+            PartnerNotiModel partnerNotiModel = PartnerNotiModel(
+              title: model.message,
+              timestamp: model.timeNoti,
+              bolCollection: true,
+              status: model.status,
+            );
             setState(() {
               load = false;
               haveData = true;
               notificationModels.add(model);
+              partnerNotiModels.add(partnerNotiModel);
             });
           }
         }
       });
     });
+
+    //for appointment
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(docUser)
+        .collection('appointment')
+        .orderBy('timeAppointment', descending: true)
+        .get()
+        .then((value) {
+      for (var item in value.docs) {
+        AppointmentModel appointmentModel =
+            AppointmentModel.fromMap(item.data());
+        PartnerNotiModel partnerNotiModel = PartnerNotiModel(
+          title: appointmentModel.nameSocial,
+          timestamp: appointmentModel.timeContact,
+          bolCollection: false,
+          status: appointmentModel.approve,
+        );
+        setState(() {
+          appointMentModels.add(appointmentModel);
+        });
+        partnerNotiModels.add(partnerNotiModel);
+      }
+    });
+
+    var partnerNotiMaps = <Map<String, dynamic>>[];
+
+    for (var item in partnerNotiModels) {
+      var partnerNotiMap = item.toMap();
+      partnerNotiMaps.add(partnerNotiMap);
+    }
+
+    print('#1feb partnerNotiMap ==> $partnerNotiMaps');
+
+    partnerNotiMaps.sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
+
+    print('#1feb partnerNotiMap sorted ==> $partnerNotiMaps');
+
+    for (var item in partnerNotiMaps) {
+      PartnerNotiModel partnerNotiModel = PartnerNotiModel.fromMap(item);
+      setState(() {
+        partnerNotiModelsorteds.add(partnerNotiModel);
+      });
+    }
   }
 
   @override
@@ -85,16 +146,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
       body: load
           ? ShowProgress()
           : haveData!
-              ? ListView.builder(
-                  itemCount: notificationModels.length,
-                  itemBuilder: (context, index) => buildContent(
-                        notificationModels[index].message,
-                        TimeToString(
-                                timestamp: notificationModels[index].timeNoti)
-                            .findString(),
-                        notificationModels[index].status,
-                        notificationModels[index].title,
-                      ))
+              ? oldListView()
               : Center(
                   child: ShowText(
                     title: 'ไม่มีการแจ้งเตือน',
@@ -103,17 +155,62 @@ class _PartnerNotificationState extends State<PartnerNotification> {
     );
   }
 
+  ListView testListView() {
+    return ListView.builder(
+      itemCount: partnerNotiModelsorteds.length,
+      itemBuilder: (context, index) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShowText(title: partnerNotiModelsorteds[index].title),
+          ShowText(
+              title: TimeToString(
+                      timestamp: partnerNotiModelsorteds[index].timestamp)
+                  .findString()),
+        ],
+      ),
+    );
+  }
+
+  ListView oldListView() {
+    return ListView.builder(
+        itemCount: partnerNotiModelsorteds.length,
+        itemBuilder: (context, index) => buildContent(
+              partnerNotiModelsorteds[index].title,
+              TimeToString(timestamp: partnerNotiModelsorteds[index].timestamp)
+                  .findString(),
+              partnerNotiModelsorteds[index].status,
+              'title',
+              partnerNotiModelsorteds[index].bolCollection,
+            ));
+  }
+
   Widget buildContent(
-      String message, String dateStr, String status, String title) {
+    String message,
+    String dateStr,
+    String status,
+    String title,
+    bool bolCollection, // true ==> myNotification, false ==> appointment
+  ) {
     return GestureDetector(
       onTap: () {
         print('#28Nov Click message ==> $message');
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ShowDetailNoti(
-                  userModelOld: userModelOld!, title: title, message: message),
-            )).then((value) => readAllNoti());
+        if (bolCollection) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ShowDetailNoti(
+                  userModelOld: userModelOld!,
+                  title: title,
+                  message: message,
+                ),
+              )).then((value) => readAllNoti());
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FormtoTechnician(),
+              ));
+        }
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

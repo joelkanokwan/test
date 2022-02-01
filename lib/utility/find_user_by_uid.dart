@@ -8,6 +8,21 @@ class FindUserByUid {
     required this.uid,
   });
 
+  Future<String?> getDocUser() async {
+    String? docUser;
+
+    var result = await FirebaseFirestore.instance
+        .collection('user')
+        .where('uid', isEqualTo: uid)
+        .get();
+
+    for (var item in result.docs) {
+      docUser = item.id;
+    }
+
+    return docUser;
+  }
+
   Future<UserModelOld> getUserModel() async {
     UserModelOld? userModelOld;
 

@@ -101,7 +101,7 @@ class _ListTechnicWhereTypeState extends State<ListTechnicWhereType> {
                           MaterialPageRoute(
                               builder: (context) => ShowGeneralProfile(
                                     uidTechnic: userModelOlds[index].uid,
-                                    showContact: false,
+                                    showContact: false, postCustomerModel: null,
                                   )));
                     }
                   } else {

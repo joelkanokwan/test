@@ -483,7 +483,7 @@ class _CommunityPageState extends State<CommunityPage> {
             builder: (context) => ShowGeneralProfile(
               uidTechnic: uidAvatar,
               showContact: showContact,
-              postCustomerModel: postCustomerModels[index],
+              postCustomerModel: postCustomerModels[index], docIdPostCustomer: docIdPostCustomers[index],
             ),
           ),
         );

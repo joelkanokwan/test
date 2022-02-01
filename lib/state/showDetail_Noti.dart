@@ -29,11 +29,13 @@ import 'package:joelfindtechnician/widgets/show_text.dart';
 class ShowDetailNoti extends StatefulWidget {
   final String title, message;
   final UserModelOld userModelOld;
+  
   const ShowDetailNoti({
     Key? key,
     required this.userModelOld,
     required this.title,
     required this.message,
+    
   }) : super(key: key);
 
   @override
@@ -945,7 +947,8 @@ class _ShowDetailNotiState extends State<ShowDetailNoti> {
             context,
             MaterialPageRoute(
                 builder: (context) => ShowGeneralProfile(
-                      uidTechnic: uidAvatar, showContact: false,
+                      uidTechnic: uidAvatar,
+                      showContact: false,
                     )));
       }
     }
