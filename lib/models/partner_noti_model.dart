@@ -2,16 +2,22 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:joelfindtechnician/models/appointment_model.dart';
+
 class PartnerNotiModel {
   final String title;
   final Timestamp timestamp;
   final bool bolCollection;
   final String status;
+  final String docId;
+  final AppointmentModel? appointmentModel;
   PartnerNotiModel({
     required this.title,
     required this.timestamp,
     required this.bolCollection,
     required this.status,
+    required this.docId,
+    this.appointmentModel,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +26,8 @@ class PartnerNotiModel {
       'timestamp': timestamp,
       'bolCollection': bolCollection,
       'status': status,
+      'docId': docId,
+      'appointmentModel': appointmentModel?.toMap(),
     };
   }
 
@@ -29,6 +37,10 @@ class PartnerNotiModel {
       timestamp: (map['timestamp']),
       bolCollection: map['bolCollection'] ?? false,
       status: map['status'] ?? '',
+      docId: map['docId'] ?? '',
+      appointmentModel: map['appointmentModel'] != null
+          ? AppointmentModel.fromMap(map['appointmentModel'])
+          : null,
     );
   }
 

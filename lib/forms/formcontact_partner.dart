@@ -359,6 +359,7 @@ class _FormContactPartnerState extends State<FormContactPartner> {
                 tokenSocial: token,
                 uidSocial: user!.uid,
                 timeContact: Timestamp.fromDate(DateTime.now()),
+               
               );
               print('#1feb appointment ===> ${appointmentModel.toMap()}');
 

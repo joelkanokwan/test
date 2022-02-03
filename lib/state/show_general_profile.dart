@@ -4,11 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/forms/formcontact_partner.dart';
+import 'package:joelfindtechnician/models/appointment_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/reference_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
 import 'package:joelfindtechnician/state/show_photo_ref.dart';
 import 'package:joelfindtechnician/state/show_review.dart';
+import 'package:joelfindtechnician/utility/find_user_by_uid.dart';
 import 'package:joelfindtechnician/utility/my_constant.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
 
@@ -21,7 +23,7 @@ class ShowGeneralProfile extends StatefulWidget {
     Key? key,
     required this.uidTechnic,
     required this.showContact,
-     this.postCustomerModel,
+    this.postCustomerModel,
     this.docIdPostCustomer,
   }) : super(key: key);
 
@@ -42,12 +44,17 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
   String? uidTechnic;
   bool? showContact;
 
+  bool? colorContact = true; // true ==? ส่งคอนแทคได้
+  String? docIdCustomer;
+
   @override
   void initState() {
     super.initState();
 
     uidTechnic = widget.uidTechnic;
     print('##### uidTechnic => $uidTechnic');
+
+    docIdCustomer = widget.docIdPostCustomer;
 
     showContact = widget.showContact;
     if (showContact == null) {
@@ -71,9 +78,46 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
           setState(() {
             userModelOld = UserModelOld.fromMap(item.data());
             findReference();
+            findApprove();
           });
         }
       });
+    });
+  }
+
+  Future<void> findApprove() async {
+    setState(() {
+      colorContact = true;
+    });
+    var docIdUser = await FindUserByUid(uid: userModelOld!.uid).getDocUser();
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(docIdUser)
+        .collection('appointment')
+        .where('uidSocial', isEqualTo: firebaseUser.uid)
+        .get()
+        .then((value) {
+      print('#2feb value findApprove ==> ${value.docs}');
+      if (value.docs.isNotEmpty) {
+        for (var item in value.docs) {
+          AppointmentModel appointmentModel =
+              AppointmentModel.fromMap(item.data());
+          String approve = appointmentModel.approve;
+          print('#2feb approve readed ==>> $approve');
+
+          //รู้ doc ที่ส่งมากับ doc ที่มี
+          print('#2feb ค่า doc ที่ส่งมา ==>> $docIdCustomer');
+
+          if ((approve == 'unread') || (approve == 'read')) {
+            if (docIdCustomer == appointmentModel.docIdPostcustomer) {
+              setState(() {
+                colorContact = false;
+              });
+            }
+          }
+        }
+      }
     });
   }
 
@@ -245,31 +289,37 @@ class _ShowGeneralProfileState extends State<ShowGeneralProfile> {
     );
   }
 
-  FlatButton buttonContact() {
-    return FlatButton(
+  Widget buttonContact() {
+    return SizedBox(
       height: 40,
-      // minWidth: 170,
-      color: Colors.blue,
-      onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FormContactPartner(
-                userModelOl: userModelOld!,
-                postCustomerModel: widget.postCustomerModel, docIdPostCustomer: widget.docIdPostCustomer ?? '',
-              ),
-            ));
-      },
-      child: Text(
-        'Contact',
-        style: GoogleFonts.lato(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 17,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: colorContact! ? Colors.blue : Colors.grey,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        onPressed: () {
+          if (colorContact!) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FormContactPartner(
+                    userModelOl: userModelOld!,
+                    postCustomerModel: widget.postCustomerModel,
+                    docIdPostCustomer: widget.docIdPostCustomer ?? '',
+                  ),
+                )).then((value) => findApprove());
+          }
+        },
+        child: Text(
+          'Contact',
+          style: GoogleFonts.lato(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 17,
+          ),
+        ),
       ),
     );
   }

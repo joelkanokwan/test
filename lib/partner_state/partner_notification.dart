@@ -54,12 +54,16 @@ class _PartnerNotificationState extends State<PartnerNotification> {
     readAllNoti();
   }
 
-  // for myNotification
   Future<void> readAllNoti() async {
-    if (notificationModels.isNotEmpty) {
-      notificationModels.clear();
-      appointMentModels.clear();
-    }
+    setState(() {
+      load = true;
+    });
+    notificationModels.clear();
+    appointMentModels.clear();
+    partnerNotiModelsorteds.clear();
+    print('#2feb ขนาด partNoto ==>> ${partnerNotiModelsorteds.length}');
+
+    // for myNotification
     await Firebase.initializeApp().then((value) async {
       await FirebaseFirestore.instance
           .collection('user')
@@ -81,6 +85,7 @@ class _PartnerNotificationState extends State<PartnerNotification> {
               timestamp: model.timeNoti,
               bolCollection: true,
               status: model.status,
+              docId: item.id,
             );
             setState(() {
               load = false;
@@ -109,6 +114,8 @@ class _PartnerNotificationState extends State<PartnerNotification> {
           timestamp: appointmentModel.timeContact,
           bolCollection: false,
           status: appointmentModel.approve,
+          docId: item.id,
+          appointmentModel: appointmentModel,
         );
         setState(() {
           appointMentModels.add(appointmentModel);
@@ -180,7 +187,9 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                   .findString(),
               partnerNotiModelsorteds[index].status,
               'title',
+              partnerNotiModelsorteds[index].docId,
               partnerNotiModelsorteds[index].bolCollection,
+              partnerNotiModelsorteds[index].appointmentModel,
             ));
   }
 
@@ -189,7 +198,10 @@ class _PartnerNotificationState extends State<PartnerNotification> {
     String dateStr,
     String status,
     String title,
-    bool bolCollection, // true ==> myNotification, false ==> appointment
+    String docId,
+    bool bolCollection,
+    AppointmentModel?
+        appointmentModel, // true ==> myNotification, false ==> appointment
   ) {
     return GestureDetector(
       onTap: () {
@@ -203,12 +215,15 @@ class _PartnerNotificationState extends State<PartnerNotification> {
                   title: title,
                   message: message,
                 ),
-              )).then((value) => readAllNoti());
+              ));
         } else {
+          print('#2feb customerName ==>> ${appointmentModel?.customerName}');
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FormtoTechnician(),
+                builder: (context) => FormtoTechnician(
+                  docIdAppointment: docId, appointmentModel: appointmentModel!,
+                ),
               ));
         }
       },

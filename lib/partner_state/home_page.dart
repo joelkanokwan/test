@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joelfindtechnician/customer_state/social_service.dart';
 import 'package:joelfindtechnician/forms/formto_technician.dart';
+import 'package:joelfindtechnician/models/appointment_model.dart';
 import 'package:joelfindtechnician/models/notification_model.dart';
 import 'package:joelfindtechnician/models/token_model.dart';
 import 'package:joelfindtechnician/models/user_model_old.dart';
@@ -134,20 +135,41 @@ class _HomePageState extends State<HomePage> {
         '#1feb processAfterClickNoti Work ==>>> title = $title, message = $message');
 
     List<String> strings = message.split('@');
-    print('string[0] ==>> ${strings[0]}');
-    if (strings[0].isNotEmpty) {
-      strings[0] = strings[0].trim();
-      if (strings[0] == 'Contact') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FormtoTechnician(),
-          ),
-        );
-      } else {
-        moveToGeneralNoti(title, message);
-      }
+    print('#3feb strings ==> $strings');
+
+    if (strings[0].trim() == 'Contact') {
+      String customerName = strings[1].trim();
+      customerName = customerName.substring(4).trim();
+
+      print('#3feb customerName = $customerName');
+
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(docUser)
+          .collection('appointment')
+          .where('customerName', isEqualTo: customerName)
+          .get()
+          .then((value) {
+        for (var item in value.docs) {
+          AppointmentModel appointmentModel =
+              AppointmentModel.fromMap(item.data());
+          if (appointmentModel.approve == 'unread') {
+            var docIdAppointment = item.id;
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FormtoTechnician(
+                  docIdAppointment: docIdAppointment,
+                  appointmentModel: appointmentModel,
+                ),
+              ),
+            );
+          }
+        }
+      });
     } else {
+      print('#3feb from Other');
       moveToGeneralNoti(title, message);
     }
   }
