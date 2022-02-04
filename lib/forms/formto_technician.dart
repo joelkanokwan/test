@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/alertdialog/my_dialog.dart';
 import 'package:joelfindtechnician/forms/check_detail.dart';
 import 'package:joelfindtechnician/models/answer_model.dart';
 import 'package:joelfindtechnician/models/appointment_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/replypost_model.dart';
+import 'package:joelfindtechnician/models/social_my_notification.dart';
 import 'package:joelfindtechnician/state/show_circleavatar.dart';
 import 'package:joelfindtechnician/state/show_image_post.dart';
 import 'package:joelfindtechnician/utility/find_user_by_uid.dart';
@@ -45,16 +47,14 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
   PostCustomerModel? postcustomerModel;
   var listAnswerModels = <List<AnswerModel>>[];
 
+  String? detailOfWork, warranty, totalPrice;
+
   @override
   void initState() {
     super.initState();
     docIdAppointment = widget.docIdAppointment;
     appointmentModel = widget.appointmentModel;
     readCustomerPost();
-
-    // if (appointmentModel != null) {
-    // calculateExpireMinus();
-    // }
 
     if (docIdAppointment != null) {
       checkApprove();
@@ -116,17 +116,16 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
       contactDateTime.second,
     );
 
-    print('#3feb Calculate Work');
-
-    print('#2feb current ==> $currentDateTime, contact ==> $contactDateTime');
+    print('#3 current ==> $currentDateTime, contact ==> $contactDateTime');
 
     if (currentDateTime.isBefore(contactDateTime)) {
-      print('#2feb ก่อนหมดเวลา');
-
-      var minusInt = currentDateTime.difference(contactDateTime).inMinutes;
+      var minusInt = contactDateTime.difference(currentDateTime).inMinutes;
       Duration duration = Duration(minutes: minusInt);
       Duration duration1 = Duration(seconds: 10);
-      Timer(duration1, () {
+
+      print('#3feb ก่อนหมดเวลา minusInt ==>> $minusInt นาที');
+      Timer(duration, () {
+        print('#3feb Calculate Work');
         processNonApprove(label: 'TimeOut');
       });
 
@@ -171,7 +170,11 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
       } else if (approve == 'NonApprove') {
         setState(() {
           expMinus = 'Non Approve';
+
+          showButton = false;
         });
+      } else if (approve == 'Confirm') {
+        expMinus = 'Confirm';
         showButton = false;
       } else {
         calculateExpireMinus();
@@ -247,11 +250,21 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
                         Divider(thickness: 2),
                         ShowForm(
                           label: 'Detail of work:',
+                          changeFunc: (String? string) =>
+                              detailOfWork = string!.trim(),
                         ),
                         Divider(thickness: 2),
-                        ShowForm(label: 'Warantty :'),
+                        ShowForm(
+                          label: 'Warantty :',
+                          changeFunc: (String? string) =>
+                              warranty = string!.trim(),
+                        ),
                         Divider(thickness: 2),
-                        ShowForm(label: 'Totl Price :'),
+                        ShowForm(
+                          label: 'Totl Price :',
+                          changeFunc: (String? string) =>
+                              totalPrice = string!.trim(),
+                        )
                       ],
                     ),
                   ),
@@ -367,35 +380,65 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
   ElevatedButton confirmButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: ListTile(
-              leading: ShowImage(),
-              title: ShowText(title: 'Confirm Job'),
-              subtitle: ShowText(title: 'If Confime will cannot change'),
+        if ((detailOfWork?.isEmpty ?? true) ||
+            (warranty?.isEmpty ?? true) ||
+            (totalPrice?.isEmpty ?? true)) {
+          MyDialog()
+              .normalDialog(context, 'Have space', 'Please fill something');
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: ListTile(
+                leading: ShowImage(),
+                title: ShowText(title: 'Confirm Job'),
+                subtitle: ShowText(title: 'If Confime will cannot change'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    print('3efbeb you click ok');
+
+                    await processNonApprove(label: 'Confirm')
+                        .then((value) async {
+                      print('#3feb noti confirm success');
+
+                      var uid = await FirebaseAuth.instance.currentUser!.uid;
+                      var docIdTechnic =
+                          await FindUserByUid(uid: uid).getDocUser();
+
+                          Timestamp  timestamp = Timestamp.fromDate(DateTime.now());
+
+                      SocialMyNotificationModel socialMyNotification =
+                          SocialMyNotificationModel(
+                        docIdPostCustomer: appointmentModel!.docIdPostcustomer,
+                        docIdTechnic: docIdTechnic!, timeConfirm: timestamp, readed: false,
+                      );
+
+                      await FirebaseFirestore.instance
+                          .collection('social')
+                          .doc(appointmentModel!.uidSocial)
+                          .collection('myNotification')
+                          .doc()
+                          .set(socialMyNotification.toMap())
+                          .then((value) {
+                        print('#3feb Insert myNoti Success');
+                        Navigator.pop(context);
+                      });
+                    });
+                  },
+                  child: Text('OK'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel'),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CheckDetail(),
-                      ),
-                      (route) => false);
-                },
-                child: Text('OK'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Cancel'),
-              ),
-            ],
-          ),
-        );
+          );
+        }
       },
       child: Text('Confirm'),
     );
@@ -461,7 +504,7 @@ class _FormtoTechnicianState extends State<FormtoTechnician> {
         print('Sent Noti Success');
         setState(() {
           showButton = false;
-          expMinus = 'Canceled';
+          expMinus = label;
         });
       });
     });

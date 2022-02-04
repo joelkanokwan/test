@@ -12,6 +12,7 @@ import 'package:joelfindtechnician/customer_state/ctm_howtouseapp.dart';
 import 'package:joelfindtechnician/customer_state/ctm_notification.dart';
 import 'package:joelfindtechnician/customer_state/ctm_ordethistory.dart';
 import 'package:joelfindtechnician/customer_state/ctm_termandconditon.dart';
+import 'package:joelfindtechnician/forms/check_detail.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
 import 'package:joelfindtechnician/models/replypost_model.dart';
 import 'package:joelfindtechnician/models/token_social_model.dart';
@@ -65,7 +66,9 @@ class _LoginSuccessState extends State<LoginSuccess> {
     List<String?> strings = myMessage!.split('@');
     if (!(strings[0]?.isEmpty ?? true)) {
       strings[0] = strings[0]!.trim();
-      if ((strings[0] == 'NonApprove') || (strings[0] == 'TimeOut')) {
+      if ((strings[0] == 'NonApprove') ||
+          (strings[0] == 'TimeOut') ||
+          (strings[0] == 'Confirm')) {
         checkMessage = false;
       }
     }
@@ -103,10 +106,15 @@ class _LoginSuccessState extends State<LoginSuccess> {
     } else {
       print('Noti form Cancel Appointment');
       Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CustomerNotification(),
-          ),
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            if (strings[0] == 'Confirm') {
+              return CheckDetail();
+            } else {}
+            return CustomerNotification();
+          },
+        ),
       );
     }
   }

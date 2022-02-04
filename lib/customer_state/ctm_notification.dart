@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:joelfindtechnician/forms/check_detail.dart';
+import 'package:joelfindtechnician/models/customer_noti_model.dart';
 import 'package:joelfindtechnician/models/postcustomer_model.dart';
+import 'package:joelfindtechnician/models/social_my_notification.dart';
 import 'package:joelfindtechnician/state/ctm_list_answer.dart';
 import 'package:joelfindtechnician/utility/time_to_string.dart';
 import 'package:joelfindtechnician/widgets/show_progress.dart';
@@ -28,10 +31,62 @@ class _CustomerNotificationState extends State<CustomerNotification> {
 
   var socialReadeds = <bool>[];
 
+  var customerNotiModels = <CustomerNotiModel>[];
+  var customerNotiSortModels = <CustomerNotiModel>[];
+
   @override
   void initState() {
     super.initState();
     readPostCustomer();
+  }
+
+  Future<void> readMyNotification() async {
+    await FirebaseFirestore.instance
+        .collection('social')
+        .doc(uidLogin)
+        .collection('myNotification')
+        .get()
+        .then((value) async {
+      for (var item in value.docs) {
+        SocialMyNotificationModel socialMyNotificationModel =
+            SocialMyNotificationModel.fromMap(item.data());
+
+        var result = await FirebaseFirestore.instance
+            .collection('postcustomer')
+            .doc(socialMyNotificationModel.docIdPostCustomer)
+            .get();
+
+        PostCustomerModel customerModel =
+            PostCustomerModel.fromMap(result.data()!);
+
+        CustomerNotiModel customerNotiModel = CustomerNotiModel(
+          title: customerModel.job,
+          timestamp: socialMyNotificationModel.timeConfirm,
+          navigatorBool: false,
+          socialMyNotificationModel: socialMyNotificationModel,
+          fontWeight: socialMyNotificationModel.readed,
+        );
+
+        setState(() {
+          customerNotiModels.add(customerNotiModel);
+          haveData = true;
+        });
+      }
+    });
+
+    var listCustomerNotiMaps = <Map<String, dynamic>>[];
+    for (var item in customerNotiModels) {
+      Map<String, dynamic> map = item.toMap();
+      listCustomerNotiMaps.add(map);
+    }
+    listCustomerNotiMaps
+        .sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
+    for (var item in listCustomerNotiMaps) {
+      CustomerNotiModel customerNotiModel = CustomerNotiModel.fromMap(item);
+      setState(() {
+        customerNotiSortModels.add(customerNotiModel);
+      });
+    }
   }
 
   Future<void> readPostCustomer() async {
@@ -43,8 +98,6 @@ class _CustomerNotificationState extends State<CustomerNotification> {
     await Firebase.initializeApp().then((value) async {
       final User = FirebaseAuth.instance.currentUser!;
       uidLogin = User.uid;
-
-      print('#6jan uidLogin ==> $uidLogin');
 
       await FirebaseFirestore.instance
           .collection('postcustomer')
@@ -65,11 +118,21 @@ class _CustomerNotificationState extends State<CustomerNotification> {
                 .get()
                 .then((value) {
               if (value.docs.isNotEmpty) {
+                CustomerNotiModel customerNotiModel = CustomerNotiModel(
+                  title: postCustomerModel.job,
+                  timestamp: postCustomerModel.timePost,
+                  navigatorBool: true,
+                  postCustomerModel: postCustomerModel,
+                  fontWeight: postCustomerModel.socialReaded,
+                  docIdPostCustomer: docIdPostCustomer,
+                );
+
                 setState(() {
                   haveData = true;
                   postCustomerModels.add(postCustomerModel);
                   docIdPostCustomers.add(docIdPostCustomer);
                   socialReadeds.add(postCustomerModel.socialReaded);
+                  customerNotiModels.add(customerNotiModel);
                 });
               } else {
                 haveData = false;
@@ -78,6 +141,8 @@ class _CustomerNotificationState extends State<CustomerNotification> {
           } // if
         }
       });
+
+      readMyNotification();
     });
   }
 
@@ -90,14 +155,9 @@ class _CustomerNotificationState extends State<CustomerNotification> {
           ? ShowProgress()
           : haveData!
               ? ListView.builder(
-                  itemCount: postCustomerModels.length,
+                  itemCount: customerNotiSortModels.length,
                   itemBuilder: (context, index) => newContent(
-                    postCustomerModels[index].job,
-                    TimeToString(timestamp: postCustomerModels[index].timePost)
-                        .findString(),
-                    postCustomerModels[index],
-                    index,
-                  ),
+                      customerNotiModel: customerNotiSortModels[index]),
                 )
               : Center(child: ShowText(title: 'No Message')),
     );
@@ -118,37 +178,42 @@ class _CustomerNotificationState extends State<CustomerNotification> {
     );
   }
 
-  Widget newContent(
-    String job,
-    String timePost,
-    PostCustomerModel postCustomerModel,
-    int index,
-  ) {
+  Widget newContent({required CustomerNotiModel customerNotiModel}) {
     return InkWell(
       onTap: () async {
-        String docIdPostCustomer = docIdPostCustomers[index];
-        print('##23jan docIdPostCustomer ==>> $docIdPostCustomer');
-        bool socialReaded = postCustomerModels[index].socialReaded;
-        print('##23jan socialReaded ==> $socialReaded');
-        if (!socialReaded) {
-          Map<String, dynamic> data = {};
-          data['socialReaded'] = true;
-          await FirebaseFirestore.instance
-              .collection('postcustomer')
-              .doc(docIdPostCustomer)
-              .update(data)
-              .then((value) => print('##23jan Update Success'));
-        }
+        if (customerNotiModel.navigatorBool) {
+          String docIdPostCustomer = customerNotiModel.docIdPostCustomer!;
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CtmListAnswer(
-              job: job,
-              postCustomerModel: postCustomerModel,
+          bool socialReaded = customerNotiModel.fontWeight;
+
+          if (!socialReaded) {
+            Map<String, dynamic> data = {};
+            data['socialReaded'] = true;
+            await FirebaseFirestore.instance
+                .collection('postcustomer')
+                .doc(docIdPostCustomer)
+                .update(data)
+                .then((value) => print('##23jan Update Success'));
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CtmListAnswer(
+                job: customerNotiModel.title,
+                postCustomerModel: customerNotiModel.postCustomerModel!,
+              ),
             ),
-          ),
-        ).then((value) => readPostCustomer());
+          );
+        } else {
+
+          
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CheckDetail(),
+              ));
+        }
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,10 +232,10 @@ class _CustomerNotificationState extends State<CustomerNotification> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 30, 0),
                 child: Text(
-                  job,
+                  customerNotiModel.title,
                   style: GoogleFonts.lato(
                     fontSize: 20,
-                    fontWeight: socialReadeds[index]
+                    fontWeight: customerNotiModel.fontWeight
                         ? FontWeight.normal
                         : FontWeight.bold,
                   ),
@@ -179,7 +244,8 @@ class _CustomerNotificationState extends State<CustomerNotification> {
               Padding(
                 padding: const EdgeInsets.only(top: 5),
                 child: Text(
-                  timePost,
+                  TimeToString(timestamp: customerNotiModel.timestamp)
+                      .findString(),
                   style: GoogleFonts.lato(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
