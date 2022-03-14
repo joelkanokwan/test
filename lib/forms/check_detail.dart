@@ -257,7 +257,7 @@ class _CheckDetailState extends State<CheckDetail> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                color: Colors.amberAccent,
+                                color: Colors.blue,
                               ),
                             ),
                           ],
