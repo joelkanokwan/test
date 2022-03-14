@@ -69,7 +69,6 @@ class _CheckDetailState extends State<CheckDetail> {
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
                         ),
-                        
                       ),
                       SizedBox(height: 8),
                       Text(
@@ -103,14 +102,7 @@ class _CheckDetailState extends State<CheckDetail> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Order number :',
-                        style: GoogleFonts.lato(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+
                       SizedBox(height: 8),
                       Text(
                         'Appointment Date :',
@@ -132,6 +124,15 @@ class _CheckDetailState extends State<CheckDetail> {
                       SizedBox(height: 8),
                       Text(
                         'Detail of work :',
+                        style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Divider(thickness: 3),
+                      SizedBox(height: 8),
+                      Text(
+                        'Warranty :',
                         style: GoogleFonts.lato(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -319,28 +320,28 @@ class _CheckDetailState extends State<CheckDetail> {
                 ),
               ),
             ),
-            SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 50,
-                child: FlatButton(
-                  textColor: Colors.white,
-                  color: Colors.blueAccent,
-                  onPressed: () {},
-                  child: Text(
-                    'Confirm Payment',
-                    style: GoogleFonts.lato(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ),
+            // SizedBox(height: 40),
+            // Padding(
+              // padding: const EdgeInsets.all(8.0),
+              // child: Container(
+                // height: 50,
+                // child: FlatButton(
+                  // textColor: Colors.white,
+                  // color: Colors.blueAccent,
+                  // onPressed: () {},
+                  // child: Text(
+                    // 'Confirm Payment',
+                    // style: GoogleFonts.lato(
+                      // fontSize: 20,
+                      // fontWeight: FontWeight.bold,
+                    // ),
+                  // ),
+                  // shape: RoundedRectangleBorder(
+                    // borderRadius: BorderRadius.circular(20),
+                  // ),
+                // ),
+              // ),
+            // ),
           ],
         ),
       ),
