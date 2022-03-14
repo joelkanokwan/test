@@ -320,28 +320,6 @@ class _CheckDetailState extends State<CheckDetail> {
                 ),
               ),
             ),
-            // SizedBox(height: 40),
-            // Padding(
-              // padding: const EdgeInsets.all(8.0),
-              // child: Container(
-                // height: 50,
-                // child: FlatButton(
-                  // textColor: Colors.white,
-                  // color: Colors.blueAccent,
-                  // onPressed: () {},
-                  // child: Text(
-                    // 'Confirm Payment',
-                    // style: GoogleFonts.lato(
-                      // fontSize: 20,
-                      // fontWeight: FontWeight.bold,
-                    // ),
-                  // ),
-                  // shape: RoundedRectangleBorder(
-                    // borderRadius: BorderRadius.circular(20),
-                  // ),
-                // ),
-              // ),
-            // ),
           ],
         ),
       ),
